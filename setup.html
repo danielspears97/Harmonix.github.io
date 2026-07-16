@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Set up Harmonix — self-hosting guide</title>
+<title>Set up Harmonix — free self-hosting guide</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -33,26 +33,48 @@
   .back{color:var(--cream-dim);text-decoration:none;font-size:.9rem;font-weight:500;display:inline-flex;align-items:center;gap:7px;transition:color .2s}
   .back:hover{color:var(--cream)}
 
-  header{padding:70px 0 40px}
+  header{padding:70px 0 20px}
   header h1{font-family:"Poppins";font-weight:800;font-size:clamp(2.3rem,5vw,3.4rem);letter-spacing:-.025em;line-height:1.05;margin:20px 0 16px}
-  header p{color:var(--cream-dim);font-size:1.1rem;max-width:36em}
-  .est{display:inline-flex;align-items:center;gap:9px;margin-top:22px;font-size:.85rem;color:var(--tan);border:1px solid var(--line);padding:8px 15px;border-radius:30px}
-  .est svg{width:15px;height:15px;stroke:var(--rose)}
+  header p{color:var(--cream-dim);font-size:1.1rem;max-width:40em}
+  .meta-row{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
+  .chip{display:inline-flex;align-items:center;gap:9px;font-size:.85rem;color:var(--tan);border:1px solid var(--line);padding:8px 15px;border-radius:30px}
+  .chip svg{width:15px;height:15px;stroke:var(--rose)}
+  .chip.free{color:var(--ok);border-color:rgba(123,216,143,.4);background:rgba(123,216,143,.08);font-weight:600}
+  .chip.free svg{stroke:var(--ok)}
+
+  /* free explainer band */
+  .free-band{display:flex;gap:16px;align-items:flex-start;background:rgba(123,216,143,.08);border:1px solid rgba(123,216,143,.3);border-radius:16px;padding:20px 22px;margin:28px 0 8px}
+  .free-band .fi{flex:0 0 auto;width:26px;height:26px;color:var(--ok)}
+  .free-band .fi svg{width:26px;height:26px}
+  .free-band h4{font-family:"Poppins";font-weight:700;font-size:1.05rem;margin-bottom:5px}
+  .free-band p{color:var(--cream-dim);font-size:.95rem;max-width:none}
+  .free-band b{color:var(--cream)}
+
+  /* plain-English mental model */
+  .model{background:linear-gradient(180deg,var(--panel),var(--ink-2));border:1px solid var(--line);border-radius:16px;padding:24px;margin:36px 0}
+  .model h3{font-family:"Poppins";font-weight:700;font-size:1.1rem;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  .model h3 svg{width:19px;height:19px;stroke:var(--rose)}
+  .model .flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:12px;align-items:center;margin-top:4px}
+  @media(max-width:680px){.model .flow{grid-template-columns:1fr;gap:8px}.model .arrow{transform:rotate(90deg);justify-self:center}}
+  .model .node{background:var(--ink);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+  .model .node .big{font-size:1.5rem;margin-bottom:6px}
+  .model .node b{display:block;font-size:.9rem;margin-bottom:2px}
+  .model .node span{font-size:.78rem;color:var(--tan);line-height:1.35;display:block}
+  .model .arrow{color:var(--coral);font-size:1.3rem;text-align:center}
 
   .layout{display:grid;grid-template-columns:220px 1fr;gap:52px;padding:20px 0 100px;align-items:start}
   @media(max-width:860px){.layout{grid-template-columns:1fr;gap:8px}}
-
   .toc{position:sticky;top:96px}
   @media(max-width:860px){.toc{display:none}}
   .toc .th{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tan);margin-bottom:16px}
   .toc a{display:block;text-decoration:none;color:var(--cream-dim);font-size:.9rem;padding:8px 0 8px 16px;border-left:2px solid var(--line);transition:color .2s,border-color .2s}
   .toc a:hover,.toc a.active{color:var(--coral);border-color:var(--coral)}
 
-  .prereq{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:56px}
-  @media(max-width:560px){.prereq{grid-template-columns:1fr}}
+  .prereq{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:56px}
+  @media(max-width:720px){.prereq{grid-template-columns:1fr}}
   .pq{background:linear-gradient(180deg,var(--panel),var(--ink-2));border:1px solid var(--line);border-radius:14px;padding:20px}
-  .pq h4{font-family:"Poppins";font-weight:700;font-size:1rem;margin-bottom:5px;display:flex;align-items:center;gap:9px}
-  .pq h4 .d{width:8px;height:8px;border-radius:2px;background:var(--rose)}
+  .pq .tag{font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ok);background:rgba(123,216,143,.12);padding:3px 8px;border-radius:20px;float:right}
+  .pq h4{font-family:"Poppins";font-weight:700;font-size:1rem;margin-bottom:5px}
   .pq p{color:var(--cream-dim);font-size:.88rem}
   .pq a.link{color:var(--coral);text-decoration:none;font-weight:500}
   .pq a.link:hover{text-decoration:underline}
@@ -60,7 +82,8 @@
   .step{position:relative;padding:0 0 48px 60px;border-left:1px solid var(--line);margin-left:19px}
   .step:last-of-type{border-left-color:transparent}
   .step .num{position:absolute;left:-20px;top:-4px;width:40px;height:40px;border-radius:12px;background:var(--panel);border:1px solid var(--line);display:grid;place-items:center;font-family:"Poppins";font-weight:800;color:var(--coral);font-size:1.05rem}
-  .step h3{font-family:"Poppins";font-weight:700;font-size:1.4rem;letter-spacing:-.015em;margin-bottom:12px}
+  .step h3{font-family:"Poppins";font-weight:700;font-size:1.4rem;letter-spacing:-.015em;margin-bottom:6px}
+  .step .lead{color:var(--tan);font-size:.9rem;margin-bottom:14px}
   .step p{color:var(--cream-dim);margin-bottom:14px}
   .step p b{color:var(--cream);font-weight:600}
   .step ul{list-style:none;margin:0 0 16px}
@@ -72,7 +95,7 @@
   .code{position:relative;background:var(--ink-2);border:1px solid var(--line);border-radius:12px;margin:0 0 16px;overflow:hidden}
   .code .ch{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--line);background:var(--panel)}
   .code .ch .fname{font-family:"JetBrains Mono",monospace;font-size:.74rem;color:var(--tan)}
-  .code .copy{background:none;border:1px solid var(--line);color:var(--cream-dim);font-family:inherit;font-size:.72rem;padding:4px 11px;border-radius:7px;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:6px}
+  .code .copy{background:none;border:1px solid var(--line);color:var(--cream-dim);font-family:inherit;font-size:.72rem;padding:4px 11px;border-radius:7px;cursor:pointer;transition:all .18s}
   .code .copy:hover{border-color:var(--coral);color:var(--coral)}
   .code .copy.done{border-color:var(--ok);color:var(--ok)}
   .code pre{margin:0;padding:16px;overflow-x:auto;font-family:"JetBrains Mono",monospace;font-size:.84rem;line-height:1.7;color:var(--cream)}
@@ -80,11 +103,26 @@
   .code pre .k{color:var(--rose)}
   .code pre .s{color:var(--ok)}
 
-  .callout{display:flex;gap:14px;background:rgba(255,143,176,.08);border:1px solid rgba(255,143,176,.28);border-radius:12px;padding:16px 18px;margin:0 0 16px}
-  .callout .ci{flex:0 0 auto;width:22px;height:22px;color:var(--rose)}
+  .callout{display:flex;gap:14px;border-radius:12px;padding:16px 18px;margin:0 0 16px}
+  .callout.tip{background:rgba(255,143,176,.08);border:1px solid rgba(255,143,176,.28)}
+  .callout.warn{background:rgba(224,164,75,.08);border:1px solid rgba(224,164,75,.3)}
+  .callout .ci{flex:0 0 auto;width:22px;height:22px}
+  .callout.tip .ci{color:var(--rose)}.callout.warn .ci{color:#E0A44B}
   .callout .ci svg{width:22px;height:22px}
   .callout p{margin:0;font-size:.9rem;color:var(--cream)}
-  .callout p b{color:var(--rose)}
+  .callout.tip p b{color:var(--rose)}.callout.warn p b{color:#E0A44B}
+
+  /* pick-a-path cards */
+  .pathpick{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:4px 0 18px}
+  @media(max-width:680px){.pathpick{grid-template-columns:1fr}}
+  .path{background:linear-gradient(180deg,var(--panel),var(--ink-2));border:1px solid var(--line);border-radius:14px;padding:20px;position:relative}
+  .path.reco{border-color:var(--coral)}
+  .path .rb{position:absolute;top:-10px;left:18px;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--coral);padding:3px 10px;border-radius:20px}
+  .path h4{font-family:"Poppins";font-weight:700;font-size:1.05rem;margin:4px 0 6px}
+  .path .who{font-size:.82rem;color:var(--tan);margin-bottom:12px}
+  .path ul{list-style:none;margin:0}
+  .path ul li{position:relative;padding-left:20px;font-size:.86rem;color:var(--cream-dim);margin-bottom:7px}
+  .path ul li::before{content:"✓";position:absolute;left:0;top:0;color:var(--ok);font-weight:700;font-size:.8rem}
 
   .tips{margin-top:20px}
   .tips h2{font-family:"Poppins";font-weight:800;font-size:1.8rem;letter-spacing:-.02em;margin-bottom:8px}
@@ -112,31 +150,56 @@
 
 <nav>
   <div class="nav-inner">
-    <a class="brand" href="harmonix.html"><span class="glyph"><span><i></i><i></i><i></i></span></span>Harmonix</a>
-    <a class="back" href="harmonix.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to site</a>
+    <a class="brand" href="index.html"><span class="glyph"><span><i></i><i></i><i></i></span></span>Harmonix</a>
+    <a class="back" href="index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to site</a>
   </div>
 </nav>
 
 <header>
   <div class="wrap">
-    <span class="eyebrow">Self-hosting guide</span>
-    <h1>Get Harmonix running.</h1>
-    <p>Harmonix runs on your own machine — the bot, the music engine, and the web dashboard all start together. This walks you through it from an empty folder to a live bot.</p>
-    <span class="est"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>About 15 minutes · beginner friendly</span>
+    <span class="eyebrow">Free self-hosting guide</span>
+    <h1>Get Harmonix running — for free.</h1>
+    <p>You run Harmonix on your own computer. No monthly bill, no server to rent, no domain to buy. This guide takes you from an empty folder to a working bot with a dashboard, one plain step at a time.</p>
+    <div class="meta-row">
+      <span class="chip free"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>$0 — nothing here costs money</span>
+      <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>About 15 minutes</span>
+      <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>No coding needed</span>
+    </div>
+
+    <div class="free-band">
+      <span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></span>
+      <div>
+        <h4>Everything on this page is 100% free</h4>
+        <p>Every tool you need — Node.js, Java, a Discord bot — is free to download and free to keep. The dashboard runs right on your own machine with a simple password, so there's <b>no domain to buy and no tunnel required</b>. Opening it to the wider internet later is optional, and even that has a free option.</p>
+      </div>
+    </div>
   </div>
 </header>
 
 <div class="wrap">
+  <!-- MENTAL MODEL -->
+  <div class="model">
+    <h3><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.66 18H4a2 2 0 01-2-2V6a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-5.66"/><path d="M8 21h8M12 18v3"/></svg>How it fits together</h3>
+    <div class="flow">
+      <div class="node"><div class="big">💻</div><b>Your computer</b><span>runs the Harmonix program</span></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="big">🤖</div><b>The bot</b><span>joins your Discord and plays music</span></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="big">🎛️</div><b>The dashboard</b><span>a web page your PC serves — you open it in your browser to run the show</span></div>
+    </div>
+  </div>
+
   <div class="layout">
     <aside class="toc">
       <div class="th">On this page</div>
       <a href="#need">What you'll need</a>
       <a href="#bot">1 · Create the bot</a>
       <a href="#install">2 · Install Harmonix</a>
-      <a href="#config">3 · Configure it</a>
-      <a href="#tunnel">4 · Set up the tunnel</a>
+      <a href="#config">3 · Basic setup</a>
+      <a href="#login">4 · Pick how you log in</a>
       <a href="#launch">5 · Launch</a>
-      <a href="#invite">6 · Invite &amp; deploy</a>
+      <a href="#invite">6 · Invite &amp; commands</a>
+      <a href="#remote">Open it from anywhere</a>
       <a href="#trouble">Troubleshooting</a>
     </aside>
 
@@ -144,12 +207,12 @@
       <!-- PREREQS -->
       <section id="need" style="scroll-margin-top:90px">
         <span class="eyebrow">Before you start</span>
-        <h3 style="font-family:'Poppins';font-weight:800;font-size:1.6rem;margin:14px 0 22px;letter-spacing:-.02em">What you'll need</h3>
+        <h3 style="font-family:'Poppins';font-weight:800;font-size:1.6rem;margin:14px 0 8px;letter-spacing:-.02em">What you'll need</h3>
+        <p style="color:var(--cream-dim);margin-bottom:22px">Three free things. Install the first two once and you're set for good.</p>
         <div class="prereq">
-          <div class="pq"><h4><span class="d"></span>Node.js 20 LTS</h4><p>The runtime Harmonix is built on. Grab the LTS build from <a class="link" href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a>.</p></div>
-          <div class="pq"><h4><span class="d"></span>Java 17+</h4><p>Lavalink v4 (the music engine) runs on Java. Any 17-or-newer JDK works — Temurin is a solid pick.</p></div>
-          <div class="pq"><h4><span class="d"></span>A Discord application</h4><p>Free from the <a class="link" href="https://discord.com/developers/applications" target="_blank" rel="noopener">Developer Portal</a>. You'll get a bot token and client ID.</p></div>
-          <div class="pq"><h4><span class="d"></span>A Cloudflare account</h4><p>Optional but recommended — it gives the dashboard login a stable URL that survives restarts.</p></div>
+          <div class="pq"><span class="tag">Free</span><h4>Node.js 20</h4><p>The engine Harmonix runs on. Download the <b>LTS</b> version from <a class="link" href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a> and click through the installer.</p></div>
+          <div class="pq"><span class="tag">Free</span><h4>Docker Desktop</h4><p>Runs the music engine for you — the launcher starts it automatically. Free from <a class="link" href="https://www.docker.com/products/docker-desktop/" target="_blank" rel="noopener">docker.com</a>. <small>(Prefer no Docker? You can run the engine with Java 17+ instead — see step 5.)</small></p></div>
+          <div class="pq"><span class="tag">Free</span><h4>A Discord bot</h4><p>Made in a couple of clicks at the <a class="link" href="https://discord.com/developers/applications" target="_blank" rel="noopener">Developer Portal</a>. Step 1 walks you through it.</p></div>
         </div>
       </section>
 
@@ -157,15 +220,16 @@
       <div class="step" id="bot" style="scroll-margin-top:90px">
         <div class="num">1</div>
         <h3>Create your Discord bot</h3>
-        <p>Head to the <b>Developer Portal</b>, hit <b>New Application</b>, and name it Harmonix. Then:</p>
+        <p class="lead">This is the account your bot logs in as. It's free and takes about two minutes.</p>
+        <p>Open the <b>Developer Portal</b>, click <b>New Application</b>, and name it Harmonix. Then grab two things:</p>
         <ul>
-          <li>Open the <b>Bot</b> tab and press <b>Reset Token</b> — copy the token somewhere safe. You'll only see it once.</li>
-          <li>Scroll to <b>Privileged Gateway Intents</b> and switch on <b>Server Members</b> and <b>Message Content</b>.</li>
-          <li>On the <b>OAuth2</b> tab, copy your <b>Client ID</b> — you'll need it for both config and the invite link.</li>
+          <li>On the <b>Bot</b> tab, click <b>Reset Token</b> and copy the token. This is the bot's password — you'll only see it once, so paste it somewhere safe.</li>
+          <li>Still on the <b>Bot</b> tab, scroll to <b>Privileged Gateway Intents</b> and switch on <b>Server Members</b> and <b>Message Content</b>.</li>
+          <li>On the <b>General Information</b> tab, copy the <b>Application ID</b> (also called the Client ID). You'll need it in a moment.</li>
         </ul>
-        <div class="callout">
+        <div class="callout warn">
           <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></span>
-          <p><b>Keep the token private.</b> Anyone with it can run your bot. If it ever leaks, reset it — the old one dies instantly.</p>
+          <p><b>Keep the token private.</b> Anyone who has it can control your bot. If it ever leaks, hit Reset Token again and the old one stops working instantly.</p>
         </div>
       </div>
 
@@ -173,109 +237,184 @@
       <div class="step" id="install" style="scroll-margin-top:90px">
         <div class="num">2</div>
         <h3>Install Harmonix</h3>
-        <p>Unzip the Harmonix folder wherever you'd like it to live, open a terminal in that folder, and pull in the dependencies:</p>
+        <p class="lead">Unpack the download and let it grab what it needs.</p>
+        <p>Unzip the Harmonix folder wherever you like. Open a terminal <b>inside that folder</b> and run:</p>
         <div class="code">
           <div class="ch"><span class="fname">terminal</span><button class="copy">Copy</button></div>
-          <pre><span class="c"># from inside the Harmonix folder</span>
-npm install</pre>
+          <pre>npm install</pre>
         </div>
-        <p>That installs everything the bot and dashboard need. Lavalink comes bundled — no separate download.</p>
+        <p>This pulls in everything the bot and dashboard need. The music engine comes with the project too — the launcher spins it up for you the first time you start, so there's nothing else to install by hand.</p>
+        <div class="callout tip">
+          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7c.6.5 1 1.3 1 2.1h6c0-.8.4-1.6 1-2.1A7 7 0 0012 2z"/></svg></span>
+          <p><b>Not sure how to open a terminal in a folder?</b> On Windows, open the folder, click the address bar, type <code class="inl">cmd</code> and press Enter. On Mac, right-click the folder → Services → New Terminal at Folder.</p>
+        </div>
       </div>
 
       <!-- STEP 3 -->
       <div class="step" id="config" style="scroll-margin-top:90px">
         <div class="num">3</div>
-        <h3>Configure it</h3>
-        <p>Copy the example config to <code class="inl">.env</code> and fill in the two values from step 1:</p>
+        <h3>Basic setup</h3>
+        <p class="lead">Tell Harmonix which bot it is. Just two values to fill in.</p>
+        <p>In the folder you'll find a file called <code class="inl">.env.example</code>. Make a copy and rename the copy to <code class="inl">.env</code>, then open it in any text editor and paste in your token and ID from step 1:</p>
         <div class="code">
           <div class="ch"><span class="fname">.env</span><button class="copy">Copy</button></div>
-          <pre><span class="k">DISCORD_TOKEN</span>=<span class="s">your-bot-token-here</span>
-<span class="k">CLIENT_ID</span>=<span class="s">your-client-id-here</span>
-
-<span class="c"># dashboard</span>
-<span class="k">DASHBOARD_PORT</span>=<span class="s">3000</span>
-<span class="k">DASHBOARD_URL</span>=<span class="s">https://harmonix.yourdomain.com</span>
-<span class="k">SESSION_SECRET</span>=<span class="s">any-long-random-string</span></pre>
+          <pre><span class="k">DISCORD_TOKEN</span>=<span class="s">paste-your-bot-token-here</span>
+<span class="k">CLIENT_ID</span>=<span class="s">paste-your-application-id-here</span></pre>
         </div>
-        <p>Leave <code class="inl">DASHBOARD_URL</code> as-is for now if you're skipping the tunnel — you can point it at <code class="inl">http://localhost:3000</code> and log in locally.</p>
+        <p>Everything else in that file already has a sensible default. Save it and move on.</p>
+        <div class="callout tip">
+          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></span>
+          <p><b>Want your slash commands to appear instantly while testing?</b> Paste your server's ID into <code class="inl">GUILD_ID</code>. Leave it blank and commands still work — they just take up to an hour to show up the first time.</p>
+        </div>
       </div>
 
       <!-- STEP 4 -->
-      <div class="step" id="tunnel" style="scroll-margin-top:90px">
+      <div class="step" id="login" style="scroll-margin-top:90px">
         <div class="num">4</div>
-        <h3>Set up the tunnel <span style="font-size:.7em;color:var(--tan);font-weight:500">(recommended)</span></h3>
-        <p>The dashboard login uses Discord OAuth, and Discord needs a <b>fixed redirect URL</b>. A named Cloudflare tunnel gives you one that doesn't change when you restart:</p>
+        <h3>Pick how you log into the dashboard</h3>
+        <p class="lead">Two ways in — both completely free. Most people want the first one.</p>
+        <div class="pathpick">
+          <div class="path reco">
+            <span class="rb">Easiest · recommended</span>
+            <h4>🔒 Local password</h4>
+            <div class="who">You open the dashboard on the same computer that runs the bot.</div>
+            <ul>
+              <li>No domain, no tunnel, nothing to sign up for</li>
+              <li>Just set one password</li>
+              <li>Works the moment you launch</li>
+            </ul>
+          </div>
+          <div class="path">
+            <h4>🎮 Discord login</h4>
+            <div class="who">You'd rather sign in with your Discord account.</div>
+            <ul>
+              <li>Still free, still runs locally</li>
+              <li>Only lets people manage servers they already run</li>
+              <li>A couple of extra fields to fill</li>
+            </ul>
+          </div>
+        </div>
+
+        <p style="margin-top:8px"><b>For the local password</b>, add one line to your <code class="inl">.env</code> and you're done:</p>
         <div class="code">
-          <div class="ch"><span class="fname">terminal</span><button class="copy">Copy</button></div>
-          <pre>cloudflared tunnel login
-cloudflared tunnel create harmonix
-cloudflared tunnel route dns harmonix harmonix.yourdomain.com</pre>
+          <div class="ch"><span class="fname">.env</span><button class="copy">Copy</button></div>
+          <pre><span class="c"># Leave CLIENT_SECRET blank to stay in local mode,</span>
+<span class="c"># then set a password to open the dashboard with:</span>
+<span class="k">DASHBOARD_PASSWORD</span>=<span class="s">pick-any-password</span></pre>
         </div>
-        <p>Then add the redirect back on the Discord <b>OAuth2</b> tab:</p>
-        <ul>
-          <li>Redirect URL: <code class="inl">https://harmonix.yourdomain.com/auth/callback</code></li>
-          <li>Match it exactly in your <code class="inl">.env</code> <code class="inl">DASHBOARD_URL</code>.</li>
-        </ul>
-        <div class="callout">
-          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></span>
-          <p><b>This is the #1 login gotcha.</b> If the redirect URL in Discord and the one Harmonix sends don't match character-for-character, login just fails. A named tunnel fixes it for good — random quick-tunnel URLs change every restart and break it.</p>
+
+        <p><b>Prefer the Discord login?</b> On the Developer Portal's <b>OAuth2</b> tab copy your <b>Client Secret</b>, then fill these in. Leave the redirect line blank and Harmonix points it at your own computer automatically:</p>
+        <div class="code">
+          <div class="ch"><span class="fname">.env</span><button class="copy">Copy</button></div>
+          <pre><span class="k">CLIENT_SECRET</span>=<span class="s">your-client-secret</span>
+<span class="k">SESSION_SECRET</span>=<span class="s">any-long-random-string</span>
+<span class="c"># Leave OAUTH_REDIRECT_URI blank — it auto-fills to</span>
+<span class="c"># http://localhost:3000/auth/callback</span></pre>
         </div>
+        <p>Then, on that same <b>OAuth2</b> tab, add <code class="inl">http://localhost:3000/auth/callback</code> under <b>Redirects</b> so Discord recognises it.</p>
       </div>
 
       <!-- STEP 5 -->
       <div class="step" id="launch" style="scroll-margin-top:90px">
         <div class="num">5</div>
-        <h3>Launch</h3>
-        <p>One command starts everything — Lavalink, the bot, and the dashboard, in the right order:</p>
+        <h3>Launch — just double-click</h3>
+        <p class="lead">Once everything's installed, you don't touch the terminal at all. Harmonix ships with a launcher that does the whole start-up for you.</p>
+        <p>On <b>Windows</b>, open the Harmonix folder and <b>double-click <code class="inl">start.bat</code></b>. On <b>Mac or Linux</b>, run <code class="inl">./start.sh</code>. That one file:</p>
+        <ul>
+          <li>Makes sure the <b>music engine</b> is up (starts it through Docker for you)</li>
+          <li><b>Registers the slash commands</b> so they show up in Discord</li>
+          <li>Opens a free public link for the dashboard and <b>prints the exact login redirect</b> to paste into Discord</li>
+          <li><b>Starts the bot</b> and streams everything into one window</li>
+        </ul>
+        <div class="callout tip">
+          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></span>
+          <p><b>That's the whole job.</b> Install the pieces once, double-click the launcher, and Harmonix runs. Leave that window open while you're using the bot; closing it (or Ctrl+C) stops the bot.</p>
+        </div>
+        <p>Want it out of the way? On Windows, double-click <code class="inl">start-silent.vbs</code> instead and Harmonix runs hidden with an icon in your system tray — right-click it to open the dashboard, restart, or stop.</p>
+
+        <p style="margin-top:22px"><b>Rather not use the launcher?</b> You can start things by hand — the launcher just runs these for you:</p>
         <div class="code">
           <div class="ch"><span class="fname">terminal</span><button class="copy">Copy</button></div>
-          <pre>node run.js</pre>
+          <pre><span class="c"># the same thing the batch file does</span>
+npm run launch
+
+<span class="c"># local only — skip the public link, dashboard stays on your PC</span>
+npm run launch:local
+
+<span class="c"># no Docker? run the music engine yourself with Java 17+ first…</span>
+cd lavalink && java -jar Lavalink.jar
+<span class="c"># …then in another window:</span>
+node run.js --no-tunnel</pre>
         </div>
-        <p>On <b>Windows</b>, run the tray launcher instead and Harmonix tucks into your system tray — right-click to start, stop, or open the dashboard:</p>
-        <div class="code">
-          <div class="ch"><span class="fname">terminal</span><button class="copy">Copy</button></div>
-          <pre>node tray.js</pre>
-        </div>
-        <p>When you see the bot come online in your terminal, you're live. Open <code class="inl">DASHBOARD_URL</code> in a browser and log in with Discord.</p>
+        <p>However you start it, open <code class="inl">http://localhost:3000</code> in your browser and log in the way you chose in step 4. That's the dashboard.</p>
       </div>
 
       <!-- STEP 6 -->
       <div class="step" id="invite" style="scroll-margin-top:90px">
         <div class="num">6</div>
-        <h3>Invite the bot &amp; deploy commands</h3>
-        <p>Slash commands deploy <b>globally on first launch</b> — no extra step. To add the bot to a server, use an invite link with your client ID:</p>
+        <h3>Invite the bot to your server</h3>
+        <p class="lead">One link adds it. Commands set themselves up on their own.</p>
+        <p>Paste your <b>Client ID</b> into this link where it says <code class="inl">YOUR_CLIENT_ID</code>, open it, pick your server, and confirm:</p>
         <div class="code">
           <div class="ch"><span class="fname">invite link</span><button class="copy">Copy</button></div>
           <pre>https://discord.com/oauth2/authorize?client_id=<span class="s">YOUR_CLIENT_ID</span>&permissions=<span class="k">277083450646</span>&scope=bot+applications.commands</pre>
         </div>
-        <p>Swap in your client ID, open it, pick a server, and confirm. Global commands can take a few minutes to show up the first time — after that they're instant.</p>
+        <p>Slash commands deploy automatically on first launch. If you left <code class="inl">GUILD_ID</code> blank, give them a few minutes to appear the first time.</p>
       </div>
+
+      <!-- OPTIONAL: REMOTE -->
+      <section id="remote" style="scroll-margin-top:90px;margin-bottom:20px">
+        <span class="eyebrow">Optional · also free</span>
+        <h3 style="font-family:'Poppins';font-weight:800;font-size:1.6rem;margin:14px 0 8px;letter-spacing:-.02em">Open the dashboard from another device</h3>
+        <p style="color:var(--cream-dim);margin-bottom:16px">Everything above runs on your own machine, which is all most people need. If you also want to reach the dashboard from your phone or another computer, you can — without paying for a domain — using a free Cloudflare quick tunnel:</p>
+        <div class="code">
+          <div class="ch"><span class="fname">terminal (second window)</span><button class="copy">Copy</button></div>
+          <pre>cloudflared tunnel --url http://localhost:3000</pre>
+        </div>
+        <p style="color:var(--cream-dim);margin-bottom:16px">It prints a free <code class="inl">https://…trycloudflare.com</code> address you can open anywhere. Put that address in <code class="inl">PUBLIC_URL</code> in your <code class="inl">.env</code>, and if you use the Discord login, add <code class="inl">&lt;that address&gt;/auth/callback</code> to your OAuth2 redirects too.</p>
+        <div class="callout tip">
+          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+          <p><b>No port forwarding, ever.</b> You don't open any router ports for this. The tunnel makes an <b>outbound</b> connection to Cloudflare, so it works from behind any home network with nothing to configure — that's the whole reason to use it instead of forwarding a port.</p>
+        </div>
+        <div class="callout warn">
+          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></span>
+          <p><b>Heads up:</b> a free quick-tunnel address changes every time you restart it, so you'd update those two spots each run. Fine for occasional remote access — for the local password setup you never need this at all.</p>
+        </div>
+      </section>
 
       <!-- TROUBLESHOOTING -->
       <section id="trouble" class="tips" style="scroll-margin-top:90px">
-        <h2>When something's off</h2>
-        <p class="sub">The usual suspects, and the quick fix for each.</p>
+        <h2>If something's off</h2>
+        <p class="sub">The usual hiccups, and the one-line fix for each.</p>
 
         <details>
-          <summary>Dashboard login fails or loops back <span class="plus">+</span></summary>
-          <div class="body">Almost always a redirect mismatch. Check that the OAuth2 redirect in the Discord portal is <em>exactly</em> <code class="inl">DASHBOARD_URL</code> + <code class="inl">/auth/callback</code>. If you're on a random quick-tunnel URL, it changed on restart — switch to a named tunnel (step 4) so the URL stays put.</div>
+          <summary>Do I need to port-forward or open router ports? <span class="plus">+</span></summary>
+          <div class="body"><b>No.</b> The bot connects out to Discord, so it receives commands without any port being opened — it just works behind your router. The music engine runs locally on your PC. The only thing that ever leaves your machine is the optional dashboard tunnel, and that dials <b>out</b> to Cloudflare, so there's still nothing to forward. If a guide tells you to open port 3000 on your router, you don't need to.</div>
+        </details>
+        <details>
+          <summary>The dashboard login won't work <span class="plus">+</span></summary>
+          <div class="body">If you're using the local password, double-check <code class="inl">CLIENT_SECRET</code> is <b>blank</b> and <code class="inl">DASHBOARD_PASSWORD</code> is set. If you're using the Discord login and it keeps bouncing you back, the cause is almost always a leftover <code class="inl">OAUTH_REDIRECT_URI</code> line — delete it so Harmonix can fill it in automatically, and make sure the same address is listed under Redirects in the Developer Portal.</div>
         </details>
         <details>
           <summary>Music won't play <span class="plus">+</span></summary>
-          <div class="body">This is Lavalink. Confirm Java 17+ is installed (<code class="inl">java -version</code>) and that Lavalink actually started in the terminal output. If the port's taken, change it in <code class="inl">application.yml</code> and restart.</div>
+          <div class="body">This is the music engine (Lavalink). Make sure <b>Docker Desktop is running</b> before you launch — the launcher starts the engine through it. Check the startup logs actually show the engine connecting. (Running it the no-Docker way instead? Confirm Java 17+ with <code class="inl">java -version</code> and that <code class="inl">Lavalink.jar</code> is up.)</div>
         </details>
         <details>
-          <summary>Slash commands aren't showing <span class="plus">+</span></summary>
-          <div class="body">Global commands can take a few minutes to propagate the first time. Give it up to an hour, then reload Discord. Double-check the bot has the <code class="inl">applications.commands</code> scope from the invite link.</div>
+          <summary>Slash commands aren't showing up <span class="plus">+</span></summary>
+          <div class="body">Global commands can take up to an hour the very first time. To see them instantly while setting up, paste your server's ID into <code class="inl">GUILD_ID</code> and relaunch. Also make sure you invited the bot with the link in step 6, which includes the commands permission.</div>
         </details>
         <details>
-          <summary>Bot is online but ignores commands <span class="plus">+</span></summary>
-          <div class="body">Usually a missing intent. Go back to step 1 and make sure <b>Message Content</b> and <b>Server Members</b> are both switched on in the Developer Portal, then restart.</div>
+          <summary>It logs me out every time I restart <span class="plus">+</span></summary>
+          <div class="body">Set <code class="inl">SESSION_SECRET</code> to any long random string in your <code class="inl">.env</code>. When it's blank, a new one is generated on each restart, which signs everyone out.</div>
+        </details>
+        <details>
+          <summary>The bot is online but ignores commands <span class="plus">+</span></summary>
+          <div class="body">Usually a missing intent. Go back to step 1 and make sure both <b>Message Content</b> and <b>Server Members</b> are switched on in the Developer Portal, then restart.</div>
         </details>
       </section>
 
       <div class="done-band">
-        <h2>That's it — you're hosting Harmonix.</h2>
+        <h2>That's it — you're hosting Harmonix, free.</h2>
         <p>Open the dashboard and start running your server from the browser.</p>
         <a href="dashboard.html">Open the dashboard<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
@@ -284,11 +423,10 @@ cloudflared tunnel route dns harmonix harmonix.yourdomain.com</pre>
 </div>
 
 <footer>
-  <div class="wrap">Harmonix · self-hosting guide · built by ItsChaBoiDan</div>
+  <div class="wrap">Harmonix · free self-hosting guide · built by ItsChaBoiDan</div>
 </footer>
 
 <script>
-  // copy buttons
   document.querySelectorAll('.code .copy').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const pre=btn.closest('.code').querySelector('pre');
@@ -298,7 +436,6 @@ cloudflared tunnel route dns harmonix harmonix.yourdomain.com</pre>
       });
     });
   });
-  // toc scrollspy
   const links=[...document.querySelectorAll('.toc a')];
   const map=new Map(links.map(l=>[l.getAttribute('href').slice(1),l]));
   const spy=new IntersectionObserver((es)=>{
