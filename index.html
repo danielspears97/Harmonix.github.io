@@ -119,18 +119,88 @@
     background:var(--rose);opacity:.55;border-radius:2px;
   }
   .hero p.lede{font-size:1.12rem;color:var(--cream-dim);max-width:30em;margin-bottom:30px}
-  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .hero-cta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:560px;align-items:stretch}
+  @media(max-width:600px){.hero-cta,.linkchips{grid-template-columns:1fr}}
   .btn{
-    display:inline-flex;align-items:center;gap:9px;
-    padding:14px 24px;border-radius:12px;font-weight:600;font-size:.98rem;
-    text-decoration:none;cursor:pointer;border:none;transition:transform .15s,background .2s,border-color .2s;
+    display:inline-flex;align-items:center;gap:12px;
+    min-height:58px;box-sizing:border-box;
+    padding:10px 22px 10px 11px;border-radius:14px;font-weight:600;font-size:.98rem;
+    text-decoration:none;cursor:pointer;border:1px solid transparent;
+    transition:transform .15s,background .2s,border-color .2s,box-shadow .2s;
   }
-  .btn-primary{background:var(--coral);color:#fff;box-shadow:0 10px 26px -8px rgba(240,76,60,.6)}
-  .btn-primary:hover{background:var(--coral-deep);transform:translateY(-2px)}
-  .btn-ghost{background:transparent;color:var(--cream);border:1px solid var(--line)}
+  /* shared icon tile + two-line label (used by BOTH cta buttons) */
+  .btile{
+    width:34px;height:34px;border-radius:10px;flex:0 0 auto;
+    display:grid;place-items:center;transition:transform .2s,box-shadow .2s;
+  }
+  .btile svg{width:18px;height:18px;display:block}
+  .btxt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.2;text-align:left}
+  .btxt b{font-weight:600;font-size:.95rem;white-space:nowrap}
+  .btxt span{font-size:.7rem;font-weight:500;opacity:.72;white-space:nowrap;transition:opacity .2s}
+  .btn:hover .btile{transform:scale(1.06)}
+
+  .btn-primary{background:var(--coral);color:#fff;border-color:transparent;box-shadow:0 10px 26px -8px rgba(240,76,60,.6)}
+  .btn-primary .btile{background:rgba(255,255,255,.18)}
+  .btn-primary .btile svg{stroke:#fff;fill:none}
+  .btn-primary:hover{background:var(--coral-deep);transform:translateY(-2px);box-shadow:0 14px 30px -8px rgba(240,76,60,.7)}
+  .btn-ghost{background:transparent;color:var(--cream);border:1px solid var(--line);min-height:0;padding:14px 24px;gap:9px}
+
+  /* Discord "Add our bot" button — same geometry as primary, blurple identity */
+  .btn-discord{
+    color:var(--cream);
+    background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.015));
+    border:1px solid var(--line);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  .btn-discord .btile{background:#5865F2;box-shadow:0 4px 12px -3px rgba(88,101,242,.65)}
+  .btn-discord .btile svg{fill:#fff;stroke:none;width:19px;height:19px}
+  .btn-discord:hover{
+    border-color:#5865F2;
+    background:linear-gradient(180deg,rgba(88,101,242,.18),rgba(88,101,242,.07));
+    transform:translateY(-2px);
+    box-shadow:0 10px 26px -10px rgba(88,101,242,.7),inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .btn-discord:hover .btile{box-shadow:0 6px 16px -3px rgba(88,101,242,.85)}
+  .btn-discord:hover .btxt span{opacity:1}
+
   .btn-ghost:hover{border-color:var(--cream-dim);transform:translateY(-2px)}
 
   .hero-meta{display:flex;gap:26px;margin-top:32px;flex-wrap:wrap}
+
+  /* secondary link chips */
+  .linkchips{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px;max-width:560px;margin-top:14px;
+  }
+  .lchip{
+    display:flex;align-items:center;gap:11px;
+    min-height:56px;box-sizing:border-box;
+    padding:9px 15px 9px 11px;border-radius:14px;text-decoration:none;
+    background:rgba(255,255,255,.028);border:1px solid var(--line);
+    transition:border-color .2s,background .2s,transform .15s;
+  }
+  .lchip:hover{border-color:var(--rose);background:rgba(255,143,176,.07);transform:translateY(-2px)}
+  .lchip .li{
+    width:34px;height:34px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;
+    background:rgba(255,143,176,.12);border:1px solid rgba(255,143,176,.28);
+  }
+  .lchip .li svg{width:16px;height:16px;stroke:var(--rose);fill:none}
+  .lchip .lt{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+  .lchip .lt b{font-size:.9rem;font-weight:600;color:var(--cream);white-space:nowrap}
+  .lchip .lt span{font-size:.72rem;color:var(--tan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lchip .lar{color:var(--tan);font-size:1rem;margin-left:auto;padding-left:6px;transition:transform .2s,color .2s}
+  .lchip:hover .lar{color:var(--rose);transform:translateX(3px)}
+
+  /* on the coral band */
+  .band .linkchips{margin-left:auto;margin-right:auto;position:relative}
+  .band .lchip{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3)}
+  .band .lchip:hover{background:rgba(255,255,255,.2);border-color:#fff}
+  .band .lchip .li{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.35)}
+  .band .lchip .li svg{stroke:#fff}
+  .band .lchip .lt b{color:#fff}
+  .band .lchip .lt span{color:rgba(255,255,255,.75)}
+  .band .lchip .lar{color:rgba(255,255,255,.75)}
+  .band .lchip:hover .lar{color:#fff}
   .hero-meta .m{display:flex;flex-direction:column;gap:1px}
   .hero-meta .m b{font-family:"Poppins";font-weight:800;font-size:1.5rem;color:var(--cream)}
   .hero-meta .m span{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tan)}
@@ -323,9 +393,21 @@
   }
   .band h2{font-family:"Poppins";font-weight:800;font-size:clamp(1.9rem,4vw,2.9rem);color:#fff;letter-spacing:-.02em;position:relative;margin-bottom:14px}
   .band p{color:rgba(255,255,255,.9);font-size:1.1rem;max-width:34em;margin:0 auto 30px;position:relative}
-  .band .hero-cta{justify-content:center;position:relative}
+  .band .hero-cta{margin-left:auto;margin-right:auto;position:relative}
   .band .btn-primary{background:#fff;color:var(--coral-deep);box-shadow:0 12px 30px -8px rgba(0,0,0,.4)}
+  .band .btn-primary .btile{background:var(--coral)}
+  .band .btn-primary .btile svg{stroke:#fff}
   .band .btn-primary:hover{background:var(--cream)}
+  .band .btn-discord{
+    background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.34);color:#fff;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
+  }
+  .band .btn-discord .btile{background:#fff;box-shadow:0 4px 12px -3px rgba(0,0,0,.35)}
+  .band .btn-discord .btile svg{fill:#5865F2}
+  .band .btn-discord:hover{
+    background:rgba(255,255,255,.24);border-color:#fff;
+    box-shadow:0 10px 26px -10px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.25);
+  }
   .band .btn-ghost{border-color:rgba(255,255,255,.5);color:#fff}
   .band .btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,.1)}
 
@@ -374,16 +456,25 @@
         <p class="lede">Harmonix is the music, moderation, and control-room bot you host yourself — with a full web dashboard so you can run the whole server from your browser.</p>
         <div class="hero-cta">
           <a href="harmonix-music-bot.zip" download class="btn btn-primary">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-            Download Harmonix
+            <span class="btile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></span>
+            <span class="btxt"><b>Download Harmonix</b><span>Free · ~316 KB</span></span>
           </a>
-          <a href="setup.html" class="btn btn-ghost">Read the setup guide</a>
+          <a href="https://discord.com/oauth2/authorize?client_id=1511943816469414109&amp;permissions=8&amp;integration_type=0&amp;scope=bot+applications.commands" target="_blank" rel="noopener" class="btn btn-discord">
+            <span class="btile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg></span>
+            <span class="btxt"><b>Add our bot</b><span>Hosted by us · no setup</span></span>
+          </a>
         </div>
-        <div style="margin-top:14px;font-size:.86rem;color:#8A7860">
-          Free &amp; self-hosted · runs on your own PC ·
-          <a href="dashboard.html" style="color:#FF8FB0;text-decoration:none;font-weight:600">tour the dashboard</a>
-          <span style="opacity:.5">·</span>
-          <a href="https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=277083450646&scope=bot+applications.commands" target="_blank" rel="noopener" style="color:#FF8FB0;text-decoration:none;font-weight:600">just add our hosted bot</a>
+        <div class="linkchips">
+          <a href="setup.html" class="lchip">
+            <span class="li"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></span>
+            <span class="lt"><b>Setup guide</b><span>Free · about 15 minutes</span></span>
+            <span class="lar">›</span>
+          </a>
+          <a href="dashboard.html" class="lchip">
+            <span class="li"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></span>
+            <span class="lt"><b>Live demo</b><span>Explore the dashboard</span></span>
+            <span class="lar">›</span>
+          </a>
         </div>
         <div class="hero-meta">
           <div class="m"><b>34</b><span>Achievements</span></div>
@@ -1000,12 +1091,27 @@
       <p>Harmonix runs on your own machine — free, no monthly bill. Download it, run one command, and the bot and dashboard start together. Set it up once, then run the whole show from your browser.</p>
       <div class="hero-cta">
         <a href="harmonix-music-bot.zip" download class="btn btn-primary">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-          Download Harmonix
-        </a>
-        <a href="setup.html" class="btn btn-ghost">Read the setup guide</a>
+            <span class="btile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></span>
+            <span class="btxt"><b>Download Harmonix</b><span>Free · ~316 KB</span></span>
+          </a>
+        <a href="https://discord.com/oauth2/authorize?client_id=1511943816469414109&amp;permissions=8&amp;integration_type=0&amp;scope=bot+applications.commands" target="_blank" rel="noopener" class="btn btn-discord">
+            <span class="btile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg></span>
+            <span class="btxt"><b>Add our bot</b><span>Hosted by us · no setup</span></span>
+          </a>
       </div>
-      <div style="margin-top:14px;font-size:.85rem;color:rgba(255,255,255,.8);position:relative">Free &amp; open · ~316 KB · self-host in about 15 minutes</div>
+      <div class="linkchips">
+        <a href="setup.html" class="lchip">
+          <span class="li"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></span>
+          <span class="lt"><b>Setup guide</b><span>Free · about 15 minutes</span></span>
+          <span class="lar">›</span>
+        </a>
+        <a href="dashboard.html" class="lchip">
+          <span class="li"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></span>
+          <span class="lt"><b>Live demo</b><span>Explore the dashboard</span></span>
+          <span class="lar">›</span>
+        </a>
+      </div>
+      <div style="margin-top:16px;font-size:.82rem;color:rgba(255,255,255,.75);position:relative">Free &amp; open source · ~316 KB · runs on your own PC</div>
     </div>
   </div>
 </section>
