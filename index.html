@@ -282,7 +282,27 @@
   .cmd-bar input{background:none;border:none;color:var(--cream);font-family:inherit;font-size:.98rem;flex:1;outline:none}
   .cmd-bar input::placeholder{color:var(--tan)}
   .cmd-bar .esc{font-size:.66rem;color:var(--tan);border:1px solid var(--line);padding:3px 8px;border-radius:6px;letter-spacing:.08em}
-  .cmd-list{padding:8px}
+  .cmd-list{padding:8px;max-height:440px;overflow-y:auto}
+  .cmd-list::-webkit-scrollbar{width:10px}
+  .cmd-list::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px;border:3px solid var(--ink-2)}
+  .cmd-list::-webkit-scrollbar-thumb:hover{background:var(--tan)}
+
+  .cgroup{border-bottom:1px solid var(--line)}
+  .cgroup:last-of-type{border-bottom:none}
+  .cghead{width:100%;display:flex;align-items:center;gap:13px;padding:13px 15px;background:none;border:none;cursor:pointer;font-family:inherit;text-align:left;color:var(--cream);border-radius:10px;transition:background .18s}
+  .cghead:hover{background:var(--panel)}
+  .cgname{font-weight:600;min-width:132px;flex:0 0 auto}
+  .cgname b{color:var(--coral);font-weight:600}
+  .cgdesc{color:var(--cream-dim);font-size:.9rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cgcount{font-size:.66rem;color:var(--tan);border:1px solid var(--line);padding:3px 9px;border-radius:20px;flex:0 0 auto}
+  .cgchev{color:var(--tan);font-size:1.1rem;transition:transform .2s;flex:0 0 auto}
+  .cgroup.open .cgchev{transform:rotate(90deg)}
+  .cgbody{display:none;padding:2px 0 10px 15px}
+  .cgroup.open .cgbody{display:block}
+  .cgbody .cmd{padding:9px 14px}
+  .cgbody .cmd .name{min-width:190px}
+  .cgbody .cmd .name i{font-style:normal;color:var(--cream)}
+  @media(max-width:620px){.cgdesc{display:none}.cgbody .cmd .name{min-width:auto}}
   .cmd{display:flex;align-items:center;gap:15px;padding:13px 15px;border-radius:11px;transition:background .18s}
   .cmd:hover{background:var(--panel)}
   .cmd .name{font-weight:600;color:var(--cream);min-width:132px}
@@ -522,21 +542,451 @@
     <div class="sec-head reveal">
       <span class="eyebrow">Slash commands</span>
       <h2>Type <span style="color:var(--coral)">/</span> and go.</h2>
-      <p>Every feature is a slash command your whole server already knows how to use — deployed globally the moment the bot starts.</p>
+      <p>41 top-level commands with 230 subcommands underneath — pick a category to expand it, or search to jump straight to what you need.</p>
     </div>
     <div class="cmd-wrap reveal">
       <div class="cmd-bar">
         <span class="slash">/</span>
-        <input type="text" placeholder="Search commands…" aria-label="Search commands" readonly>
+        <input type="text" id="cmdSearch" placeholder="Try “mod”, “play”, or “ban”…" aria-label="Search commands" autocomplete="off">
         <span class="esc">ESC</span>
       </div>
-      <div class="cmd-list">
-        <div class="cmd"><span class="name"><b>/</b>play</span><span class="desc">Queue a track or playlist and start the set</span><span class="cat">Music</span></div>
-        <div class="cmd"><span class="name"><b>/</b>queue</span><span class="desc">See what's up next and reorder it</span><span class="cat">Music</span></div>
-        <div class="cmd"><span class="name"><b>/</b>247</span><span class="desc">Keep Harmonix in the channel around the clock</span><span class="cat">Music</span></div>
-        <div class="cmd"><span class="name"><b>/</b>composer</span><span class="desc">Open the visual embed &amp; message builder</span><span class="cat">Create</span></div>
-        <div class="cmd"><span class="name"><b>/</b>achievements</span><span class="desc">Check unlocks and server-wide progress</span><span class="cat">Rewards</span></div>
-        <div class="cmd"><span class="name"><b>/</b>lockdown</span><span class="desc">Freeze a channel until you open it back up</span><span class="cat">Mod</span></div>
+      <div class="cmd-list" id="cmdList">
+        <div class="cgroup" data-q="247 toggle 24/7 mode (the bot stays in the channel forever).">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>247</span><span class="cgdesc">Toggle 24/7 mode (the bot stays in the channel forever).</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/247 toggle 24/7 mode (the bot stays in the channel forever)."><span class="name"><b>/</b>247</span><span class="desc">Toggle 24/7 mode (the bot stays in the channel forever).</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="achievements view unlocked badges">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>achievements</span><span class="cgdesc">View unlocked badges</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/achievements view unlocked badges"><span class="name"><b>/</b>achievements</span><span class="desc">View unlocked badges</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="automod configure automatic message moderation">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>automod</span><span class="cgdesc">Configure automatic message moderation</span><span class="cgcount">8</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/automod status show current automod settings"><span class="name"><b>/</b>automod <i>status</i></span><span class="desc">Show current automod settings</span></div>
+          <div class="cmd" data-q="/automod rule enable or disable a filter"><span class="name"><b>/</b>automod <i>rule</i></span><span class="desc">Enable or disable a filter</span></div>
+          <div class="cmd" data-q="/automod exempt add add an exempt role"><span class="name"><b>/</b>automod <i>exempt add</i></span><span class="desc">Add an exempt role</span></div>
+          <div class="cmd" data-q="/automod exempt remove remove an exempt role"><span class="name"><b>/</b>automod <i>exempt remove</i></span><span class="desc">Remove an exempt role</span></div>
+          <div class="cmd" data-q="/automod words add block a word"><span class="name"><b>/</b>automod <i>words add</i></span><span class="desc">Block a word</span></div>
+          <div class="cmd" data-q="/automod words remove unblock a word"><span class="name"><b>/</b>automod <i>words remove</i></span><span class="desc">Unblock a word</span></div>
+          <div class="cmd" data-q="/automod words list show blocked words"><span class="name"><b>/</b>automod <i>words list</i></span><span class="desc">Show blocked words</span></div>
+          <div class="cmd" data-q="/automod words clear clear the blocked-word list"><span class="name"><b>/</b>automod <i>words clear</i></span><span class="desc">Clear the blocked-word list</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="autoplay toggle autoplay (keeps the music going with related tracks).">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>autoplay</span><span class="cgdesc">Toggle autoplay (keeps the music going with related tracks).</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/autoplay toggle autoplay (keeps the music going with related tracks)."><span class="name"><b>/</b>autoplay</span><span class="desc">Toggle autoplay (keeps the music going with related tracks).</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="clear clear the queue (keeps the current track).">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>clear</span><span class="cgdesc">Clear the queue (keeps the current track).</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/clear clear the queue (keeps the current track)."><span class="name"><b>/</b>clear</span><span class="desc">Clear the queue (keeps the current track).</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="community tags, afk, suggestions, birthdays &amp; info">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>community</span><span class="cgdesc">Tags, AFK, suggestions, birthdays &amp; info</span><span class="cgcount">19</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/community tag get show a tag"><span class="name"><b>/</b>community <i>tag get</i></span><span class="desc">Show a tag</span></div>
+          <div class="cmd" data-q="/community tag add create or update a tag (manage messages)"><span class="name"><b>/</b>community <i>tag add</i></span><span class="desc">Create or update a tag (Manage Messages)</span></div>
+          <div class="cmd" data-q="/community tag delete delete a tag (manage messages)"><span class="name"><b>/</b>community <i>tag delete</i></span><span class="desc">Delete a tag (Manage Messages)</span></div>
+          <div class="cmd" data-q="/community tag list list all tags"><span class="name"><b>/</b>community <i>tag list</i></span><span class="desc">List all tags</span></div>
+          <div class="cmd" data-q="/community afk set yourself as afk"><span class="name"><b>/</b>community <i>afk</i></span><span class="desc">Set yourself as AFK</span></div>
+          <div class="cmd" data-q="/community snipe show the last deleted message here"><span class="name"><b>/</b>community <i>snipe</i></span><span class="desc">Show the last deleted message here</span></div>
+          <div class="cmd" data-q="/community suggest submit a suggestion"><span class="name"><b>/</b>community <i>suggest</i></span><span class="desc">Submit a suggestion</span></div>
+          <div class="cmd" data-q="/community suggestions set set the suggestions channel"><span class="name"><b>/</b>community <i>suggestions set</i></span><span class="desc">Set the suggestions channel</span></div>
+          <div class="cmd" data-q="/community suggestions disable clear the suggestions channel"><span class="name"><b>/</b>community <i>suggestions disable</i></span><span class="desc">Clear the suggestions channel</span></div>
+          <div class="cmd" data-q="/community userinfo show info about a member"><span class="name"><b>/</b>community <i>userinfo</i></span><span class="desc">Show info about a member</span></div>
+          <div class="cmd" data-q="/community serverinfo show info about this server"><span class="name"><b>/</b>community <i>serverinfo</i></span><span class="desc">Show info about this server</span></div>
+          <div class="cmd" data-q="/community roleinfo show info about a role"><span class="name"><b>/</b>community <i>roleinfo</i></span><span class="desc">Show info about a role</span></div>
+          <div class="cmd" data-q="/community avatar show a user’s avatar"><span class="name"><b>/</b>community <i>avatar</i></span><span class="desc">Show a user’s avatar</span></div>
+          <div class="cmd" data-q="/community membercount show the member count"><span class="name"><b>/</b>community <i>membercount</i></span><span class="desc">Show the member count</span></div>
+          <div class="cmd" data-q="/community birthday set set your birthday"><span class="name"><b>/</b>community <i>birthday set</i></span><span class="desc">Set your birthday</span></div>
+          <div class="cmd" data-q="/community birthday remove remove your birthday"><span class="name"><b>/</b>community <i>birthday remove</i></span><span class="desc">Remove your birthday</span></div>
+          <div class="cmd" data-q="/community birthday show show a birthday"><span class="name"><b>/</b>community <i>birthday show</i></span><span class="desc">Show a birthday</span></div>
+          <div class="cmd" data-q="/community birthday list upcoming birthdays"><span class="name"><b>/</b>community <i>birthday list</i></span><span class="desc">Upcoming birthdays</span></div>
+          <div class="cmd" data-q="/community birthday config set the announcement channel and optional birthday role (admin)"><span class="name"><b>/</b>community <i>birthday config</i></span><span class="desc">Set the announcement channel and optional birthday role (admin)</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="dj restrict disruptive music controls to a dj role">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>dj</span><span class="cgdesc">Restrict disruptive music controls to a DJ role</span><span class="cgcount">3</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/dj set set the dj role"><span class="name"><b>/</b>dj <i>set</i></span><span class="desc">Set the DJ role</span></div>
+          <div class="cmd" data-q="/dj clear clear the dj role (open controls to everyone)"><span class="name"><b>/</b>dj <i>clear</i></span><span class="desc">Clear the DJ role (open controls to everyone)</span></div>
+          <div class="cmd" data-q="/dj status show the current dj role"><span class="name"><b>/</b>dj <i>status</i></span><span class="desc">Show the current DJ role</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="economy server economy: currency, daily rewards, shop and games">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>economy</span><span class="cgdesc">Server economy: currency, daily rewards, shop and games</span><span class="cgcount">16</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/economy balance check a balance"><span class="name"><b>/</b>economy <i>balance</i></span><span class="desc">Check a balance</span></div>
+          <div class="cmd" data-q="/economy daily claim your daily reward"><span class="name"><b>/</b>economy <i>daily</i></span><span class="desc">Claim your daily reward</span></div>
+          <div class="cmd" data-q="/economy work work for some coins"><span class="name"><b>/</b>economy <i>work</i></span><span class="desc">Work for some coins</span></div>
+          <div class="cmd" data-q="/economy give give coins to someone"><span class="name"><b>/</b>economy <i>give</i></span><span class="desc">Give coins to someone</span></div>
+          <div class="cmd" data-q="/economy leaderboard richest members"><span class="name"><b>/</b>economy <i>leaderboard</i></span><span class="desc">Richest members</span></div>
+          <div class="cmd" data-q="/economy slots spin the slot machine"><span class="name"><b>/</b>economy <i>slots</i></span><span class="desc">Spin the slot machine</span></div>
+          <div class="cmd" data-q="/economy coinflip bet on a coin flip"><span class="name"><b>/</b>economy <i>coinflip</i></span><span class="desc">Bet on a coin flip</span></div>
+          <div class="cmd" data-q="/economy shop list browse the shop"><span class="name"><b>/</b>economy <i>shop list</i></span><span class="desc">Browse the shop</span></div>
+          <div class="cmd" data-q="/economy shop buy buy an item"><span class="name"><b>/</b>economy <i>shop buy</i></span><span class="desc">Buy an item</span></div>
+          <div class="cmd" data-q="/economy shop additem add a shop item (admin)"><span class="name"><b>/</b>economy <i>shop additem</i></span><span class="desc">Add a shop item (admin)</span></div>
+          <div class="cmd" data-q="/economy shop removeitem remove a shop item (admin)"><span class="name"><b>/</b>economy <i>shop removeitem</i></span><span class="desc">Remove a shop item (admin)</span></div>
+          <div class="cmd" data-q="/economy admin add add coins to a user"><span class="name"><b>/</b>economy <i>admin add</i></span><span class="desc">Add coins to a user</span></div>
+          <div class="cmd" data-q="/economy admin remove remove coins from a user"><span class="name"><b>/</b>economy <i>admin remove</i></span><span class="desc">Remove coins from a user</span></div>
+          <div class="cmd" data-q="/economy admin set set a user’s balance"><span class="name"><b>/</b>economy <i>admin set</i></span><span class="desc">Set a user’s balance</span></div>
+          <div class="cmd" data-q="/economy config currency set currency name &amp; symbol"><span class="name"><b>/</b>economy <i>config currency</i></span><span class="desc">Set currency name &amp; symbol</span></div>
+          <div class="cmd" data-q="/economy config rates set daily/work payouts"><span class="name"><b>/</b>economy <i>config rates</i></span><span class="desc">Set daily/work payouts</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="engage polls, giveaways &amp; temporary channels">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>engage</span><span class="cgdesc">Polls, giveaways &amp; temporary channels</span><span class="cgcount">9</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/engage poll create start a new poll"><span class="name"><b>/</b>engage <i>poll create</i></span><span class="desc">Start a new poll</span></div>
+          <div class="cmd" data-q="/engage poll end close a poll"><span class="name"><b>/</b>engage <i>poll end</i></span><span class="desc">Close a poll</span></div>
+          <div class="cmd" data-q="/engage giveaway start start a giveaway"><span class="name"><b>/</b>engage <i>giveaway start</i></span><span class="desc">Start a giveaway</span></div>
+          <div class="cmd" data-q="/engage giveaway end end a giveaway now"><span class="name"><b>/</b>engage <i>giveaway end</i></span><span class="desc">End a giveaway now</span></div>
+          <div class="cmd" data-q="/engage giveaway reroll reroll winners"><span class="name"><b>/</b>engage <i>giveaway reroll</i></span><span class="desc">Reroll winners</span></div>
+          <div class="cmd" data-q="/engage tempvoice setup set the hub members join to spawn their own private voice channel + control panel"><span class="name"><b>/</b>engage <i>tempvoice setup</i></span><span class="desc">Set the hub members join to spawn their own private voice channel + control panel</span></div>
+          <div class="cmd" data-q="/engage tempvoice disable turn off join-to-create"><span class="name"><b>/</b>engage <i>tempvoice disable</i></span><span class="desc">Turn off join-to-create</span></div>
+          <div class="cmd" data-q="/engage tempvoice status show join-to-create settings"><span class="name"><b>/</b>engage <i>tempvoice status</i></span><span class="desc">Show join-to-create settings</span></div>
+          <div class="cmd" data-q="/engage temptext create a temporary text channel that auto-deletes"><span class="name"><b>/</b>engage <i>temptext</i></span><span class="desc">Create a temporary text channel that auto-deletes</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="filter apply an audio filter to playback">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>filter</span><span class="cgdesc">Apply an audio filter to playback</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/filter apply an audio filter to playback"><span class="name"><b>/</b>filter</span><span class="desc">Apply an audio filter to playback</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="fun jokes, facts, food, pictures &amp; random fun">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>fun</span><span class="cgdesc">Jokes, facts, food, pictures &amp; random fun</span><span class="cgcount">17</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/fun dadjoke a random dad joke"><span class="name"><b>/</b>fun <i>dadjoke</i></span><span class="desc">A random dad joke</span></div>
+          <div class="cmd" data-q="/fun joke a random (safe-mode) joke"><span class="name"><b>/</b>fun <i>joke</i></span><span class="desc">A random (safe-mode) joke</span></div>
+          <div class="cmd" data-q="/fun fact a random useless fact"><span class="name"><b>/</b>fun <i>fact</i></span><span class="desc">A random useless fact</span></div>
+          <div class="cmd" data-q="/fun advice a random piece of advice"><span class="name"><b>/</b>fun <i>advice</i></span><span class="desc">A random piece of advice</span></div>
+          <div class="cmd" data-q="/fun catfact a random cat fact"><span class="name"><b>/</b>fun <i>catfact</i></span><span class="desc">A random cat fact</span></div>
+          <div class="cmd" data-q="/fun affirmation a positive affirmation"><span class="name"><b>/</b>fun <i>affirmation</i></span><span class="desc">A positive affirmation</span></div>
+          <div class="cmd" data-q="/fun chucknorris a random chuck norris fact"><span class="name"><b>/</b>fun <i>chucknorris</i></span><span class="desc">A random Chuck Norris fact</span></div>
+          <div class="cmd" data-q="/fun quote a random inspirational quote"><span class="name"><b>/</b>fun <i>quote</i></span><span class="desc">A random inspirational quote</span></div>
+          <div class="cmd" data-q="/fun dog a random dog picture"><span class="name"><b>/</b>fun <i>dog</i></span><span class="desc">A random dog picture</span></div>
+          <div class="cmd" data-q="/fun cat a random cat picture"><span class="name"><b>/</b>fun <i>cat</i></span><span class="desc">A random cat picture</span></div>
+          <div class="cmd" data-q="/fun inspire an ai-generated inspirational poster"><span class="name"><b>/</b>fun <i>inspire</i></span><span class="desc">An AI-generated inspirational poster</span></div>
+          <div class="cmd" data-q="/fun xkcd a random or specific xkcd comic"><span class="name"><b>/</b>fun <i>xkcd</i></span><span class="desc">A random or specific xkcd comic</span></div>
+          <div class="cmd" data-q="/fun iss where is the space station right now?"><span class="name"><b>/</b>fun <i>iss</i></span><span class="desc">Where is the Space Station right now?</span></div>
+          <div class="cmd" data-q="/fun apod nasa astronomy picture of the day"><span class="name"><b>/</b>fun <i>apod</i></span><span class="desc">NASA Astronomy Picture of the Day</span></div>
+          <div class="cmd" data-q="/fun guessage playfully guess an age from a first name"><span class="name"><b>/</b>fun <i>guessage</i></span><span class="desc">Playfully guess an age from a first name</span></div>
+          <div class="cmd" data-q="/fun recipe get a meal recipe (random or search)"><span class="name"><b>/</b>fun <i>recipe</i></span><span class="desc">Get a meal recipe (random or search)</span></div>
+          <div class="cmd" data-q="/fun cocktail get a cocktail recipe (random or search)"><span class="name"><b>/</b>fun <i>cocktail</i></span><span class="desc">Get a cocktail recipe (random or search)</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="game games">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>game</span><span class="cgdesc">Games</span><span class="cgcount">15</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/game 8ball ask the magic 8-ball"><span class="name"><b>/</b>game <i>8ball</i></span><span class="desc">Ask the magic 8-ball</span></div>
+          <div class="cmd" data-q="/game rps rock, paper, scissors vs the bot"><span class="name"><b>/</b>game <i>rps</i></span><span class="desc">Rock, paper, scissors vs the bot</span></div>
+          <div class="cmd" data-q="/game coinflip flip a coin"><span class="name"><b>/</b>game <i>coinflip</i></span><span class="desc">Flip a coin</span></div>
+          <div class="cmd" data-q="/game roll roll dice (e.g. 2d6, d20, 3d6+2)"><span class="name"><b>/</b>game <i>roll</i></span><span class="desc">Roll dice (e.g. 2d6, d20, 3d6+2)</span></div>
+          <div class="cmd" data-q="/game draw draw cards from a shuffled deck"><span class="name"><b>/</b>game <i>draw</i></span><span class="desc">Draw cards from a shuffled deck</span></div>
+          <div class="cmd" data-q="/game pokemon look up a pokémon"><span class="name"><b>/</b>game <i>pokemon</i></span><span class="desc">Look up a Pokémon</span></div>
+          <div class="cmd" data-q="/game whosthat play “who’s that pokémon?”"><span class="name"><b>/</b>game <i>whosthat</i></span><span class="desc">Play “Who’s That Pokémon?”</span></div>
+          <div class="cmd" data-q="/game scramble unscramble the word — first to type it wins!"><span class="name"><b>/</b>game <i>scramble</i></span><span class="desc">Unscramble the word — first to type it wins!</span></div>
+          <div class="cmd" data-q="/game trivia start continuous trivia in this channel (run again to stop)"><span class="name"><b>/</b>game <i>trivia</i></span><span class="desc">Start continuous trivia in this channel (run again to stop)</span></div>
+          <div class="cmd" data-q="/game hangman start start a new game"><span class="name"><b>/</b>game <i>hangman start</i></span><span class="desc">Start a new game</span></div>
+          <div class="cmd" data-q="/game hangman guess guess a letter"><span class="name"><b>/</b>game <i>hangman guess</i></span><span class="desc">Guess a letter</span></div>
+          <div class="cmd" data-q="/game hangman quit end the current game"><span class="name"><b>/</b>game <i>hangman quit</i></span><span class="desc">End the current game</span></div>
+          <div class="cmd" data-q="/game wordle start start a new game"><span class="name"><b>/</b>game <i>wordle start</i></span><span class="desc">Start a new game</span></div>
+          <div class="cmd" data-q="/game wordle guess guess a 5-letter word"><span class="name"><b>/</b>game <i>wordle guess</i></span><span class="desc">Guess a 5-letter word</span></div>
+          <div class="cmd" data-q="/game wordle quit give up your game"><span class="name"><b>/</b>game <i>wordle quit</i></span><span class="desc">Give up your game</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="help browse everything this bot can do.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>help</span><span class="cgdesc">Browse everything this bot can do.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/help browse everything this bot can do."><span class="name"><b>/</b>help</span><span class="desc">Browse everything this bot can do.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="leave disconnect the bot from the voice channel.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>leave</span><span class="cgdesc">Disconnect the bot from the voice channel.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/leave disconnect the bot from the voice channel."><span class="name"><b>/</b>leave</span><span class="desc">Disconnect the bot from the voice channel.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="level leveling &amp; ranks">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>level</span><span class="cgdesc">Leveling &amp; ranks</span><span class="cgcount">9</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/level rank show your (or someone’s) level and xp"><span class="name"><b>/</b>level <i>rank</i></span><span class="desc">Show your (or someone’s) level and XP</span></div>
+          <div class="cmd" data-q="/level leaderboard show the server xp leaderboard"><span class="name"><b>/</b>level <i>leaderboard</i></span><span class="desc">Show the server XP leaderboard</span></div>
+          <div class="cmd" data-q="/level enable turn leveling on"><span class="name"><b>/</b>level <i>enable</i></span><span class="desc">Turn leveling on</span></div>
+          <div class="cmd" data-q="/level disable turn leveling off"><span class="name"><b>/</b>level <i>disable</i></span><span class="desc">Turn leveling off</span></div>
+          <div class="cmd" data-q="/level announce toggle level-up announcements"><span class="name"><b>/</b>level <i>announce</i></span><span class="desc">Toggle level-up announcements</span></div>
+          <div class="cmd" data-q="/level setxp set a member’s total xp"><span class="name"><b>/</b>level <i>setxp</i></span><span class="desc">Set a member’s total XP</span></div>
+          <div class="cmd" data-q="/level reward add add a role reward at a level"><span class="name"><b>/</b>level <i>reward add</i></span><span class="desc">Add a role reward at a level</span></div>
+          <div class="cmd" data-q="/level reward remove remove a role reward"><span class="name"><b>/</b>level <i>reward remove</i></span><span class="desc">Remove a role reward</span></div>
+          <div class="cmd" data-q="/level reward list list role rewards"><span class="name"><b>/</b>level <i>reward list</i></span><span class="desc">List role rewards</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="lookup dictionary, country, currency, wiki &amp; more">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>lookup</span><span class="cgdesc">Dictionary, country, currency, wiki &amp; more</span><span class="cgcount">10</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/lookup define look up a word’s definition"><span class="name"><b>/</b>lookup <i>define</i></span><span class="desc">Look up a word’s definition</span></div>
+          <div class="cmd" data-q="/lookup country look up information about a country"><span class="name"><b>/</b>lookup <i>country</i></span><span class="desc">Look up information about a country</span></div>
+          <div class="cmd" data-q="/lookup convert convert currency (ecb rates)"><span class="name"><b>/</b>lookup <i>convert</i></span><span class="desc">Convert currency (ECB rates)</span></div>
+          <div class="cmd" data-q="/lookup crypto get a cryptocurrency’s price"><span class="name"><b>/</b>lookup <i>crypto</i></span><span class="desc">Get a cryptocurrency’s price</span></div>
+          <div class="cmd" data-q="/lookup wiki get a wikipedia summary"><span class="name"><b>/</b>lookup <i>wiki</i></span><span class="desc">Get a Wikipedia summary</span></div>
+          <div class="cmd" data-q="/lookup forecast 3-day weather forecast for a place"><span class="name"><b>/</b>lookup <i>forecast</i></span><span class="desc">3-day weather forecast for a place</span></div>
+          <div class="cmd" data-q="/lookup mcstatus check a minecraft server’s status"><span class="name"><b>/</b>lookup <i>mcstatus</i></span><span class="desc">Check a Minecraft server’s status</span></div>
+          <div class="cmd" data-q="/lookup github look up a github user or repo"><span class="name"><b>/</b>lookup <i>github</i></span><span class="desc">Look up a GitHub user or repo</span></div>
+          <div class="cmd" data-q="/lookup anime look up an anime"><span class="name"><b>/</b>lookup <i>anime</i></span><span class="desc">Look up an anime</span></div>
+          <div class="cmd" data-q="/lookup qr generate a qr code"><span class="name"><b>/</b>lookup <i>qr</i></span><span class="desc">Generate a QR code</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="loop set or cycle the loop mode.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>loop</span><span class="cgdesc">Set or cycle the loop mode.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/loop set or cycle the loop mode."><span class="name"><b>/</b>loop</span><span class="desc">Set or cycle the loop mode.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="mod moderation tools">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>mod</span><span class="cgdesc">Moderation tools</span><span class="cgcount">38</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/mod warn warn a member (logged as a case)"><span class="name"><b>/</b>mod <i>warn</i></span><span class="desc">Warn a member (logged as a case)</span></div>
+          <div class="cmd" data-q="/mod warnings list a member’s moderation history"><span class="name"><b>/</b>mod <i>warnings</i></span><span class="desc">List a member’s moderation history</span></div>
+          <div class="cmd" data-q="/mod case view a moderation case by number"><span class="name"><b>/</b>mod <i>case</i></span><span class="desc">View a moderation case by number</span></div>
+          <div class="cmd" data-q="/mod reason update the reason on an existing case"><span class="name"><b>/</b>mod <i>reason</i></span><span class="desc">Update the reason on an existing case</span></div>
+          <div class="cmd" data-q="/mod kick kick a member from the server"><span class="name"><b>/</b>mod <i>kick</i></span><span class="desc">Kick a member from the server</span></div>
+          <div class="cmd" data-q="/mod ban ban a user (works even if they’ve left)"><span class="name"><b>/</b>mod <i>ban</i></span><span class="desc">Ban a user (works even if they’ve left)</span></div>
+          <div class="cmd" data-q="/mod unban unban a user by id"><span class="name"><b>/</b>mod <i>unban</i></span><span class="desc">Unban a user by ID</span></div>
+          <div class="cmd" data-q="/mod timeout temporarily mute a member (discord timeout)"><span class="name"><b>/</b>mod <i>timeout</i></span><span class="desc">Temporarily mute a member (Discord timeout)</span></div>
+          <div class="cmd" data-q="/mod untimeout remove a member’s timeout"><span class="name"><b>/</b>mod <i>untimeout</i></span><span class="desc">Remove a member’s timeout</span></div>
+          <div class="cmd" data-q="/mod purge bulk-delete recent messages in this channel"><span class="name"><b>/</b>mod <i>purge</i></span><span class="desc">Bulk-delete recent messages in this channel</span></div>
+          <div class="cmd" data-q="/mod slowmode set this channel’s slowmode delay"><span class="name"><b>/</b>mod <i>slowmode</i></span><span class="desc">Set this channel’s slowmode delay</span></div>
+          <div class="cmd" data-q="/mod modlog set set the channel where moderation cases are posted"><span class="name"><b>/</b>mod <i>modlog set</i></span><span class="desc">Set the channel where moderation cases are posted</span></div>
+          <div class="cmd" data-q="/mod modlog disable stop posting moderation cases"><span class="name"><b>/</b>mod <i>modlog disable</i></span><span class="desc">Stop posting moderation cases</span></div>
+          <div class="cmd" data-q="/mod modlog status show the current mod-log channel"><span class="name"><b>/</b>mod <i>modlog status</i></span><span class="desc">Show the current mod-log channel</span></div>
+          <div class="cmd" data-q="/mod logging set set the channel where server events are logged"><span class="name"><b>/</b>mod <i>logging set</i></span><span class="desc">Set the channel where server events are logged</span></div>
+          <div class="cmd" data-q="/mod logging disable turn off the event log"><span class="name"><b>/</b>mod <i>logging disable</i></span><span class="desc">Turn off the event log</span></div>
+          <div class="cmd" data-q="/mod logging toggle enable or disable a specific event type"><span class="name"><b>/</b>mod <i>logging toggle</i></span><span class="desc">Enable or disable a specific event type</span></div>
+          <div class="cmd" data-q="/mod logging status show current logging settings"><span class="name"><b>/</b>mod <i>logging status</i></span><span class="desc">Show current logging settings</span></div>
+          <div class="cmd" data-q="/mod ticket setup configure the ticket system"><span class="name"><b>/</b>mod <i>ticket setup</i></span><span class="desc">Configure the ticket system</span></div>
+          <div class="cmd" data-q="/mod ticket panel post a ticket panel with an open button"><span class="name"><b>/</b>mod <i>ticket panel</i></span><span class="desc">Post a ticket panel with an Open button</span></div>
+          <div class="cmd" data-q="/mod ticket close close the current ticket"><span class="name"><b>/</b>mod <i>ticket close</i></span><span class="desc">Close the current ticket</span></div>
+          <div class="cmd" data-q="/mod ticket add add a user to the current ticket"><span class="name"><b>/</b>mod <i>ticket add</i></span><span class="desc">Add a user to the current ticket</span></div>
+          <div class="cmd" data-q="/mod ticket remove remove a user from the current ticket"><span class="name"><b>/</b>mod <i>ticket remove</i></span><span class="desc">Remove a user from the current ticket</span></div>
+          <div class="cmd" data-q="/mod verify setup set the verified role and post a verify panel"><span class="name"><b>/</b>mod <i>verify setup</i></span><span class="desc">Set the verified role and post a verify panel</span></div>
+          <div class="cmd" data-q="/mod verify disable turn off verification"><span class="name"><b>/</b>mod <i>verify disable</i></span><span class="desc">Turn off verification</span></div>
+          <div class="cmd" data-q="/mod verify status show verification settings"><span class="name"><b>/</b>mod <i>verify status</i></span><span class="desc">Show verification settings</span></div>
+          <div class="cmd" data-q="/mod antiraid enable turn raid protection on"><span class="name"><b>/</b>mod <i>antiraid enable</i></span><span class="desc">Turn raid protection on</span></div>
+          <div class="cmd" data-q="/mod antiraid disable turn raid protection off"><span class="name"><b>/</b>mod <i>antiraid disable</i></span><span class="desc">Turn raid protection off</span></div>
+          <div class="cmd" data-q="/mod antiraid config tune raid-protection thresholds"><span class="name"><b>/</b>mod <i>antiraid config</i></span><span class="desc">Tune raid-protection thresholds</span></div>
+          <div class="cmd" data-q="/mod antiraid status show raid-protection settings"><span class="name"><b>/</b>mod <i>antiraid status</i></span><span class="desc">Show raid-protection settings</span></div>
+          <div class="cmd" data-q="/mod tempban ban a member for a set duration, then auto-unban"><span class="name"><b>/</b>mod <i>tempban</i></span><span class="desc">Ban a member for a set duration, then auto-unban</span></div>
+          <div class="cmd" data-q="/mod mute mute a member for a set duration (managed role)"><span class="name"><b>/</b>mod <i>mute</i></span><span class="desc">Mute a member for a set duration (managed role)</span></div>
+          <div class="cmd" data-q="/mod unmute remove a member’s mute"><span class="name"><b>/</b>mod <i>unmute</i></span><span class="desc">Remove a member’s mute</span></div>
+          <div class="cmd" data-q="/mod warnthreshold add add or replace a rule at a warning count"><span class="name"><b>/</b>mod <i>warnthreshold add</i></span><span class="desc">Add or replace a rule at a warning count</span></div>
+          <div class="cmd" data-q="/mod warnthreshold remove remove the rule at a warning count"><span class="name"><b>/</b>mod <i>warnthreshold remove</i></span><span class="desc">Remove the rule at a warning count</span></div>
+          <div class="cmd" data-q="/mod warnthreshold list list all auto-escalation rules"><span class="name"><b>/</b>mod <i>warnthreshold list</i></span><span class="desc">List all auto-escalation rules</span></div>
+          <div class="cmd" data-q="/mod lockdown lock a channel (or the whole server) so members can’t send messages"><span class="name"><b>/</b>mod <i>lockdown</i></span><span class="desc">Lock a channel (or the whole server) so members can’t send messages</span></div>
+          <div class="cmd" data-q="/mod unlock unlock a previously locked channel (or the whole server)"><span class="name"><b>/</b>mod <i>unlock</i></span><span class="desc">Unlock a previously locked channel (or the whole server)</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="nowplaying show the track that is currently playing.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>nowplaying</span><span class="cgdesc">Show the track that is currently playing.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/nowplaying show the track that is currently playing."><span class="name"><b>/</b>nowplaying</span><span class="desc">Show the track that is currently playing.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="nsfw adult images — only works in age-restricted (nsfw) channels">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>nsfw</span><span class="cgdesc">Adult images — only works in age-restricted (NSFW) channels</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/nsfw adult images — only works in age-restricted (nsfw) channels"><span class="name"><b>/</b>nsfw</span><span class="desc">Adult images — only works in age-restricted (NSFW) channels</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="pause pause the current track.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>pause</span><span class="cgdesc">Pause the current track.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/pause pause the current track."><span class="name"><b>/</b>pause</span><span class="desc">Pause the current track.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="play play a track or playlist (youtube, spotify, soundcloud — link or search).">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>play</span><span class="cgdesc">Play a track or playlist (YouTube, Spotify, SoundCloud — link or search).</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/play play a track or playlist (youtube, spotify, soundcloud — link or search)."><span class="name"><b>/</b>play</span><span class="desc">Play a track or playlist (YouTube, Spotify, SoundCloud — link or search).</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="playlist save and load your music playlists">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>playlist</span><span class="cgdesc">Save and load your music playlists</span><span class="cgcount">5</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/playlist save save the current queue as a playlist"><span class="name"><b>/</b>playlist <i>save</i></span><span class="desc">Save the current queue as a playlist</span></div>
+          <div class="cmd" data-q="/playlist load queue up one of your playlists"><span class="name"><b>/</b>playlist <i>load</i></span><span class="desc">Queue up one of your playlists</span></div>
+          <div class="cmd" data-q="/playlist list list your saved playlists"><span class="name"><b>/</b>playlist <i>list</i></span><span class="desc">List your saved playlists</span></div>
+          <div class="cmd" data-q="/playlist show show a playlist’s tracks"><span class="name"><b>/</b>playlist <i>show</i></span><span class="desc">Show a playlist’s tracks</span></div>
+          <div class="cmd" data-q="/playlist delete delete a playlist"><span class="name"><b>/</b>playlist <i>delete</i></span><span class="desc">Delete a playlist</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="previous go back to the previous track.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>previous</span><span class="cgdesc">Go back to the previous track.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/previous go back to the previous track."><span class="name"><b>/</b>previous</span><span class="desc">Go back to the previous track.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="queue show the current queue.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>queue</span><span class="cgdesc">Show the current queue.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/queue show the current queue."><span class="name"><b>/</b>queue</span><span class="desc">Show the current queue.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="remove remove a track from the queue by its position.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>remove</span><span class="cgdesc">Remove a track from the queue by its position.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/remove remove a track from the queue by its position."><span class="name"><b>/</b>remove</span><span class="desc">Remove a track from the queue by its position.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="resume resume playback.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>resume</span><span class="cgdesc">Resume playback.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/resume resume playback."><span class="name"><b>/</b>resume</span><span class="desc">Resume playback.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="seek jump to a position in the current track.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>seek</span><span class="cgdesc">Jump to a position in the current track.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/seek jump to a position in the current track."><span class="name"><b>/</b>seek</span><span class="desc">Jump to a position in the current track.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="server server setup &amp; management">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>server</span><span class="cgdesc">Server setup &amp; management</span><span class="cgcount">31</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/server welcome set enable &amp; configure the welcome message"><span class="name"><b>/</b>server <i>welcome set</i></span><span class="desc">Enable &amp; configure the Welcome message</span></div>
+          <div class="cmd" data-q="/server welcome test preview the welcome message"><span class="name"><b>/</b>server <i>welcome test</i></span><span class="desc">Preview the Welcome message</span></div>
+          <div class="cmd" data-q="/server welcome disable turn off the welcome message"><span class="name"><b>/</b>server <i>welcome disable</i></span><span class="desc">Turn off the Welcome message</span></div>
+          <div class="cmd" data-q="/server welcome status show the welcome configuration"><span class="name"><b>/</b>server <i>welcome status</i></span><span class="desc">Show the Welcome configuration</span></div>
+          <div class="cmd" data-q="/server goodbye set enable &amp; configure the goodbye message"><span class="name"><b>/</b>server <i>goodbye set</i></span><span class="desc">Enable &amp; configure the Goodbye message</span></div>
+          <div class="cmd" data-q="/server goodbye test preview the goodbye message"><span class="name"><b>/</b>server <i>goodbye test</i></span><span class="desc">Preview the Goodbye message</span></div>
+          <div class="cmd" data-q="/server goodbye disable turn off the goodbye message"><span class="name"><b>/</b>server <i>goodbye disable</i></span><span class="desc">Turn off the Goodbye message</span></div>
+          <div class="cmd" data-q="/server goodbye status show the goodbye configuration"><span class="name"><b>/</b>server <i>goodbye status</i></span><span class="desc">Show the Goodbye configuration</span></div>
+          <div class="cmd" data-q="/server autorole set set the role to assign on join"><span class="name"><b>/</b>server <i>autorole set</i></span><span class="desc">Set the role to assign on join</span></div>
+          <div class="cmd" data-q="/server autorole disable turn off autorole"><span class="name"><b>/</b>server <i>autorole disable</i></span><span class="desc">Turn off autorole</span></div>
+          <div class="cmd" data-q="/server autorole status show the autorole configuration"><span class="name"><b>/</b>server <i>autorole status</i></span><span class="desc">Show the autorole configuration</span></div>
+          <div class="cmd" data-q="/server reactionrole create post a new reaction-role message"><span class="name"><b>/</b>server <i>reactionrole create</i></span><span class="desc">Post a new reaction-role message</span></div>
+          <div class="cmd" data-q="/server reactionrole add add a role button to a panel"><span class="name"><b>/</b>server <i>reactionrole add</i></span><span class="desc">Add a role button to a panel</span></div>
+          <div class="cmd" data-q="/server reactionrole remove remove a role button from a panel"><span class="name"><b>/</b>server <i>reactionrole remove</i></span><span class="desc">Remove a role button from a panel</span></div>
+          <div class="cmd" data-q="/server reactionrole list list reaction-role panels in this server"><span class="name"><b>/</b>server <i>reactionrole list</i></span><span class="desc">List reaction-role panels in this server</span></div>
+          <div class="cmd" data-q="/server starboard set enable the starboard in a channel"><span class="name"><b>/</b>server <i>starboard set</i></span><span class="desc">Enable the starboard in a channel</span></div>
+          <div class="cmd" data-q="/server starboard disable turn the starboard off"><span class="name"><b>/</b>server <i>starboard disable</i></span><span class="desc">Turn the starboard off</span></div>
+          <div class="cmd" data-q="/server starboard status show starboard settings"><span class="name"><b>/</b>server <i>starboard status</i></span><span class="desc">Show starboard settings</span></div>
+          <div class="cmd" data-q="/server autodelete auto-delete the bot’s replies after a delay (0 = off)"><span class="name"><b>/</b>server <i>autodelete</i></span><span class="desc">Auto-delete the bot’s replies after a delay (0 = off)</span></div>
+          <div class="cmd" data-q="/server triviachannel set the channel auto-cleared every hour for trivia (omit channel to clear)"><span class="name"><b>/</b>server <i>triviachannel</i></span><span class="desc">Set the channel auto-cleared every hour for trivia (omit channel to clear)</span></div>
+          <div class="cmd" data-q="/server autoresponder add add an auto-reply"><span class="name"><b>/</b>server <i>autoresponder add</i></span><span class="desc">Add an auto-reply</span></div>
+          <div class="cmd" data-q="/server autoresponder remove remove an auto-reply by id or trigger"><span class="name"><b>/</b>server <i>autoresponder remove</i></span><span class="desc">Remove an auto-reply by id or trigger</span></div>
+          <div class="cmd" data-q="/server autoresponder list list auto-replies"><span class="name"><b>/</b>server <i>autoresponder list</i></span><span class="desc">List auto-replies</span></div>
+          <div class="cmd" data-q="/server sticky set set the sticky message for this channel"><span class="name"><b>/</b>server <i>sticky set</i></span><span class="desc">Set the sticky message for this channel</span></div>
+          <div class="cmd" data-q="/server sticky remove remove this channel’s sticky message"><span class="name"><b>/</b>server <i>sticky remove</i></span><span class="desc">Remove this channel’s sticky message</span></div>
+          <div class="cmd" data-q="/server sticky list list channels with sticky messages"><span class="name"><b>/</b>server <i>sticky list</i></span><span class="desc">List channels with sticky messages</span></div>
+          <div class="cmd" data-q="/server rolemenu create create a role menu in this channel"><span class="name"><b>/</b>server <i>rolemenu create</i></span><span class="desc">Create a role menu in this channel</span></div>
+          <div class="cmd" data-q="/server rolemenu addrole add a role to a menu"><span class="name"><b>/</b>server <i>rolemenu addrole</i></span><span class="desc">Add a role to a menu</span></div>
+          <div class="cmd" data-q="/server rolemenu removerole remove a role from a menu"><span class="name"><b>/</b>server <i>rolemenu removerole</i></span><span class="desc">Remove a role from a menu</span></div>
+          <div class="cmd" data-q="/server rolemenu list list this server’s role menus"><span class="name"><b>/</b>server <i>rolemenu list</i></span><span class="desc">List this server’s role menus</span></div>
+          <div class="cmd" data-q="/server prefix set or view the text-command prefix (e.g. !)"><span class="name"><b>/</b>server <i>prefix</i></span><span class="desc">Set or view the text-command prefix (e.g. !)</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="setup create (or designate) the dedicated music control channel with live buttons.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>setup</span><span class="cgdesc">Create (or designate) the dedicated music control channel with live buttons.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/setup create (or designate) the dedicated music control channel with live buttons."><span class="name"><b>/</b>setup</span><span class="desc">Create (or designate) the dedicated music control channel with live buttons.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="shuffle shuffle the queue.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>shuffle</span><span class="cgdesc">Shuffle the queue.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/shuffle shuffle the queue."><span class="name"><b>/</b>shuffle</span><span class="desc">Shuffle the queue.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="skip skip to the next track.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>skip</span><span class="cgdesc">Skip to the next track.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/skip skip to the next track."><span class="name"><b>/</b>skip</span><span class="desc">Skip to the next track.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="status show the bot’s health &amp; status">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>status</span><span class="cgdesc">Show the bot’s health &amp; status</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/status show the bot’s health &amp; status"><span class="name"><b>/</b>status</span><span class="desc">Show the bot’s health &amp; status</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="stop stop playback and clear the queue.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>stop</span><span class="cgdesc">Stop playback and clear the queue.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/stop stop playback and clear the queue."><span class="name"><b>/</b>stop</span><span class="desc">Stop playback and clear the queue.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="timezone set your timezone so the bot can show your local time">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>timezone</span><span class="cgdesc">Set your timezone so the bot can show your local time</span><span class="cgcount">3</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/timezone set set your timezone (iana name like america/chicago)"><span class="name"><b>/</b>timezone <i>set</i></span><span class="desc">Set your timezone (IANA name like America/Chicago)</span></div>
+          <div class="cmd" data-q="/timezone show show a timezone &amp; current local time"><span class="name"><b>/</b>timezone <i>show</i></span><span class="desc">Show a timezone &amp; current local time</span></div>
+          <div class="cmd" data-q="/timezone clear remove your saved timezone"><span class="name"><b>/</b>timezone <i>clear</i></span><span class="desc">Remove your saved timezone</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="tools handy text &amp; dev utilities">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>tools</span><span class="cgdesc">Handy text &amp; dev utilities</span><span class="cgcount">11</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/tools timestamp generate discord timestamp codes"><span class="name"><b>/</b>tools <i>timestamp</i></span><span class="desc">Generate Discord timestamp codes</span></div>
+          <div class="cmd" data-q="/tools math evaluate a math expression"><span class="name"><b>/</b>tools <i>math</i></span><span class="desc">Evaluate a math expression</span></div>
+          <div class="cmd" data-q="/tools base64 encode or decode base64"><span class="name"><b>/</b>tools <i>base64</i></span><span class="desc">Encode or decode Base64</span></div>
+          <div class="cmd" data-q="/tools hash hash text"><span class="name"><b>/</b>tools <i>hash</i></span><span class="desc">Hash text</span></div>
+          <div class="cmd" data-q="/tools password generate a random password"><span class="name"><b>/</b>tools <i>password</i></span><span class="desc">Generate a random password</span></div>
+          <div class="cmd" data-q="/tools color preview a hex color"><span class="name"><b>/</b>tools <i>color</i></span><span class="desc">Preview a hex color</span></div>
+          <div class="cmd" data-q="/tools choose pick a random option"><span class="name"><b>/</b>tools <i>choose</i></span><span class="desc">Pick a random option</span></div>
+          <div class="cmd" data-q="/tools mock spongebob-ify text"><span class="name"><b>/</b>tools <i>mock</i></span><span class="desc">sPoNgEbOb-ify text</span></div>
+          <div class="cmd" data-q="/tools emojify turn text into regional-indicator emoji"><span class="name"><b>/</b>tools <i>emojify</i></span><span class="desc">Turn text into regional-indicator emoji</span></div>
+          <div class="cmd" data-q="/tools ascii make ascii-art text"><span class="name"><b>/</b>tools <i>ascii</i></span><span class="desc">Make ASCII-art text</span></div>
+          <div class="cmd" data-q="/tools reverse reverse text"><span class="name"><b>/</b>tools <i>reverse</i></span><span class="desc">Reverse text</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="util reminders, translate, weather &amp; feeds">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>util</span><span class="cgdesc">Reminders, translate, weather &amp; feeds</span><span class="cgcount">8</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/util reminder set set a reminder"><span class="name"><b>/</b>util <i>reminder set</i></span><span class="desc">Set a reminder</span></div>
+          <div class="cmd" data-q="/util reminder list list your active reminders"><span class="name"><b>/</b>util <i>reminder list</i></span><span class="desc">List your active reminders</span></div>
+          <div class="cmd" data-q="/util reminder cancel cancel a reminder"><span class="name"><b>/</b>util <i>reminder cancel</i></span><span class="desc">Cancel a reminder</span></div>
+          <div class="cmd" data-q="/util feed add subscribe a channel to a feed"><span class="name"><b>/</b>util <i>feed add</i></span><span class="desc">Subscribe a channel to a feed</span></div>
+          <div class="cmd" data-q="/util feed remove unsubscribe a feed"><span class="name"><b>/</b>util <i>feed remove</i></span><span class="desc">Unsubscribe a feed</span></div>
+          <div class="cmd" data-q="/util feed list list this server’s feeds"><span class="name"><b>/</b>util <i>feed list</i></span><span class="desc">List this server’s feeds</span></div>
+          <div class="cmd" data-q="/util translate translate text to another language"><span class="name"><b>/</b>util <i>translate</i></span><span class="desc">Translate text to another language</span></div>
+          <div class="cmd" data-q="/util weather show current weather for a place"><span class="name"><b>/</b>util <i>weather</i></span><span class="desc">Show current weather for a place</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="voicelock restrict music to a single voice channel">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>voicelock</span><span class="cgdesc">Restrict music to a single voice channel</span><span class="cgcount">3</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/voicelock set lock music to a voice channel"><span class="name"><b>/</b>voicelock <i>set</i></span><span class="desc">Lock music to a voice channel</span></div>
+          <div class="cmd" data-q="/voicelock off remove the music voice lock"><span class="name"><b>/</b>voicelock <i>off</i></span><span class="desc">Remove the music voice lock</span></div>
+          <div class="cmd" data-q="/voicelock status show the current music voice lock"><span class="name"><b>/</b>voicelock <i>status</i></span><span class="desc">Show the current music voice lock</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="volume set the playback volume (0-150).">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>volume</span><span class="cgdesc">Set the playback volume (0-150).</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/volume set the playback volume (0-150)."><span class="name"><b>/</b>volume</span><span class="desc">Set the playback volume (0-150).</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="voteskip vote to skip the current track">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>voteskip</span><span class="cgdesc">Vote to skip the current track</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/voteskip vote to skip the current track"><span class="name"><b>/</b>voteskip</span><span class="desc">Vote to skip the current track</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="wrapped a recap of your server’s music &amp; activity">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>wrapped</span><span class="cgdesc">A recap of your server’s music &amp; activity</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/wrapped a recap of your server’s music &amp; activity"><span class="name"><b>/</b>wrapped</span><span class="desc">A recap of your server’s music &amp; activity</span></div>
+          </div>
+        </div>
+        <div class="cmd-empty" id="cmdEmpty" style="display:none;padding:20px 15px;color:var(--tan);font-size:.9rem;text-align:center">No commands match that search.</div>
       </div>
     </div>
   </div>
@@ -584,6 +1034,47 @@
     entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
   },{threshold:.12});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // command palette: expand/collapse + search across subcommands
+  const cmdSearch = document.getElementById('cmdSearch');
+  const cmdList = document.getElementById('cmdList');
+  const cmdEmpty = document.getElementById('cmdEmpty');
+  if (cmdSearch && cmdList) {
+    const groups = [...cmdList.querySelectorAll('.cgroup')];
+
+    cmdList.addEventListener('click', (e) => {
+      const head = e.target.closest('.cghead');
+      if (head) head.parentElement.classList.toggle('open');
+    });
+
+    const filter = () => {
+      const q = cmdSearch.value.toLowerCase().replace(/^\//, '').trim();
+      let shown = 0;
+      groups.forEach(g => {
+        const rows = [...g.querySelectorAll('.cmd')];
+        if (!q) {
+          g.style.display = ''; g.classList.remove('open');
+          rows.forEach(r => r.style.display = '');
+          shown++;
+          return;
+        }
+        const groupHit = (g.dataset.q || '').includes(q);
+        let any = false;
+        rows.forEach(r => {
+          const hit = groupHit || (r.dataset.q || '').includes(q);
+          r.style.display = hit ? '' : 'none';
+          if (hit) any = true;
+        });
+        g.style.display = any ? '' : 'none';
+        g.classList.toggle('open', any);
+        if (any) shown++;
+      });
+      if (cmdEmpty) cmdEmpty.style.display = shown ? 'none' : '';
+    };
+
+    cmdSearch.addEventListener('input', filter);
+    cmdSearch.addEventListener('keydown', e => { if (e.key === 'Escape') { cmdSearch.value = ''; filter(); } });
+  }
 </script>
 </body>
 </html>
