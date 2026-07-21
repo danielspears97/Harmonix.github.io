@@ -485,6 +485,26 @@ header.topbar {
 #mgrSaveCmds:hover, #mgrSaveConfig:hover { filter: brightness(1.12); }
 .cfg-save { height: var(--ctl-h); }
 
+/* ---- demo-mode banner (not part of the real dashboard) ---- */
+.demo-banner{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:10px 16px;margin:0 0 2px;
+  background:linear-gradient(90deg,rgba(240,76,60,.16),rgba(255,143,176,.08));
+  border-bottom:1px solid rgba(240,76,60,.32);
+  font-size:.86rem;
+}
+.demo-tag{
+  font-size:.64rem;font-weight:800;letter-spacing:.18em;
+  background:var(--accent,#f04c3c);color:#fff;
+  padding:4px 9px;border-radius:20px;flex:0 0 auto;
+}
+.demo-txt{color:var(--text,#f3e7c8);opacity:.9}
+.demo-link{
+  margin-left:auto;color:var(--accent,#f04c3c);text-decoration:none;font-weight:600;
+  white-space:nowrap;transition:opacity .2s;
+}
+.demo-link:hover{opacity:.75;text-decoration:underline}
+@media(max-width:620px){.demo-link{margin-left:0}}
 </style>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23f04c3c'/%3E%3C/svg%3E" />
 </head>
@@ -514,7 +534,7 @@ header.topbar {
 
   <div class="wrap" id="app">
     <aside class="side" id="side">
-      <a class="brand" href="index.html" style="text-decoration:none;color:inherit" title="Back to site">
+      <a class="brand" href="/" style="text-decoration:none;color:inherit" title="Back to site">
         <span class="dot"></span>
         <span class="brand-name">Harmonix</span>
         <small>control room</small>
@@ -540,6 +560,11 @@ header.topbar {
     </aside>
 
     <div class="content">
+      <div class="demo-banner">
+        <span class="demo-tag">DEMO</span>
+        <span class="demo-txt">You're viewing a preview with sample data — this isn't a real server.</span>
+        <a class="demo-link" href="http://localhost:3000" target="_blank" rel="noopener" title="Opens your own Harmonix dashboard — only works while Harmonix is running on this computer.">Open my real dashboard ›</a>
+      </div>
       <header class="topbar">
         <button class="hamburger" id="hamburger" title="Menu" style="display:none">☰</button>
         <div class="guild-select">
