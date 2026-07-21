@@ -95,6 +95,8 @@
   .nav-links{display:flex;gap:30px;align-items:center}
   .nav-links a{color:var(--cream-dim);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .2s}
   .nav-links a:hover{color:var(--cream)}
+  .nav-live{display:inline-flex;align-items:center;gap:7px}
+  .nav-live .ndot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(123,216,143,.16);flex:0 0 auto}
   .nav-cta{
     background:var(--coral);color:#fff;padding:9px 18px;border-radius:10px;
     font-weight:600;font-size:.88rem;text-decoration:none;transition:transform .15s,background .2s;
@@ -185,7 +187,7 @@
     background:rgba(255,143,176,.12);border:1px solid rgba(255,143,176,.28);
   }
   .lchip .li svg{width:16px;height:16px;stroke:var(--rose);fill:none}
-  .lchip .lt{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+  .lchip .lt{display:flex;flex-direction:column;line-height:1.25;min-width:0;text-align:left;align-items:flex-start}
   .lchip .lt b{font-size:.9rem;font-weight:600;color:var(--cream);white-space:nowrap}
   .lchip .lt span{font-size:.72rem;color:var(--tan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .lchip .lar{color:var(--tan);font-size:1rem;margin-left:auto;padding-left:6px;transition:transform .2s,color .2s}
@@ -440,8 +442,9 @@
     </div>
     <div class="nav-links">
       <a href="#features">Features</a>
-      <a href="#dashboard">Dashboard</a>
       <a href="#commands">Commands</a>
+      <a href="/dashboard/">Demo</a>
+      <a href="http://localhost:3000" target="_blank" rel="noopener" class="nav-live" title="Opens your own Harmonix dashboard at localhost:3000 — only works while Harmonix is running on this computer."><span class="ndot"></span>My dashboard</a>
       <a href="#get" class="nav-cta">Get Harmonix</a>
     </div>
   </div>
@@ -455,7 +458,7 @@
         <h1>Run your server like a <em>broadcast</em>.</h1>
         <p class="lede">Harmonix is the music, moderation, and control-room bot you host yourself — with a full web dashboard so you can run the whole server from your browser.</p>
         <div class="hero-cta">
-          <a href="harmonix-music-bot.zip" download class="btn btn-primary">
+          <a href="/harmonix-music-bot.zip" download class="btn btn-primary">
             <span class="btile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></span>
             <span class="btxt"><b>Download Harmonix</b><span>Free · ~316 KB</span></span>
           </a>
@@ -465,14 +468,14 @@
           </a>
         </div>
         <div class="linkchips">
-          <a href="setup.html" class="lchip">
+          <a href="/setup/" class="lchip">
             <span class="li"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></span>
             <span class="lt"><b>Setup guide</b><span>Free · about 15 minutes</span></span>
             <span class="lar">›</span>
           </a>
-          <a href="dashboard.html" class="lchip">
+          <a href="/dashboard/" class="lchip">
             <span class="li"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></span>
-            <span class="lt"><b>Live demo</b><span>Explore the dashboard</span></span>
+            <span class="lt"><b>Try the demo</b><span>Sample data · no install</span></span>
             <span class="lar">›</span>
           </a>
         </div>
@@ -1090,7 +1093,7 @@
       <h2>Bring the control room to your server.</h2>
       <p>Harmonix runs on your own machine — free, no monthly bill. Download it, run one command, and the bot and dashboard start together. Set it up once, then run the whole show from your browser.</p>
       <div class="hero-cta">
-        <a href="harmonix-music-bot.zip" download class="btn btn-primary">
+        <a href="/harmonix-music-bot.zip" download class="btn btn-primary">
             <span class="btile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></span>
             <span class="btxt"><b>Download Harmonix</b><span>Free · ~316 KB</span></span>
           </a>
@@ -1100,14 +1103,14 @@
           </a>
       </div>
       <div class="linkchips">
-        <a href="setup.html" class="lchip">
+        <a href="/setup/" class="lchip">
           <span class="li"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></span>
           <span class="lt"><b>Setup guide</b><span>Free · about 15 minutes</span></span>
           <span class="lar">›</span>
         </a>
-        <a href="dashboard.html" class="lchip">
+        <a href="/dashboard/" class="lchip">
           <span class="li"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></span>
-          <span class="lt"><b>Live demo</b><span>Explore the dashboard</span></span>
+          <span class="lt"><b>Try the demo</b><span>Sample data · no install</span></span>
           <span class="lar">›</span>
         </a>
       </div>
@@ -1125,7 +1128,7 @@
       </div>
       <div class="links">
         <a href="#features">Features</a>
-        <a href="#dashboard">Dashboard</a>
+        <a href="/dashboard/">Demo dashboard</a>
         <a href="#commands">Commands</a>
         <a href="#get">Get started</a>
       </div>
