@@ -485,6 +485,20 @@ header.topbar {
 #mgrSaveCmds:hover, #mgrSaveConfig:hover { filter: brightness(1.12); }
 .cfg-save { height: var(--ctl-h); }
 
+
+/* typed volume input beside the slider */
+.vol-num { display: inline-flex; align-items: center; gap: 2px; }
+.vol-num input[type="number"] {
+  width: 58px; height: 28px; padding: 0 4px 0 6px;
+  text-align: right; font-variant-numeric: tabular-nums; font-size: 13px;
+  border-radius: 6px;
+}
+.vol-num input[type="number"]::-webkit-outer-spin-button,
+.vol-num input[type="number"]::-webkit-inner-spin-button { opacity: 1; height: 22px; }
+.vol-num b { color: var(--muted); font-size: 12px; font-weight: 500; }
+/* overview stats sit above the console on the home view */
+#homeStats { margin-bottom: 20px; }
+
 /* ---- demo-mode banner (not part of the real dashboard) ---- */
 .demo-banner{
   display:flex;align-items:center;gap:12px;flex-wrap:wrap;
@@ -540,9 +554,7 @@ header.topbar {
         <small>control room</small>
       </a>
       <nav class="sidenav" id="hamMenu">
-        <button data-view="overview"><span class="nav-ico">🏠</span> Overview</button>
-        <div class="nav-label">Music</div>
-        <button data-view="music"><span class="nav-ico">🎵</span> Console</button>
+        <button data-view="music"><span class="nav-ico">🏠</span> Overview</button>
         <div class="nav-label">Manage</div>
         <button data-view="commands"><span class="nav-ico">⚙️</span> Commands</button>
         <button data-view="settings"><span class="nav-ico">🔧</span> Server Settings</button>
@@ -578,6 +590,30 @@ header.topbar {
         </div>
       </header>
 
+    <div id="homeStats" style="display:none">
+      <div class="section-title" id="ovTitle">Overview</div>
+      <div class="ov-grid">
+        <div class="ov-tile"><div class="ov-num" id="ovMembers">—</div><div class="ov-lbl">Members</div></div>
+        <div class="ov-tile"><div class="ov-num" id="ovPlays">—</div><div class="ov-lbl">Tracks this week</div></div>
+        <div class="ov-tile"><div class="ov-num" id="ovListeners">—</div><div class="ov-lbl">Listeners this week</div></div>
+        <div class="ov-tile"><div class="ov-num" id="ovCommands">—</div><div class="ov-lbl">Commands used</div></div>
+        <div class="ov-tile"><div class="ov-num" id="ovAch">—</div><div class="ov-lbl">Badges unlocked</div></div>
+        <div class="ov-tile"><div class="ov-num" id="ovPing">—</div><div class="ov-lbl">Gateway ping</div></div>
+      </div>
+      <div class="ov-hero" id="ovHero" style="display:none">
+        <span class="ov-hero-eyebrow">🔥 Top track this week</span>
+        <div class="ov-hero-title" id="ovTopTrack"></div>
+      </div>
+      <div class="ov-quick" style="display:none">
+        <span class="ov-quick-lbl">Jump to</span>
+        <button data-jump="composer">✏️ Compose a message</button>
+        <button data-jump="commands">⚙️ Gate a command</button>
+        <button data-jump="settings">🔧 Server settings</button>
+        <button data-jump="achievements">🏆 Achievements</button>
+      </div>
+      <div class="mgr-hint" id="ovWarn" style="display:none"></div>
+    </div>
+
     <main id="main">
       <!-- now playing -->
       <section class="now" id="nowCard">
@@ -608,7 +644,7 @@ header.topbar {
             <div class="vol">
               🔈
               <input type="range" id="vol" min="0" max="150" value="60" />
-              <span id="volLabel">60%</span>
+              <span class="vol-num"><input type="number" id="volNum" min="0" max="150" step="1" value="60" title="Type a volume and press Enter" /><b>%</b></span>
             </div>
           </div>
         </div>
@@ -831,30 +867,6 @@ header.topbar {
       </div>
 
       <!-- overview (home) -->
-      <div class="mgr-panel" id="mgrOverviewPanel" style="display:none">
-        <div class="section-title" id="ovTitle">Overview</div>
-        <div class="ov-grid">
-          <div class="ov-tile"><div class="ov-num" id="ovMembers">—</div><div class="ov-lbl">Members</div></div>
-          <div class="ov-tile"><div class="ov-num" id="ovPlays">—</div><div class="ov-lbl">Tracks this week</div></div>
-          <div class="ov-tile"><div class="ov-num" id="ovListeners">—</div><div class="ov-lbl">Listeners this week</div></div>
-          <div class="ov-tile"><div class="ov-num" id="ovCommands">—</div><div class="ov-lbl">Commands used</div></div>
-          <div class="ov-tile"><div class="ov-num" id="ovAch">—</div><div class="ov-lbl">Badges unlocked</div></div>
-          <div class="ov-tile"><div class="ov-num" id="ovPing">—</div><div class="ov-lbl">Gateway ping</div></div>
-        </div>
-        <div class="ov-hero" id="ovHero" style="display:none">
-          <span class="ov-hero-eyebrow">🔥 Top track this week</span>
-          <div class="ov-hero-title" id="ovTopTrack"></div>
-        </div>
-        <div class="ov-quick">
-          <span class="ov-quick-lbl">Jump to</span>
-          <button data-jump="composer">✏️ Compose a message</button>
-          <button data-jump="commands">⚙️ Gate a command</button>
-          <button data-jump="settings">🔧 Server settings</button>
-          <button data-jump="achievements">🏆 Achievements</button>
-        </div>
-        <div class="mgr-hint" id="ovWarn" style="display:none"></div>
-      </div>
-
       <!-- command stats -->
       <div class="mgr-panel" id="mgrStatsPanel" style="display:none">
         <div class="section-title">Command Usage</div>
@@ -981,9 +993,9 @@ header.topbar {
   
   <script>
 'use strict';
-/* Harmonix dashboard — standalone MOCK client.
- * Same DOM templates as the real src/dashboard/public/app.js, but fed by
- * in-page mock data instead of a Socket.IO server. No network calls. */
+/* Harmonix dashboard — standalone DEMO client.
+ * Mirrors src/dashboard/public/app.js templates, fed by in-page mock data.
+ * No Socket.IO, no network. */
 
 const $ = (id) => document.getElementById(id);
 function escapeHtml(str) {
@@ -998,7 +1010,6 @@ function msToTime(ms) {
 const PLACEHOLDER_ART = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Crect width='220' height='220' fill='%231a1722'/%3E%3Cpath d='M84 150V78l58-10v62' stroke='%23f04c3c' stroke-width='6' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='78' cy='150' r='12' fill='%23f04c3c'/%3E%3Ccircle cx='142' cy='140' r='12' fill='%23ff8fb0'/%3E%3C/svg%3E";
 const CASE_EMOJI = { warn: '⚠️', kick: '👢', ban: '🔨', tempban: '⏲️', unban: '♻️', timeout: '⏳', untimeout: '🔓', mute: '🔇', unmute: '🔊' };
 
-let noticeTimer = null;
 function showNotice(type, message) {
   const d = document.createElement('div');
   if (type === 'error') d.className = 'error';
@@ -1011,16 +1022,16 @@ function showNotice(type, message) {
 const app = $('app'), lock = $('lock');
 const guildSelect = $('guildSelect'), guildIcon = $('guildIcon');
 const main = $('main'), disc = $('disc'), managerEl = $('manager');
+const homeStats = $('homeStats');
 const elArt = $('art'), elEyebrow = $('eyebrow'), elTitle = $('title'), elSub = $('sub'), elBadges = $('badges');
 const elCur = $('cur'), elDur = $('dur'), elFill = $('fill');
-const btnPlay = $('play'), vol = $('vol'), volLabel = $('volLabel');
+const btnPlay = $('play'), vol = $('vol'), volNum = $('volNum');
 const btnAutoplay = $('autoplay'), bt247 = $('t247'), btnLoop = $('loop');
 const searchInput = $('searchInput'), searchBtn = $('searchBtn');
 const queueEl = $('queue'), notice = $('notice');
 const hamburger = $('hamburger'), hamMenu = $('hamMenu'), mgrCommands = $('mgrCommands');
 
 // ══════════════════════════════════════════════ MOCK DATA ══
-const currentGuild = 'g1';
 const CHANNELS = ['general','the-lounge','music','announcements','mod-log','welcome','counting','trivia','suggestions','starboard','birthdays'].map((n, i) => ({ id: 'c' + i, name: n }));
 const VOICE = ['General','Music','Gaming','AFK'].map((n, i) => ({ id: 'v' + i, name: n }));
 const ROLES = ['Admin','Moderator','DJ','Trusted','Member'].map((n, i) => ({ id: 'r' + i, name: n }));
@@ -1073,16 +1084,16 @@ const STATS = {
   total: { total: 14208, distinct: 38 },
   top: [
     { command: 'play', count: 4812 }, { command: 'skip', count: 3090 }, { command: 'queue', count: 1974 },
-    { command: 'rank', count: 1352 }, { command: 'nowplaying', count: 1041 }, { command: 'achievements', count: 728 },
-    { command: 'trivia', count: 540 }, { command: 'giveaway', count: 388 }, { command: 'mod warn', count: 274 }, { command: 'lockdown', count: 231 },
+    { command: 'level rank', count: 1352 }, { command: 'nowplaying', count: 1041 }, { command: 'achievements', count: 728 },
+    { command: 'trivia', count: 540 }, { command: 'giveaway', count: 388 }, { command: 'mod warn', count: 274 }, { command: 'mod lockdown', count: 231 },
   ],
 };
 
 const ACH = {
   total: 34,
   board: [
-    { name: '@maya', count: 22, avatar: null }, { name: '@dan', count: 20, avatar: null },
-    { name: '@theo', count: 17, avatar: null }, { name: '@june', count: 13, avatar: null }, { name: '@korra', count: 9, avatar: null },
+    { name: '@maya', count: 22 }, { name: '@dan', count: 20 },
+    { name: '@theo', count: 17 }, { name: '@june', count: 13 }, { name: '@korra', count: 9 },
   ],
   defs: [
     { key: 'first_spin', group: 'Music', emoji: '🎵', name: 'First Spin', desc: 'Play your first track' },
@@ -1111,7 +1122,7 @@ const CONFIG = {
 };
 
 const LOG_ENTRIES = [
-  { at: Date.now() - 30000, color: 0xf04c3c, text: '/lockdown lifted on #general by @dan' },
+  { at: Date.now() - 30000, color: 0xf04c3c, text: '/mod lockdown lifted on #general by @dan' },
   { at: Date.now() - 120000, color: 0x5ad27e, text: '@maya unlocked achievement: Night Owl' },
   { at: Date.now() - 240000, color: 0xff8fb0, text: '@dan queued 12 tracks in #music' },
   { at: Date.now() - 360000, color: 0xf0b84a, text: 'Case #47 — warn @spammer (repeated self-promo)' },
@@ -1119,9 +1130,10 @@ const LOG_ENTRIES = [
   { at: Date.now() - 700000, color: 0xa2947f, text: 'Autoplay engaged in #the-lounge' },
 ];
 
+// canManage drives the managers-only bits of Overview (jump links + module notice)
 const OVERVIEW = {
-  guildId: 'g1', guildName: 'The Lounge', members: 412, playsWeek: 1284, listenersWeek: 96,
-  commandsUsed: 14208, achievementsUnlocked: 18, ping: 42,
+  guildName: 'The Lounge', members: 412, playsWeek: 1284, listenersWeek: 96,
+  commandsUsed: 14208, achievementsUnlocked: 18, ping: 42, canManage: true,
   topTrack: { title: 'Late Night Set', author: 'Nova', plays: 37 }, disabledModules: 1,
 };
 
@@ -1148,7 +1160,8 @@ function renderPlayer() {
   btnAutoplay.classList.toggle('active', !!state.autoplay);
   bt247.classList.toggle('active', !!state.twentyFourSeven);
   btnLoop.classList.toggle('active', state.repeatMode && state.repeatMode !== 'off');
-  vol.value = state.volume; volLabel.textContent = `${state.volume}%`;
+  vol.value = state.volume;
+  if (document.activeElement !== volNum) volNum.value = state.volume;
 
   queueEl.innerHTML = state.queue.map((t, i) => `
     <div class="q-item" draggable="true" data-i="${i}">
@@ -1164,12 +1177,19 @@ function renderPlayer() {
 }
 
 // ══════════════════════════════════════════════ VIEW SWITCH ══
-const PANELS = { overview: 'mgrOverviewPanel', commands: 'mgrCommandsPanel', settings: 'mgrSettingsPanel', cases: 'mgrCasesPanel', levels: 'mgrLevelsPanel', stats: 'mgrStatsPanel', achievements: 'mgrAchievementsPanel', composer: 'mgrComposerPanel', config: 'mgrConfigPanel', log: 'mgrLogPanel' };
+const PANELS = { commands: 'mgrCommandsPanel', settings: 'mgrSettingsPanel', cases: 'mgrCasesPanel', levels: 'mgrLevelsPanel', stats: 'mgrStatsPanel', achievements: 'mgrAchievementsPanel', composer: 'mgrComposerPanel', config: 'mgrConfigPanel', log: 'mgrLogPanel' };
 let currentView = 'music';
 
+// Overview stats sit above the console on the home view.
+function refreshHome() {
+  if (!homeStats) return;
+  const show = currentView === 'music';
+  homeStats.style.display = show ? '' : 'none';
+  if (show) renderOverview();
+}
+
 function refreshView() {
-  if (currentView === 'overview') renderOverview();
-  else if (currentView === 'commands' || currentView === 'settings' || currentView === 'composer') renderManager();
+  if (currentView === 'commands' || currentView === 'settings' || currentView === 'composer') renderManager();
   else if (currentView === 'cases') renderCases();
   else if (currentView === 'levels') renderLevels();
   else if (currentView === 'stats') renderStats();
@@ -1182,8 +1202,15 @@ function setView(view) {
   currentView = view;
   hamMenu.classList.remove('open');
   hamMenu.querySelectorAll('button').forEach((b) => b.classList.toggle('active', b.dataset.view === view));
-  if (view === 'music') { managerEl.style.display = 'none'; renderPlayer(); updateMini(); return; }
+  if (view === 'music') {
+    managerEl.style.display = 'none';
+    renderPlayer();
+    refreshHome();   // Overview = server stats + the music console on one page
+    updateMini();
+    return;
+  }
   main.style.display = 'none'; disc.style.display = 'none'; managerEl.style.display = '';
+  if (homeStats) homeStats.style.display = 'none';
   for (const [v, id] of Object.entries(PANELS)) { const el = $(id); if (el) el.style.display = v === view ? '' : 'none'; }
   refreshView(); updateMini();
 }
@@ -1192,10 +1219,32 @@ hamburger.addEventListener('click', (e) => { e.stopPropagation(); hamMenu.classL
 hamMenu.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => setView(b.dataset.view)));
 document.addEventListener('click', (e) => { if (!hamMenu.contains(e.target) && e.target !== hamburger) hamMenu.classList.remove('open'); });
 
+// ══════════════════════════════════════════════ OVERVIEW (on home) ══
+function renderOverview() {
+  const o = OVERVIEW;
+  $('ovTitle').textContent = `${o.guildName} — at a glance`;
+  $('ovMembers').textContent = o.members.toLocaleString();
+  $('ovPlays').textContent = o.playsWeek.toLocaleString();
+  $('ovListeners').textContent = o.listenersWeek.toLocaleString();
+  $('ovCommands').textContent = o.commandsUsed.toLocaleString();
+  $('ovAch').textContent = o.achievementsUnlocked.toLocaleString();
+  $('ovPing').textContent = `${o.ping}ms`;
+  $('ovHero').style.display = '';
+  $('ovTopTrack').textContent = `${o.topTrack.title} — ${o.topTrack.author}  ×${o.topTrack.plays}`;
+  // Jump links and server-config notices are for managers only.
+  const quick = document.querySelector('#homeStats .ov-quick');
+  if (quick) quick.style.display = o.canManage ? '' : 'none';
+  const warn = $('ovWarn');
+  if (o.canManage && o.disabledModules > 0) {
+    warn.style.display = '';
+    warn.textContent = `🧩 ${o.disabledModules} feature module is turned off for this server (Server Settings → Feature modules).`;
+  } else warn.style.display = 'none';
+}
+document.querySelectorAll('.ov-quick button').forEach((b) => b.addEventListener('click', () => setView(b.dataset.jump)));
+
 // ══════════════════════════════════════════════ MANAGER: settings + commands ══
 let gateModel = {};
 function renderManager() {
-  // settings selects/values
   const chanOpt = (sel) => '<option value="">— none —</option>' + CHANNELS.map((c) => `<option value="${c.id}" ${sel === c.id ? 'selected' : ''}>#${escapeHtml(c.name)}</option>`).join('');
   $('mgrAutodelete').value = 0;
   $('mgrTrivia').innerHTML = chanOpt('c7');
@@ -1215,21 +1264,59 @@ function renderManager() {
   $('mgrHealth').innerHTML = ['⏱️ 6d 4h', '📡 42ms', '🧠 214MB', '🏠 3 servers', '🎧 1/3 playing', '🟢 node-1']
     .map((s) => `<span class="health-pill">${s}</span>`).join('');
 
-  // power roles
-  const mgrPower = $('mgrPower');
-  mgrPower.innerHTML = ROLES.map((r) => `<div class="prole" data-role="${r.id}">
+  $('mgrPower').innerHTML = ROLES.map((r) => {
+    const lvl = (r.name === 'Admin' || r.name === 'Moderator') ? 2 : r.name === 'Trusted' ? 1 : 0;
+    return `<div class="prole" data-role="${r.id}">
       <span class="prole-name">${escapeHtml(r.name)}</span>
       <div class="lvl" data-act="plvl">
-        ${[0, 1, 2].map((n) => `<button type="button" data-lvl="${n}" class="${(r.name === 'Moderator' || r.name === 'Admin') && n === 2 ? 'active' : n === 0 && r.name !== 'Moderator' && r.name !== 'Admin' && r.name !== 'Trusted' ? 'active' : r.name === 'Trusted' && n === 1 ? 'active' : ''}">${n}</button>`).join('')}
+        ${[0, 1, 2].map((n) => `<button type="button" data-lvl="${n}" class="${lvl === n ? 'active' : ''}">${n}</button>`).join('')}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
-  // command manager
   gateModel = {};
-  for (const cmd of COMMANDS) gateModel[cmd.path] = { enabled: !['userinfo', 'avatar', 'birthday'].includes(cmd.path), mode: '', channels: new Set(), level: cmd.path.startsWith('mod ') ? 2 : cmd.path.startsWith('level ') ? 0 : 0, reply: '' };
+  for (const cmd of COMMANDS) gateModel[cmd.path] = { enabled: !['userinfo', 'avatar', 'birthday'].includes(cmd.path), mode: '', channels: new Set(), level: cmd.path.startsWith('mod ') ? 2 : 0, reply: '' };
+
+  const chipRow = () => CHANNELS.map((ch) => `<button type="button" class="chip" data-ch="${ch.id}">#${escapeHtml(ch.name)}</button>`).join('');
+
+  // one command row (identical in both views; the full /path is always shown)
+  const buildCmdRow = (cmd) => {
+    const m = gateModel[cmd.path];
+    return `<div class="cmd ${m.enabled ? '' : 'off'}" data-path="${escapeHtml(cmd.path)}">
+      <div class="cmd-head">
+        <button type="button" class="sw ${m.enabled ? 'on' : ''}" data-act="toggle" title="Enable / disable"><span></span></button>
+        <div class="cmd-id">
+          <code>/${escapeHtml(cmd.path)}</code>
+          <span class="cmd-state">${m.enabled ? '' : 'Disabled'}</span>
+        </div>
+        <div class="lvl" data-act="lvl" title="Minimum power level to use this command">
+          ${[[0, 'Everyone'], [1, 'Trusted'], [2, 'Staff']].map(([n, label]) => `<button type="button" data-lvl="${n}" class="${m.level === n ? 'active' : ''}">${label}</button>`).join('')}
+        </div>
+        <button type="button" class="cmd-expand" data-act="expand" title="Where it works &amp; reply visibility">⚙<span class="cmd-expand-cx">✕</span></button>
+      </div>
+      <div class="cmd-detail">
+        <div class="cmd-detail-row">
+          <span class="cmd-detail-lbl">Where</span>
+          <div class="seg" data-act="seg">
+            <button type="button" data-mode="" class="active">Everywhere</button>
+            <button type="button" data-mode="allow">Only in…</button>
+            <button type="button" data-mode="deny">Block in…</button>
+          </div>
+        </div>
+        <div class="chips" hidden>${chipRow()}</div>
+        <div class="cmd-detail-row">
+          <span class="cmd-detail-lbl">Reply</span>
+          <div class="lvl reply-seg" data-act="reply" title="How this command replies">
+            ${[['', 'Default'], ['public', '👁 Public'], ['ephemeral', '🔒 Private']].map(([v, label]) => `<button type="button" data-reply="${v}" class="${(m.reply || '') === v ? 'active' : ''}">${label}</button>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  };
+
+  // collapsible categories grouped by top-level command
   const groups = {};
   for (const cmd of COMMANDS) { const top = cmd.path.split(' ')[0]; (groups[top] = groups[top] || []).push(cmd); }
-  const chipRow = () => CHANNELS.map((ch) => `<button type="button" class="chip" data-ch="${ch.id}">#${escapeHtml(ch.name)}</button>`).join('');
   let html = '';
   for (const [top, cmds] of Object.entries(groups)) {
     html += `<div class="cat" data-top="${escapeHtml(top)}">
@@ -1240,60 +1327,27 @@ function renderManager() {
       </button>
       <div class="cat-tools">
         <span class="cat-tools-lbl">Set all:</span>
-        <button type="button" data-bulk="enable">On</button>
-        <button type="button" data-bulk="disable">Off</button>
+        <button type="button" data-bulk="enable" title="Enable every command here">On</button>
+        <button type="button" data-bulk="disable" title="Disable every command here">Off</button>
         <span class="cat-tools-lbl">level</span>
         <button type="button" data-bulklvl="0">L0</button>
         <button type="button" data-bulklvl="1">L1</button>
         <button type="button" data-bulklvl="2">L2</button>
       </div>
-      <div class="cat-body">`;
-    for (const cmd of cmds) {
-      const m = gateModel[cmd.path];
-      html += `<div class="cmd ${m.enabled ? '' : 'off'}" data-path="${escapeHtml(cmd.path)}">
-        <div class="cmd-head">
-          <button type="button" class="sw ${m.enabled ? 'on' : ''}" data-act="toggle" title="Enable / disable"><span></span></button>
-          <div class="cmd-id">
-            <code>/${escapeHtml(cmd.path)}</code>
-            <span class="cmd-state">${m.enabled ? '' : 'Disabled'}</span>
-          </div>
-          <div class="lvl" data-act="lvl" title="Minimum power level to use this command">
-            ${[[0, 'Everyone'], [1, 'Trusted'], [2, 'Staff']].map(([n, label]) => `<button type="button" data-lvl="${n}" class="${m.level === n ? 'active' : ''}">${label}</button>`).join('')}
-          </div>
-          <button type="button" class="cmd-expand" data-act="expand" title="Where it works &amp; reply visibility">⚙<span class="cmd-expand-cx">✕</span></button>
-        </div>
-        <div class="cmd-detail">
-          <div class="cmd-detail-row">
-            <span class="cmd-detail-lbl">Where</span>
-            <div class="seg" data-act="seg">
-              <button type="button" data-mode="" class="active">Everywhere</button>
-              <button type="button" data-mode="allow">Only in…</button>
-              <button type="button" data-mode="deny">Block in…</button>
-            </div>
-          </div>
-          <div class="chips" hidden>${chipRow()}</div>
-          <div class="cmd-detail-row">
-            <span class="cmd-detail-lbl">Reply</span>
-            <div class="lvl reply-seg" data-act="reply" title="How this command replies">
-              ${[['', 'Default'], ['public', '👁 Public'], ['ephemeral', '🔒 Private']].map(([v, label]) => `<button type="button" data-reply="${v}" class="${(m.reply || '') === v ? 'active' : ''}">${label}</button>`).join('')}
-            </div>
-          </div>
-        </div>
-      </div>`;
-    }
-    html += `</div></div>`;
+      <div class="cat-body">${cmds.map(buildCmdRow).join('')}</div></div>`;
   }
   mgrCommands.innerHTML = html;
   mgrCommands.querySelectorAll('.cat').forEach(updateCatSummary);
   renderComposer();
 }
 function updateCatSummary(cat) {
+  if (!cat) return; // flat view has no category wrappers
   const cmds = [...cat.querySelectorAll('.cmd')];
   const off = cmds.filter((c) => c.classList.contains('off')).length;
-  cat.querySelector('.cat-sum').textContent = off ? `${off} off` : '';
+  const sum = cat.querySelector('.cat-sum');
+  if (sum) sum.textContent = off ? `${off} off` : '';
 }
 
-// command-manager interactions
 mgrCommands.addEventListener('click', (e) => {
   const head = e.target.closest('.cat-head');
   if (head) { head.parentElement.classList.toggle('open'); return; }
@@ -1343,21 +1397,25 @@ $('mgrPower').addEventListener('click', (e) => {
 });
 $('mgrFilter').addEventListener('input', () => {
   const q = $('mgrFilter').value.toLowerCase().trim();
+  // filter individual rows (works in both flat and grouped views)
+  mgrCommands.querySelectorAll('.cmd').forEach((row) => {
+    row.style.display = (!q || row.dataset.path.toLowerCase().includes(q)) ? '' : 'none';
+  });
+  // grouped view: hide empty categories, auto-expand while searching
   mgrCommands.querySelectorAll('.cat').forEach((cat) => {
-    let any = false;
-    cat.querySelectorAll('.cmd').forEach((row) => { const hit = row.dataset.path.toLowerCase().includes(q); row.style.display = hit ? '' : 'none'; if (hit) any = true; });
-    cat.style.display = any ? '' : 'none'; if (q && any) cat.classList.add('open');
+    const anyVisible = [...cat.querySelectorAll('.cmd')].some((r) => r.style.display !== 'none');
+    cat.style.display = anyVisible ? '' : 'none';
+    if (q && anyVisible) cat.classList.add('open');
   });
 });
 $('mgrExpandAll').addEventListener('click', () => mgrCommands.querySelectorAll('.cat').forEach((c) => c.classList.add('open')));
 $('mgrCollapseAll').addEventListener('click', () => mgrCommands.querySelectorAll('.cat').forEach((c) => c.classList.remove('open')));
-$('mgrSaveCmds').addEventListener('click', () => showNotice('success', 'Command settings saved ✓'));
-$('mgrSaveSettings').addEventListener('click', () => showNotice('success', 'Server settings saved ✓'));
+$('mgrSaveCmds') && $('mgrSaveCmds').addEventListener('click', () => showNotice('success', 'Command settings saved ✓'));
+$('mgrSaveSettings') && $('mgrSaveSettings').addEventListener('click', () => showNotice('success', 'Server settings saved ✓'));
 
-// ══════════════════════════════════════════════ CASES / LEVELS / STATS / ACH / CONFIG / LOG / OVERVIEW ══
+// ══════════════════════════════════════════════ OTHER PANELS ══
 function renderCases() {
-  const el = $('mgrCases');
-  el.innerHTML = CASES.map((c) => {
+  $('mgrCases').innerHTML = CASES.map((c) => {
     const when = new Date(c.created_at).toLocaleString();
     return `<div class="case-row">
       <div class="case-head"><span class="case-num">#${c.case_number}</span> <span class="case-act">${CASE_EMOJI[c.action] || '•'} ${escapeHtml(c.action)}</span> <span class="case-tgt">${escapeHtml(c.target_tag)}</span></div>
@@ -1440,21 +1498,6 @@ function logLine(entry) {
   return `<div class="log-line"><span class="log-dot" style="background:${color}"></span><span class="log-time">${escapeHtml(t)}</span><span class="log-text">${escapeHtml(entry.text || '')}</span></div>`;
 }
 function renderLog() { $('mgrLog').innerHTML = LOG_ENTRIES.slice().reverse().map(logLine).join(''); }
-function renderOverview() {
-  const o = OVERVIEW;
-  $('ovTitle').textContent = `${o.guildName} — at a glance`;
-  $('ovMembers').textContent = o.members.toLocaleString();
-  $('ovPlays').textContent = o.playsWeek.toLocaleString();
-  $('ovListeners').textContent = o.listenersWeek.toLocaleString();
-  $('ovCommands').textContent = o.commandsUsed.toLocaleString();
-  $('ovAch').textContent = o.achievementsUnlocked.toLocaleString();
-  $('ovPing').textContent = `${o.ping}ms`;
-  $('ovHero').style.display = '';
-  $('ovTopTrack').textContent = `${o.topTrack.title} — ${o.topTrack.author}  ×${o.topTrack.plays}`;
-  const warn = $('ovWarn');
-  warn.style.display = ''; warn.textContent = `🧩 ${o.disabledModules} feature module is turned off for this server (Server Settings → Feature modules).`;
-}
-document.querySelectorAll('.ov-quick button').forEach((b) => b.addEventListener('click', () => setView(b.dataset.jump)));
 
 // ══════════════════════════════════════════════ COMPOSER ══
 const cmp = {
@@ -1517,7 +1560,7 @@ if (cmp.mode) {
   });
 }
 
-// ══════════════════════════════════════════════ config export/import (mock) ══
+// config export/import (mock)
 $('cfgExport') && $('cfgExport').addEventListener('click', () => showNotice('success', 'Config file downloaded.'));
 $('cfgImport') && $('cfgImport').addEventListener('click', () => showNotice('success', 'Pick a config file to import.'));
 
@@ -1530,8 +1573,21 @@ btnAutoplay.addEventListener('click', () => { STATE.autoplay = !STATE.autoplay; 
 bt247.addEventListener('click', () => { STATE.twentyFourSeven = !STATE.twentyFourSeven; bt247.classList.toggle('active', STATE.twentyFourSeven); showNotice('success', `24/7 ${STATE.twentyFourSeven ? 'on' : 'off'}`); });
 $('clear').addEventListener('click', () => showNotice('success', 'Queue cleared'));
 $('disconnect').addEventListener('click', () => showNotice('success', 'Disconnected'));
-vol.addEventListener('input', () => { STATE.volume = Number(vol.value); volLabel.textContent = `${vol.value}%`; });
 queueEl.addEventListener('click', (e) => { if (e.target.closest('.q-rm')) { e.target.closest('.q-item').remove(); showNotice('success', 'Removed from queue'); } });
+
+// volume: slider and typed input stay in sync, either can set it
+const VOL_MAX = 150;
+const clampVol = (n) => Math.min(VOL_MAX, Math.max(0, Math.round(Number(n) || 0)));
+vol.addEventListener('input', () => { volNum.value = vol.value; });
+vol.addEventListener('change', () => applyVolume(vol.value));
+function applyVolume(raw) {
+  const v = clampVol(raw);
+  vol.value = v; volNum.value = v; STATE.volume = v;
+  showNotice('success', `Volume ${v}%`);
+}
+volNum.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); volNum.blur(); } });
+volNum.addEventListener('change', () => applyVolume(volNum.value));
+volNum.addEventListener('blur', () => applyVolume(volNum.value));
 
 // ══════════════════════════════════════════════ mini-player ══
 function updateMini() {
@@ -1558,7 +1614,7 @@ function renderPalette(q) {
 function openPalette() { palette.style.display = ''; paletteInput.value = ''; renderPalette(''); paletteInput.focus(); }
 function closePalette() { palette.style.display = 'none'; }
 document.addEventListener('keydown', (e) => {
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); palette.style.display === 'none' || !palette.style.display ? openPalette() : closePalette(); }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); palette.style.display === '' ? closePalette() : openPalette(); }
   else if (e.key === 'Escape' && palette.style.display === '') closePalette();
   else if (palette.style.display === '' && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
     e.preventDefault(); const btns = [...paletteList.querySelectorAll('button')]; if (!btns.length) return;
