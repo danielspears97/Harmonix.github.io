@@ -3,450 +3,1211 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Set up Harmonix — free self-hosting guide</title>
+<title>Harmonix — the control room for your Discord server</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#14100E;--ink-2:#1C1512;--panel:#221A16;--panel-2:#2A201B;--line:#3A2C24;
-    --coral:#F04C3C;--coral-deep:#C93526;--cream:#F3E7C8;--cream-dim:#C8B79A;
-    --tan:#8A7860;--rose:#FF8FB0;--ok:#7BD88F;--shadow:0 30px 80px -30px rgba(0,0,0,.8);
+    --ink:#14100E;
+    --ink-2:#1C1512;
+    --panel:#221A16;
+    --panel-2:#2A201B;
+    --line:#3A2C24;
+    --coral:#F04C3C;
+    --coral-deep:#C93526;
+    --cream:#F3E7C8;
+    --cream-dim:#C8B79A;
+    --tan:#8A7860;
+    --rose:#FF8FB0;
+    --ok:#7BD88F;
+    --shadow:0 30px 80px -30px rgba(0,0,0,.8);
+    --radius:18px;
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth;scroll-padding-top:90px}
-  body{background:var(--ink);color:var(--cream);font-family:"Space Grotesk",system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-  body::before{content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.05;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
-  a{color:inherit}
-  .wrap{max-width:1080px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
-  .eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--rose);display:inline-flex;align-items:center;gap:.6em}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--ink);
+    color:var(--cream);
+    font-family:"Space Grotesk",system-ui,sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* matte grain overlay */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    pointer-events:none;
+    opacity:.05;
+    mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ambient glow */
+  body::after{
+    content:"";
+    position:fixed;
+    top:-20%;left:50%;
+    transform:translateX(-50%);
+    width:900px;height:900px;
+    background:radial-gradient(circle,rgba(240,76,60,.16),transparent 62%);
+    z-index:0;pointer-events:none;
+  }
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
+
+  .eyebrow{
+    font-size:.72rem;font-weight:600;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--rose);
+    display:inline-flex;align-items:center;gap:.6em;
+  }
   .eyebrow::before{content:"";width:26px;height:1px;background:var(--rose);opacity:.7}
 
-  nav{position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);background:rgba(20,16,14,.72);border-bottom:1px solid var(--line)}
-  .nav-inner{max-width:1080px;margin:0 auto;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-  .brand{display:flex;align-items:center;gap:11px;font-family:"Poppins";font-weight:800;font-size:1.15rem;letter-spacing:-.01em;text-decoration:none;color:var(--cream)}
-  .brand .glyph{width:30px;height:30px;border-radius:9px;background:linear-gradient(150deg,var(--coral),var(--coral-deep));display:grid;place-items:center;flex:0 0 auto;box-shadow:0 4px 14px rgba(240,76,60,.4)}
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky;top:0;z-index:100;
+    backdrop-filter:blur(14px);
+    background:rgba(20,16,14,.72);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1180px;margin:0 auto;padding:16px 28px;
+    display:flex;align-items:center;justify-content:space-between;gap:20px;
+  }
+  .brand{display:flex;align-items:center;gap:11px;font-family:"Poppins";font-weight:800;font-size:1.15rem;letter-spacing:-.01em}
+  .brand .glyph{
+    width:30px;height:30px;border-radius:9px;
+    background:linear-gradient(150deg,var(--coral),var(--coral-deep));
+    display:grid;place-items:center;flex:0 0 auto;
+    box-shadow:0 4px 14px rgba(240,76,60,.4);
+  }
   .brand .glyph span{display:flex;gap:2px;align-items:flex-end;height:14px}
   .brand .glyph i{width:3px;background:var(--cream);border-radius:2px;display:block}
-  .brand .glyph i:nth-child(1){height:6px}.brand .glyph i:nth-child(2){height:14px}.brand .glyph i:nth-child(3){height:9px}
-  .back{color:var(--cream-dim);text-decoration:none;font-size:.9rem;font-weight:500;display:inline-flex;align-items:center;gap:7px;transition:color .2s}
-  .back:hover{color:var(--cream)}
+  .brand .glyph i:nth-child(1){height:6px}
+  .brand .glyph i:nth-child(2){height:14px}
+  .brand .glyph i:nth-child(3){height:9px}
 
-  header{padding:70px 0 20px}
-  header h1{font-family:"Poppins";font-weight:800;font-size:clamp(2.3rem,5vw,3.4rem);letter-spacing:-.025em;line-height:1.05;margin:20px 0 16px}
-  header p{color:var(--cream-dim);font-size:1.1rem;max-width:40em}
-  .meta-row{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap}
-  .chip{display:inline-flex;align-items:center;gap:9px;font-size:.85rem;color:var(--tan);border:1px solid var(--line);padding:8px 15px;border-radius:30px}
-  .chip svg{width:15px;height:15px;stroke:var(--rose)}
-  .chip.free{color:var(--ok);border-color:rgba(123,216,143,.4);background:rgba(123,216,143,.08);font-weight:600}
-  .chip.free svg{stroke:var(--ok)}
+  .nav-links{display:flex;gap:30px;align-items:center}
+  .nav-links a{color:var(--cream-dim);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .2s}
+  .nav-links a:hover{color:var(--cream)}
+  .nav-live{display:inline-flex;align-items:center;gap:7px}
+  .nav-live .ndot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(123,216,143,.16);flex:0 0 auto}
+  .nav-cta{
+    background:var(--coral);color:#fff;padding:9px 18px;border-radius:10px;
+    font-weight:600;font-size:.88rem;text-decoration:none;transition:transform .15s,background .2s;
+  }
+  .nav-cta:hover{background:var(--coral-deep);transform:translateY(-1px)}
+  @media(max-width:820px){.nav-links a:not(.nav-cta){display:none}}
 
-  /* free explainer band */
-  .free-band{display:flex;gap:16px;align-items:flex-start;background:rgba(123,216,143,.08);border:1px solid rgba(123,216,143,.3);border-radius:16px;padding:20px 22px;margin:28px 0 8px}
-  .free-band .fi{flex:0 0 auto;width:26px;height:26px;color:var(--ok)}
-  .free-band .fi svg{width:26px;height:26px}
-  .free-band h4{font-family:"Poppins";font-weight:700;font-size:1.05rem;margin-bottom:5px}
-  .free-band p{color:var(--cream-dim);font-size:.95rem;max-width:none}
-  .free-band b{color:var(--cream)}
+  /* ---------- HERO ---------- */
+  header{padding:78px 0 64px;position:relative}
+  .hero{display:grid;grid-template-columns:1.05fr 1fr;gap:54px;align-items:center}
+  @media(max-width:900px){.hero{grid-template-columns:1fr;gap:44px}}
 
-  /* plain-English mental model */
-  .model{background:linear-gradient(180deg,var(--panel),var(--ink-2));border:1px solid var(--line);border-radius:16px;padding:24px;margin:36px 0}
-  .model h3{font-family:"Poppins";font-weight:700;font-size:1.1rem;margin-bottom:14px;display:flex;align-items:center;gap:10px}
-  .model h3 svg{width:19px;height:19px;stroke:var(--rose)}
-  .model .flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:12px;align-items:center;margin-top:4px}
-  @media(max-width:680px){.model .flow{grid-template-columns:1fr;gap:8px}.model .arrow{transform:rotate(90deg);justify-self:center}}
-  .model .node{background:var(--ink);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
-  .model .node .big{font-size:1.5rem;margin-bottom:6px}
-  .model .node b{display:block;font-size:.9rem;margin-bottom:2px}
-  .model .node span{font-size:.78rem;color:var(--tan);line-height:1.35;display:block}
-  .model .arrow{color:var(--coral);font-size:1.3rem;text-align:center}
+  .hero h1{
+    font-family:"Poppins";font-weight:800;
+    font-size:clamp(2.6rem,5.6vw,4.1rem);
+    line-height:1.02;letter-spacing:-.025em;
+    margin:22px 0 20px;
+  }
+  .hero h1 em{font-style:normal;color:var(--coral);position:relative}
+  .hero h1 em::after{
+    content:"";position:absolute;left:0;right:0;bottom:.06em;height:.09em;
+    background:var(--rose);opacity:.55;border-radius:2px;
+  }
+  .hero p.lede{font-size:1.12rem;color:var(--cream-dim);max-width:30em;margin-bottom:30px}
+  .hero-cta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:560px;align-items:stretch}
+  @media(max-width:600px){.hero-cta,.linkchips{grid-template-columns:1fr}}
+  .btn{
+    display:inline-flex;align-items:center;gap:12px;
+    min-height:58px;box-sizing:border-box;
+    padding:10px 22px 10px 11px;border-radius:14px;font-weight:600;font-size:.98rem;
+    text-decoration:none;cursor:pointer;border:1px solid transparent;
+    transition:transform .15s,background .2s,border-color .2s,box-shadow .2s;
+  }
+  /* shared icon tile + two-line label (used by BOTH cta buttons) */
+  .btile{
+    width:34px;height:34px;border-radius:10px;flex:0 0 auto;
+    display:grid;place-items:center;transition:transform .2s,box-shadow .2s;
+  }
+  .btile svg{width:18px;height:18px;display:block}
+  .btxt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.2;text-align:left}
+  .btxt b{font-weight:600;font-size:.95rem;white-space:nowrap}
+  .btxt span{font-size:.7rem;font-weight:500;opacity:.72;white-space:nowrap;transition:opacity .2s}
+  .btn:hover .btile{transform:scale(1.06)}
 
-  .layout{display:grid;grid-template-columns:220px 1fr;gap:52px;padding:20px 0 100px;align-items:start}
-  @media(max-width:860px){.layout{grid-template-columns:1fr;gap:8px}}
-  .toc{position:sticky;top:96px}
-  @media(max-width:860px){.toc{display:none}}
-  .toc .th{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tan);margin-bottom:16px}
-  .toc a{display:block;text-decoration:none;color:var(--cream-dim);font-size:.9rem;padding:8px 0 8px 16px;border-left:2px solid var(--line);transition:color .2s,border-color .2s}
-  .toc a:hover,.toc a.active{color:var(--coral);border-color:var(--coral)}
+  .btn-primary{background:var(--coral);color:#fff;border-color:transparent;box-shadow:0 10px 26px -8px rgba(240,76,60,.6)}
+  .btn-primary .btile{background:rgba(255,255,255,.18)}
+  .btn-primary .btile svg{stroke:#fff;fill:none}
+  .btn-primary:hover{background:var(--coral-deep);transform:translateY(-2px);box-shadow:0 14px 30px -8px rgba(240,76,60,.7)}
+  .btn-ghost{background:transparent;color:var(--cream);border:1px solid var(--line);min-height:0;padding:14px 24px;gap:9px}
 
-  .prereq{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:56px}
-  @media(max-width:720px){.prereq{grid-template-columns:1fr}}
-  .pq{background:linear-gradient(180deg,var(--panel),var(--ink-2));border:1px solid var(--line);border-radius:14px;padding:20px}
-  .pq .tag{font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ok);background:rgba(123,216,143,.12);padding:3px 8px;border-radius:20px;float:right}
-  .pq h4{font-family:"Poppins";font-weight:700;font-size:1rem;margin-bottom:5px}
-  .pq p{color:var(--cream-dim);font-size:.88rem}
-  .pq a.link{color:var(--coral);text-decoration:none;font-weight:500}
-  .pq a.link:hover{text-decoration:underline}
+  /* Discord "Add our bot" button — same geometry as primary, blurple identity */
+  .btn-discord{
+    color:var(--cream);
+    background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.015));
+    border:1px solid var(--line);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  .btn-discord .btile{background:#5865F2;box-shadow:0 4px 12px -3px rgba(88,101,242,.65)}
+  .btn-discord .btile svg{fill:#fff;stroke:none;width:19px;height:19px}
+  .btn-discord:hover{
+    border-color:#5865F2;
+    background:linear-gradient(180deg,rgba(88,101,242,.18),rgba(88,101,242,.07));
+    transform:translateY(-2px);
+    box-shadow:0 10px 26px -10px rgba(88,101,242,.7),inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .btn-discord:hover .btile{box-shadow:0 6px 16px -3px rgba(88,101,242,.85)}
+  .btn-discord:hover .btxt span{opacity:1}
 
-  .step{position:relative;padding:0 0 48px 60px;border-left:1px solid var(--line);margin-left:19px}
-  .step:last-of-type{border-left-color:transparent}
-  .step .num{position:absolute;left:-20px;top:-4px;width:40px;height:40px;border-radius:12px;background:var(--panel);border:1px solid var(--line);display:grid;place-items:center;font-family:"Poppins";font-weight:800;color:var(--coral);font-size:1.05rem}
-  .step h3{font-family:"Poppins";font-weight:700;font-size:1.4rem;letter-spacing:-.015em;margin-bottom:6px}
-  .step .lead{color:var(--tan);font-size:.9rem;margin-bottom:14px}
-  .step p{color:var(--cream-dim);margin-bottom:14px}
-  .step p b{color:var(--cream);font-weight:600}
-  .step ul{list-style:none;margin:0 0 16px}
-  .step ul li{position:relative;padding-left:22px;color:var(--cream-dim);margin-bottom:8px}
-  .step ul li::before{content:"";position:absolute;left:2px;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--coral)}
-  .step ul li b{color:var(--cream);font-weight:600}
-  code.inl{font-family:"JetBrains Mono",monospace;font-size:.86em;background:var(--panel-2);border:1px solid var(--line);padding:2px 7px;border-radius:6px;color:var(--rose)}
+  .btn-ghost:hover{border-color:var(--cream-dim);transform:translateY(-2px)}
 
-  .code{position:relative;background:var(--ink-2);border:1px solid var(--line);border-radius:12px;margin:0 0 16px;overflow:hidden}
-  .code .ch{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--line);background:var(--panel)}
-  .code .ch .fname{font-family:"JetBrains Mono",monospace;font-size:.74rem;color:var(--tan)}
-  .code .copy{background:none;border:1px solid var(--line);color:var(--cream-dim);font-family:inherit;font-size:.72rem;padding:4px 11px;border-radius:7px;cursor:pointer;transition:all .18s}
-  .code .copy:hover{border-color:var(--coral);color:var(--coral)}
-  .code .copy.done{border-color:var(--ok);color:var(--ok)}
-  .code pre{margin:0;padding:16px;overflow-x:auto;font-family:"JetBrains Mono",monospace;font-size:.84rem;line-height:1.7;color:var(--cream)}
-  .code pre .c{color:var(--tan)}
-  .code pre .k{color:var(--rose)}
-  .code pre .s{color:var(--ok)}
+  .hero-meta{display:flex;gap:26px;margin-top:32px;flex-wrap:wrap}
 
-  .callout{display:flex;gap:14px;border-radius:12px;padding:16px 18px;margin:0 0 16px}
-  .callout.tip{background:rgba(255,143,176,.08);border:1px solid rgba(255,143,176,.28)}
-  .callout.warn{background:rgba(224,164,75,.08);border:1px solid rgba(224,164,75,.3)}
-  .callout .ci{flex:0 0 auto;width:22px;height:22px}
-  .callout.tip .ci{color:var(--rose)}.callout.warn .ci{color:#E0A44B}
-  .callout .ci svg{width:22px;height:22px}
-  .callout p{margin:0;font-size:.9rem;color:var(--cream)}
-  .callout.tip p b{color:var(--rose)}.callout.warn p b{color:#E0A44B}
+  /* secondary link chips */
+  .linkchips{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px;max-width:560px;margin-top:14px;
+  }
+  .lchip{
+    display:flex;align-items:center;gap:11px;
+    min-height:56px;box-sizing:border-box;
+    padding:9px 15px 9px 11px;border-radius:14px;text-decoration:none;
+    background:rgba(255,255,255,.028);border:1px solid var(--line);
+    transition:border-color .2s,background .2s,transform .15s;
+  }
+  .lchip:hover{border-color:var(--rose);background:rgba(255,143,176,.07);transform:translateY(-2px)}
+  .lchip .li{
+    width:34px;height:34px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;
+    background:rgba(255,143,176,.12);border:1px solid rgba(255,143,176,.28);
+  }
+  .lchip .li svg{width:16px;height:16px;stroke:var(--rose);fill:none}
+  .lchip .lt{display:flex;flex-direction:column;line-height:1.25;min-width:0;text-align:left;align-items:flex-start}
+  .lchip .lt b{font-size:.9rem;font-weight:600;color:var(--cream);white-space:nowrap}
+  .lchip .lt span{font-size:.72rem;color:var(--tan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lchip .lar{color:var(--tan);font-size:1rem;margin-left:auto;padding-left:6px;transition:transform .2s,color .2s}
+  .lchip:hover .lar{color:var(--rose);transform:translateX(3px)}
 
-  /* pick-a-path cards */
-  .pathpick{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:4px 0 18px}
-  @media(max-width:680px){.pathpick{grid-template-columns:1fr}}
-  .path{background:linear-gradient(180deg,var(--panel),var(--ink-2));border:1px solid var(--line);border-radius:14px;padding:20px;position:relative}
-  .path.reco{border-color:var(--coral)}
-  .path .rb{position:absolute;top:-10px;left:18px;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--coral);padding:3px 10px;border-radius:20px}
-  .path h4{font-family:"Poppins";font-weight:700;font-size:1.05rem;margin:4px 0 6px}
-  .path .who{font-size:.82rem;color:var(--tan);margin-bottom:12px}
-  .path ul{list-style:none;margin:0}
-  .path ul li{position:relative;padding-left:20px;font-size:.86rem;color:var(--cream-dim);margin-bottom:7px}
-  .path ul li::before{content:"✓";position:absolute;left:0;top:0;color:var(--ok);font-weight:700;font-size:.8rem}
+  /* on the coral band */
+  .band .linkchips{margin-left:auto;margin-right:auto;position:relative}
+  .band .lchip{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3)}
+  .band .lchip:hover{background:rgba(255,255,255,.2);border-color:#fff}
+  .band .lchip .li{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.35)}
+  .band .lchip .li svg{stroke:#fff}
+  .band .lchip .lt b{color:#fff}
+  .band .lchip .lt span{color:rgba(255,255,255,.75)}
+  .band .lchip .lar{color:rgba(255,255,255,.75)}
+  .band .lchip:hover .lar{color:#fff}
+  .hero-meta .m{display:flex;flex-direction:column;gap:1px}
+  .hero-meta .m b{font-family:"Poppins";font-weight:800;font-size:1.5rem;color:var(--cream)}
+  .hero-meta .m span{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--tan)}
 
-  .tips{margin-top:20px}
-  .tips h2{font-family:"Poppins";font-weight:800;font-size:1.8rem;letter-spacing:-.02em;margin-bottom:8px}
-  .tips .sub{color:var(--cream-dim);margin-bottom:24px}
-  details{background:linear-gradient(180deg,var(--panel),var(--ink-2));border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden}
-  details summary{padding:16px 20px;cursor:pointer;font-weight:600;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px}
-  details summary::-webkit-details-marker{display:none}
-  details summary .plus{color:var(--coral);font-size:1.3rem;transition:transform .2s;flex:0 0 auto}
-  details[open] summary .plus{transform:rotate(45deg)}
-  details .body{padding:0 20px 18px;color:var(--cream-dim);font-size:.92rem}
-  details .body code.inl{font-size:.82em}
+  /* ---------- CONSOLE (signature) ---------- */
+  .console{
+    background:linear-gradient(180deg,var(--panel),var(--ink-2));
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:22px;
+    box-shadow:var(--shadow);
+    position:relative;
+  }
+  .console::before,.console::after{
+    content:"";position:absolute;width:7px;height:7px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%,#4a3a30,#1a120e);
+    top:14px;
+  }
+  .console::before{left:14px}
+  .console::after{right:14px}
 
-  .done-band{background:linear-gradient(135deg,var(--coral),var(--coral-deep));border-radius:22px;padding:44px;text-align:center;margin-top:60px;position:relative;overflow:hidden}
-  .done-band::before{content:"";position:absolute;inset:0;opacity:.14;background-image:radial-gradient(circle at 20% 20%,#fff 1px,transparent 1px);background-size:26px 26px}
-  .done-band h2{font-family:"Poppins";font-weight:800;font-size:1.8rem;color:#fff;margin-bottom:10px;position:relative}
-  .done-band p{color:rgba(255,255,255,.9);position:relative;margin-bottom:22px}
-  .done-band a{position:relative;display:inline-flex;align-items:center;gap:9px;background:#fff;color:var(--coral-deep);text-decoration:none;font-weight:600;padding:13px 24px;border-radius:11px;transition:transform .15s}
-  .done-band a:hover{transform:translateY(-2px)}
+  .console-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding:0 6px}
+  .onair{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(240,76,60,.14);border:1px solid rgba(240,76,60,.4);
+    color:var(--coral);font-size:.68rem;font-weight:700;letter-spacing:.2em;
+    padding:6px 12px;border-radius:30px;
+  }
+  .onair .dot{width:8px;height:8px;border-radius:50%;background:var(--coral);box-shadow:0 0 0 0 rgba(240,76,60,.7);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(240,76,60,.6)}70%{box-shadow:0 0 0 9px rgba(240,76,60,0)}100%{box-shadow:0 0 0 0 rgba(240,76,60,0)}}
+  .console-top .server{font-size:.74rem;color:var(--tan);letter-spacing:.06em}
 
-  footer{border-top:1px solid var(--line);padding:34px 0;color:var(--tan);font-size:.82rem}
-  @media(prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+  .np{display:flex;gap:16px;align-items:center;margin-bottom:16px;padding:0 6px}
+  .np .art{
+    width:64px;height:64px;border-radius:13px;flex:0 0 auto;
+    background:linear-gradient(140deg,var(--rose),var(--coral));
+    display:grid;place-items:center;box-shadow:0 8px 20px -6px rgba(255,143,176,.5);
+  }
+  .np .art svg{width:30px;height:30px}
+  .np .title{font-family:"Poppins";font-weight:700;font-size:1.05rem;letter-spacing:-.01em}
+  .np .sub{font-size:.82rem;color:var(--tan)}
+
+  /* equalizer */
+  .eq{display:flex;align-items:flex-end;gap:3px;height:56px;padding:0 6px;margin-bottom:14px}
+  .eq i{flex:1;background:linear-gradient(180deg,var(--rose),var(--coral));border-radius:3px 3px 0 0;animation:bounce 1.1s ease-in-out infinite;transform-origin:bottom}
+  @keyframes bounce{0%,100%{transform:scaleY(.28)}50%{transform:scaleY(1)}}
+
+  .scrub{padding:0 6px;margin-bottom:16px}
+  .scrub .bar{height:5px;background:var(--line);border-radius:4px;overflow:hidden}
+  .scrub .bar span{display:block;height:100%;width:42%;background:var(--coral);border-radius:4px}
+  .scrub .time{display:flex;justify-content:space-between;font-size:.7rem;color:var(--tan);margin-top:7px;font-variant-numeric:tabular-nums}
+
+  .transport{display:flex;align-items:center;justify-content:center;gap:18px;padding:4px 6px 6px}
+  .transport button{
+    background:none;border:none;color:var(--cream-dim);cursor:pointer;
+    display:grid;place-items:center;transition:color .2s,transform .15s;
+  }
+  .transport button:hover{color:var(--cream);transform:scale(1.08)}
+  .transport .play{
+    width:52px;height:52px;border-radius:50%;background:var(--cream);color:var(--ink);
+    box-shadow:0 8px 20px -6px rgba(243,231,200,.5);
+  }
+  .transport .play:hover{background:#fff;color:var(--ink)}
+
+  .queue{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+  .queue .qh{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--tan);padding:0 6px 8px}
+  .queue .row{display:flex;align-items:center;gap:11px;padding:7px 6px;border-radius:9px;transition:background .2s}
+  .queue .row:hover{background:var(--panel-2)}
+  .queue .row .n{font-size:.72rem;color:var(--tan);width:14px;font-variant-numeric:tabular-nums}
+  .queue .row .t{font-size:.86rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .queue .row .len{font-size:.72rem;color:var(--tan);font-variant-numeric:tabular-nums}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:96px 0;position:relative}
+  .sec-head{max-width:40em;margin-bottom:52px}
+  .sec-head h2{
+    font-family:"Poppins";font-weight:800;font-size:clamp(1.9rem,3.6vw,2.7rem);
+    letter-spacing:-.02em;line-height:1.08;margin:18px 0 14px;
+  }
+  .sec-head p{color:var(--cream-dim);font-size:1.05rem}
+
+  /* feature grid */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  @media(max-width:860px){.grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}}
+  .card{
+    background:linear-gradient(180deg,var(--panel),var(--ink-2));
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:26px;transition:transform .2s,border-color .2s;
+  }
+  .card:hover{transform:translateY(-4px);border-color:var(--coral)}
+  .card .ic{
+    width:44px;height:44px;border-radius:12px;display:grid;place-items:center;margin-bottom:18px;
+    background:rgba(240,76,60,.12);border:1px solid rgba(240,76,60,.28);
+  }
+  .card .ic svg{width:22px;height:22px;stroke:var(--coral)}
+  .card h3{font-family:"Poppins";font-weight:700;font-size:1.12rem;margin-bottom:9px;letter-spacing:-.01em}
+  .card p{color:var(--cream-dim);font-size:.94rem}
+
+  /* dashboard showcase */
+  .showcase{display:grid;grid-template-columns:1fr 1.15fr;gap:50px;align-items:center}
+  @media(max-width:900px){.showcase{grid-template-columns:1fr;gap:36px}}
+  .feature-list{list-style:none;margin-top:26px;display:flex;flex-direction:column;gap:16px}
+  .feature-list li{display:flex;gap:13px;align-items:flex-start}
+  .feature-list .tick{
+    width:22px;height:22px;border-radius:7px;flex:0 0 auto;margin-top:2px;
+    background:rgba(123,216,143,.14);border:1px solid rgba(123,216,143,.4);
+    display:grid;place-items:center;
+  }
+  .feature-list .tick svg{width:12px;height:12px;stroke:var(--ok)}
+  .feature-list b{font-weight:600;color:var(--cream)}
+  .feature-list span{color:var(--cream-dim);font-size:.95rem}
+
+  .browser{
+    background:var(--ink-2);border:1px solid var(--line);border-radius:16px;
+    overflow:hidden;box-shadow:var(--shadow);
+  }
+  .browser .top{display:flex;align-items:center;gap:8px;padding:13px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+  .browser .top i{width:11px;height:11px;border-radius:50%;background:var(--line)}
+  .browser .top i:nth-child(1){background:var(--coral)}
+  .browser .top .url{
+    margin-left:12px;font-size:.72rem;color:var(--tan);background:var(--ink);
+    padding:5px 12px;border-radius:7px;flex:1;letter-spacing:.02em;
+  }
+  .dash{display:grid;grid-template-columns:150px 1fr;min-height:290px}
+  @media(max-width:560px){.dash{grid-template-columns:1fr}.dash .side{display:none}}
+  .dash .side{background:var(--panel);border-right:1px solid var(--line);padding:16px 12px;display:flex;flex-direction:column;gap:4px}
+  .dash .side .s{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;font-size:.82rem;color:var(--cream-dim);cursor:default}
+  .dash .side .s.active{background:rgba(240,76,60,.14);color:var(--coral);font-weight:600}
+  .dash .side .s .b{width:7px;height:7px;border-radius:2px;background:currentColor;opacity:.6}
+  .dash .main{padding:22px;display:flex;flex-direction:column;gap:14px}
+  .dash .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .dash .stat{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:14px}
+  .dash .stat b{font-family:"Poppins";font-weight:800;font-size:1.3rem;display:block;color:var(--cream)}
+  .dash .stat span{font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tan)}
+  .dash .stat:nth-child(1) b{color:var(--coral)}
+  .dash .stat:nth-child(2) b{color:var(--rose)}
+  .dash .panel-mini{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:16px;flex:1}
+  .dash .panel-mini .ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:.8rem;color:var(--cream-dim)}
+  .dash .panel-mini .live{font-size:.62rem;letter-spacing:.14em;color:var(--ok);display:flex;align-items:center;gap:6px}
+  .dash .panel-mini .live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ok)}
+  .dash .waves{display:flex;align-items:flex-end;gap:5px;height:70px}
+  .dash .waves i{flex:1;background:linear-gradient(180deg,var(--rose),var(--coral));border-radius:3px;opacity:.85}
+
+  /* commands */
+  .cmd-wrap{background:var(--ink-2);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+  .cmd-bar{display:flex;align-items:center;gap:11px;padding:16px 20px;border-bottom:1px solid var(--line);background:var(--panel)}
+  .cmd-bar .slash{font-family:"Poppins";font-weight:800;color:var(--coral);font-size:1.2rem}
+  .cmd-bar input{background:none;border:none;color:var(--cream);font-family:inherit;font-size:.98rem;flex:1;outline:none}
+  .cmd-bar input::placeholder{color:var(--tan)}
+  .cmd-bar .esc{font-size:.66rem;color:var(--tan);border:1px solid var(--line);padding:3px 8px;border-radius:6px;letter-spacing:.08em}
+  .cmd-list{padding:8px;max-height:440px;overflow-y:auto}
+  .cmd-list::-webkit-scrollbar{width:10px}
+  .cmd-list::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px;border:3px solid var(--ink-2)}
+  .cmd-list::-webkit-scrollbar-thumb:hover{background:var(--tan)}
+
+  .cgroup{border-bottom:1px solid var(--line)}
+  .cgroup:last-of-type{border-bottom:none}
+  .cghead{width:100%;display:flex;align-items:center;gap:13px;padding:13px 15px;background:none;border:none;cursor:pointer;font-family:inherit;text-align:left;color:var(--cream);border-radius:10px;transition:background .18s}
+  .cghead:hover{background:var(--panel)}
+  .cgname{font-weight:600;min-width:132px;flex:0 0 auto}
+  .cgname b{color:var(--coral);font-weight:600}
+  .cgdesc{color:var(--cream-dim);font-size:.9rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cgcount{font-size:.66rem;color:var(--tan);border:1px solid var(--line);padding:3px 9px;border-radius:20px;flex:0 0 auto}
+  .cgchev{color:var(--tan);font-size:1.1rem;transition:transform .2s;flex:0 0 auto}
+  .cgroup.open .cgchev{transform:rotate(90deg)}
+  .cgbody{display:none;padding:2px 0 10px 15px}
+  .cgroup.open .cgbody{display:block}
+  .cgbody .cmd{padding:9px 14px}
+  .cgbody .cmd .name{min-width:190px}
+  .cgbody .cmd .name i{font-style:normal;color:var(--cream)}
+  @media(max-width:620px){.cgdesc{display:none}.cgbody .cmd .name{min-width:auto}}
+  .cmd{display:flex;align-items:center;gap:15px;padding:13px 15px;border-radius:11px;transition:background .18s}
+  .cmd:hover{background:var(--panel)}
+  .cmd .name{font-weight:600;color:var(--cream);min-width:132px}
+  .cmd .name b{color:var(--coral);font-weight:600}
+  .cmd .desc{color:var(--cream-dim);font-size:.9rem;flex:1}
+  .cmd .cat{font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--tan);border:1px solid var(--line);padding:4px 9px;border-radius:20px}
+  @media(max-width:620px){.cmd .desc{display:none}}
+
+  /* CTA band */
+  .band{
+    background:linear-gradient(135deg,var(--coral),var(--coral-deep));
+    border-radius:26px;padding:60px 44px;text-align:center;position:relative;overflow:hidden;
+  }
+  .band::before{
+    content:"";position:absolute;inset:0;opacity:.14;
+    background-image:radial-gradient(circle at 20% 20%,#fff 1px,transparent 1px);
+    background-size:26px 26px;
+  }
+  .band h2{font-family:"Poppins";font-weight:800;font-size:clamp(1.9rem,4vw,2.9rem);color:#fff;letter-spacing:-.02em;position:relative;margin-bottom:14px}
+  .band p{color:rgba(255,255,255,.9);font-size:1.1rem;max-width:34em;margin:0 auto 30px;position:relative}
+  .band .hero-cta{margin-left:auto;margin-right:auto;position:relative}
+  .band .btn-primary{background:#fff;color:var(--coral-deep);box-shadow:0 12px 30px -8px rgba(0,0,0,.4)}
+  .band .btn-primary .btile{background:var(--coral)}
+  .band .btn-primary .btile svg{stroke:#fff}
+  .band .btn-primary:hover{background:var(--cream)}
+  .band .btn-discord{
+    background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.34);color:#fff;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
+  }
+  .band .btn-discord .btile{background:#fff;box-shadow:0 4px 12px -3px rgba(0,0,0,.35)}
+  .band .btn-discord .btile svg{fill:#5865F2}
+  .band .btn-discord:hover{
+    background:rgba(255,255,255,.24);border-color:#fff;
+    box-shadow:0 10px 26px -10px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  .band .btn-ghost{border-color:rgba(255,255,255,.5);color:#fff}
+  .band .btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,.1)}
+
+  /* footer */
+  footer{border-top:1px solid var(--line);padding:44px 0 60px;margin-top:40px}
+  .foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+  .foot .brand{font-size:1.05rem}
+  .foot .links{display:flex;gap:26px;flex-wrap:wrap}
+  .foot .links a{color:var(--tan);text-decoration:none;font-size:.88rem;transition:color .2s}
+  .foot .links a:hover{color:var(--cream)}
+  .foot .note{width:100%;color:var(--tan);font-size:.78rem;border-top:1px solid var(--line);padding-top:22px;margin-top:8px}
+
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .reveal{opacity:1;transform:none}
+    html{scroll-behavior:auto}
+  }
 </style>
 </head>
 <body>
 
 <nav>
   <div class="nav-inner">
-    <a class="brand" href="index.html"><span class="glyph"><span><i></i><i></i><i></i></span></span>Harmonix</a>
-    <a class="back" href="index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to site</a>
+    <div class="brand">
+      <span class="glyph"><span><i></i><i></i><i></i></span></span>
+      Harmonix
+    </div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#commands">Commands</a>
+      <a href="dashboard.html">Demo</a>
+      <a href="https://dash.harmonixbot.xyz" target="_blank" rel="noopener" class="nav-live" title="Sign in with Discord to manage your servers"><span class="ndot"></span>Dashboard</a>
+      <a href="#get" class="nav-cta">Get Harmonix</a>
+    </div>
   </div>
 </nav>
 
 <header>
   <div class="wrap">
-    <span class="eyebrow">Free self-hosting guide</span>
-    <h1>Get Harmonix running — for free.</h1>
-    <p>You run Harmonix on your own computer. No monthly bill, no server to rent, no domain to buy. This guide takes you from an empty folder to a working bot with a dashboard, one plain step at a time.</p>
-    <div class="meta-row">
-      <span class="chip free"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>$0 — nothing here costs money</span>
-      <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>About 15 minutes</span>
-      <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>No coding needed</span>
-    </div>
-
-    <div class="free-band">
-      <span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></span>
+    <div class="hero">
       <div>
-        <h4>Everything on this page is 100% free</h4>
-        <p>Every tool you need — Node.js, Java, a Discord bot — is free to download and free to keep. The dashboard runs right on your own machine with a simple password, so there's <b>no domain to buy and no tunnel required</b>. Opening it to the wider internet later is optional, and even that has a free option.</p>
+        <span class="eyebrow">Self-hosted Discord bot</span>
+        <h1>Run your server like a <em>broadcast</em>.</h1>
+        <p class="lede">Harmonix is the music, moderation, and control-room bot you host yourself — with a full web dashboard so you can run the whole server from your browser.</p>
+        <div class="hero-cta">
+          <a href="harmonix-music-bot.zip" download class="btn btn-primary">
+            <span class="btile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></span>
+            <span class="btxt"><b>Download Harmonix</b><span>Free · ~360 KB</span></span>
+          </a>
+          <a href="https://discord.com/oauth2/authorize?client_id=1511943816469414109&amp;permissions=8&amp;integration_type=0&amp;scope=bot+applications.commands" target="_blank" rel="noopener" class="btn btn-discord">
+            <span class="btile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg></span>
+            <span class="btxt"><b>Add our bot</b><span>Hosted by us · no setup</span></span>
+          </a>
+        </div>
+        <div class="linkchips">
+          <a href="setup.html" class="lchip">
+            <span class="li"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></span>
+            <span class="lt"><b>Setup guide</b><span>Free · about 15 minutes</span></span>
+            <span class="lar">›</span>
+          </a>
+          <a href="dashboard.html" class="lchip">
+            <span class="li"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></span>
+            <span class="lt"><b>Try the demo</b><span>Sample data · no install</span></span>
+            <span class="lar">›</span>
+          </a>
+        </div>
+        <div class="hero-meta">
+          <div class="m"><b>34</b><span>Achievements</span></div>
+          <div class="m"><b>24/7</b><span>Music uptime</span></div>
+          <div class="m"><b>1</b><span>Command to launch</span></div>
+        </div>
+      </div>
+
+      <!-- SIGNATURE: control-room console -->
+      <div class="console" aria-label="Now playing console">
+        <div class="console-top">
+          <span class="onair"><span class="dot"></span>ON AIR</span>
+          <span class="server">#the-lounge · 8 listening</span>
+        </div>
+
+        <div class="np">
+          <div class="art">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          </div>
+          <div>
+            <div class="title">Late Night Set</div>
+            <div class="sub">queued by @dan · autoplay on</div>
+          </div>
+        </div>
+
+        <div class="eq" aria-hidden="true">
+          <i style="animation-delay:-.2s"></i><i style="animation-delay:-.9s"></i><i style="animation-delay:-.4s"></i>
+          <i style="animation-delay:-1.1s"></i><i style="animation-delay:-.6s"></i><i style="animation-delay:-.1s"></i>
+          <i style="animation-delay:-.8s"></i><i style="animation-delay:-.3s"></i><i style="animation-delay:-1s"></i>
+          <i style="animation-delay:-.5s"></i><i style="animation-delay:-.15s"></i><i style="animation-delay:-.7s"></i>
+          <i style="animation-delay:-.35s"></i><i style="animation-delay:-.95s"></i><i style="animation-delay:-.55s"></i>
+          <i style="animation-delay:-1.05s"></i><i style="animation-delay:-.25s"></i><i style="animation-delay:-.75s"></i>
+        </div>
+
+        <div class="scrub">
+          <div class="bar"><span></span></div>
+          <div class="time"><span>1:47</span><span>4:12</span></div>
+        </div>
+
+        <div class="transport">
+          <button aria-label="Shuffle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg></button>
+          <button aria-label="Previous"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zM20 6L9 12l11 6z"/></svg></button>
+          <button class="play" aria-label="Pause"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button>
+          <button aria-label="Next"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M16 6h2v12h-2zM4 6l11 6L4 18z"/></svg></button>
+          <button aria-label="Loop"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></button>
+        </div>
+
+        <div class="queue">
+          <div class="qh">Up next</div>
+          <div class="row"><span class="n">1</span><span class="t">Midnight City — synth edit</span><span class="len">3:58</span></div>
+          <div class="row"><span class="n">2</span><span class="t">Slow Burn (live)</span><span class="len">5:21</span></div>
+          <div class="row"><span class="n">3</span><span class="t">Static &amp; Neon</span><span class="len">4:03</span></div>
+        </div>
       </div>
     </div>
   </div>
 </header>
 
-<div class="wrap">
-  <!-- MENTAL MODEL -->
-  <div class="model">
-    <h3><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.66 18H4a2 2 0 01-2-2V6a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-5.66"/><path d="M8 21h8M12 18v3"/></svg>How it fits together</h3>
-    <div class="flow">
-      <div class="node"><div class="big">💻</div><b>Your computer</b><span>runs the Harmonix program</span></div>
-      <div class="arrow">→</div>
-      <div class="node"><div class="big">🤖</div><b>The bot</b><span>joins your Discord and plays music</span></div>
-      <div class="arrow">→</div>
-      <div class="node"><div class="big">🎛️</div><b>The dashboard</b><span>a web page your PC serves — you open it in your browser to run the show</span></div>
+<!-- FEATURES -->
+<section id="features">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Everything in one bot</span>
+      <h2>One bot to run the whole room.</h2>
+      <p>Music, moderation, rewards, and a browser dashboard — no juggling five different bots and half a dozen tabs.</p>
+    </div>
+    <div class="grid">
+      <div class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+        <h3>Music that keeps up</h3>
+        <p>Clean, low-lag playback with queues, autoplay, and true 24/7 mode. Powered by Lavalink so it stays smooth even on a busy server — and the voice channel shows the current track right in its status line.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <h3>Web dashboard</h3>
+        <p>Control every server from the browser. Open it cold and you get a server picker; everything updates live over a socket, so a queue or setting change lands instantly.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H4z"/><path d="M8 20h8M12 16v4"/><path d="M7 8h6M7 11h10"/></svg></div>
+        <h3>Composer</h3>
+        <p>Build embeds and announcements visually — colors, fields, buttons, the lot — and send them without touching a single line of code.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></svg></div>
+        <h3>34 achievements</h3>
+        <p>A full unlock system that rewards the people who actually keep your server alive. Wired through one place, so nothing double-fires.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3>Moderation</h3>
+        <p>Lock a channel in one command — text <em>and</em> voice, with role overrides cleared so nobody talks through it. Unlocking restores the exact permissions each channel had before, and you can exempt a mod role.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg></div>
+        <h3>Config sync</h3>
+        <p>Export your whole setup to a file and import it somewhere else. Set a server up once, then bring the same config anywhere you like.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 15l3 3 5-5"/></svg></div>
+        <h3>Events &amp; RSVPs</h3>
+        <p>Spin up an event with a start time, image, and one-tap RSVP buttons. Repeat it on a preset or your own interval — <em>every 5 days</em>, <em>3w</em>, <em>every 6 months</em> — and the next one schedules itself. Dates in US, EU, or ISO format.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 11h4M8 9v4M15 12h.01M18 10h.01"/><rect x="2" y="6" width="20" height="12" rx="4"/></svg></div>
+        <h3>Free-game alerts</h3>
+        <p>Point it at a channel and it posts free game giveaways as they drop — big embeds with the price, platforms, a live countdown, a claim link, and the actual storefront's logo, from Steam and Epic to GOG, itch.io and Prime Gaming.</p>
+      </div>
     </div>
   </div>
+</section>
 
-  <div class="layout">
-    <aside class="toc">
-      <div class="th">On this page</div>
-      <a href="#need">What you'll need</a>
-      <a href="#bot">1 · Create the bot</a>
-      <a href="#install">2 · Install Harmonix</a>
-      <a href="#config">3 · Basic setup</a>
-      <a href="#login">4 · Pick how you log in</a>
-      <a href="#launch">5 · Launch</a>
-      <a href="#invite">6 · Invite &amp; commands</a>
-      <a href="#remote">Open it from anywhere</a>
-      <a href="#trouble">Troubleshooting</a>
-    </aside>
-
-    <main>
-      <!-- PREREQS -->
-      <section id="need" style="scroll-margin-top:90px">
-        <span class="eyebrow">Before you start</span>
-        <h3 style="font-family:'Poppins';font-weight:800;font-size:1.6rem;margin:14px 0 8px;letter-spacing:-.02em">What you'll need</h3>
-        <p style="color:var(--cream-dim);margin-bottom:22px">Three free things. Install the first two once and you're set for good.</p>
-        <div class="prereq">
-          <div class="pq"><span class="tag">Free</span><h4>Node.js 20</h4><p>The engine Harmonix runs on. Download the <b>LTS</b> version from <a class="link" href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a> and click through the installer.</p></div>
-          <div class="pq"><span class="tag">Free</span><h4>Docker Desktop</h4><p>Runs the music engine for you — the launcher starts it automatically. Free from <a class="link" href="https://www.docker.com/products/docker-desktop/" target="_blank" rel="noopener">docker.com</a>. <small>(Prefer no Docker? You can run the engine with Java 17+ instead — see step 5.)</small></p></div>
-          <div class="pq"><span class="tag">Free</span><h4>A Discord bot</h4><p>Made in a couple of clicks at the <a class="link" href="https://discord.com/developers/applications" target="_blank" rel="noopener">Developer Portal</a>. Step 1 walks you through it.</p></div>
-        </div>
-      </section>
-
-      <!-- STEP 1 -->
-      <div class="step" id="bot" style="scroll-margin-top:90px">
-        <div class="num">1</div>
-        <h3>Create your Discord bot</h3>
-        <p class="lead">This is the account your bot logs in as. It's free and takes about two minutes.</p>
-        <p>Open the <b>Developer Portal</b>, click <b>New Application</b>, and name it Harmonix. Then grab two things:</p>
-        <ul>
-          <li>On the <b>Bot</b> tab, click <b>Reset Token</b> and copy the token. This is the bot's password — you'll only see it once, so paste it somewhere safe.</li>
-          <li>Still on the <b>Bot</b> tab, scroll to <b>Privileged Gateway Intents</b> and switch on <b>Server Members</b> and <b>Message Content</b>.</li>
-          <li>On the <b>General Information</b> tab, copy the <b>Application ID</b> (also called the Client ID). You'll need it in a moment.</li>
+<!-- DASHBOARD SHOWCASE -->
+<section id="dashboard">
+  <div class="wrap">
+    <div class="showcase">
+      <div class="reveal">
+        <span class="eyebrow">The control room</span>
+        <h2 style="font-family:'Poppins';font-weight:800;font-size:clamp(1.9rem,3.6vw,2.7rem);letter-spacing:-.02em;line-height:1.08;margin:18px 0 14px;">Your server, live in the browser.</h2>
+        <p style="color:var(--cream-dim);font-size:1.05rem;">Open the dashboard and you're looking at the real state of the bot — not a snapshot. Skip a track, tweak a setting, or lock a channel, and everyone sees it happen at once.</p>
+        <ul class="feature-list">
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span><b>Live everything.</b> The queue, listeners, and settings stream in real time.</span></li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span><b>Per-section access.</b> Hand out just the parts of the dashboard each person should touch.</span></li>
+          <li><span class="tick"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span><b>Lands on the right server.</b> A dashboard link carries the server you came from, and your last one is remembered.</span></li>
         </ul>
-        <div class="callout warn">
-          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></span>
-          <p><b>Keep the token private.</b> Anyone who has it can control your bot. If it ever leaks, hit Reset Token again and the old one stops working instantly.</p>
-        </div>
       </div>
 
-      <!-- STEP 2 -->
-      <div class="step" id="install" style="scroll-margin-top:90px">
-        <div class="num">2</div>
-        <h3>Install Harmonix</h3>
-        <p class="lead">Unpack the download and let it grab what it needs.</p>
-        <p>Unzip the Harmonix folder wherever you like. Open a terminal <b>inside that folder</b> and run:</p>
-        <div class="code">
-          <div class="ch"><span class="fname">terminal</span><button class="copy">Copy</button></div>
-          <pre>npm install</pre>
+      <div class="browser reveal">
+        <div class="top">
+          <i></i><i></i><i></i>
+          <span class="url">harmonix.local / dashboard</span>
         </div>
-        <p>This pulls in everything the bot and dashboard need. The music engine comes with the project too — the launcher spins it up for you the first time you start, so there's nothing else to install by hand.</p>
-        <div class="callout tip">
-          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7c.6.5 1 1.3 1 2.1h6c0-.8.4-1.6 1-2.1A7 7 0 0012 2z"/></svg></span>
-          <p><b>Not sure how to open a terminal in a folder?</b> On Windows, open the folder, click the address bar, type <code class="inl">cmd</code> and press Enter. On Mac, right-click the folder → Services → New Terminal at Folder.</p>
-        </div>
-      </div>
-
-      <!-- STEP 3 -->
-      <div class="step" id="config" style="scroll-margin-top:90px">
-        <div class="num">3</div>
-        <h3>Basic setup</h3>
-        <p class="lead">Tell Harmonix which bot it is. Just two values to fill in.</p>
-        <p>In the folder you'll find a file called <code class="inl">.env.example</code>. Make a copy and rename the copy to <code class="inl">.env</code>, then open it in any text editor and paste in your token and ID from step 1:</p>
-        <div class="code">
-          <div class="ch"><span class="fname">.env</span><button class="copy">Copy</button></div>
-          <pre><span class="k">DISCORD_TOKEN</span>=<span class="s">paste-your-bot-token-here</span>
-<span class="k">CLIENT_ID</span>=<span class="s">paste-your-application-id-here</span></pre>
-        </div>
-        <p>Everything else in that file already has a sensible default. Save it and move on.</p>
-        <div class="callout tip">
-          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></span>
-          <p><b>Want your slash commands to appear instantly while testing?</b> Paste your server's ID into <code class="inl">GUILD_ID</code>. Leave it blank and commands still work — they just take up to an hour to show up the first time.</p>
-        </div>
-      </div>
-
-      <!-- STEP 4 -->
-      <div class="step" id="login" style="scroll-margin-top:90px">
-        <div class="num">4</div>
-        <h3>Pick how you log into the dashboard</h3>
-        <p class="lead">Two ways in — both completely free. Most people want the first one.</p>
-        <div class="pathpick">
-          <div class="path reco">
-            <span class="rb">Easiest · recommended</span>
-            <h4>🔒 Local password</h4>
-            <div class="who">You open the dashboard on the same computer that runs the bot.</div>
-            <ul>
-              <li>No domain, no tunnel, nothing to sign up for</li>
-              <li>Just set one password</li>
-              <li>Works the moment you launch</li>
-            </ul>
+        <div class="dash">
+          <div class="side">
+            <div class="s active"><span class="b"></span>Overview</div>
+            <div class="s"><span class="b"></span>Commands</div>
+            <div class="s"><span class="b"></span>Server Settings</div>
+            <div class="s"><span class="b"></span>Composer</div>
+            <div class="s"><span class="b"></span>Leveling</div>
+            <div class="s"><span class="b"></span>Achievements</div>
+            <div class="s"><span class="b"></span>Mod Cases</div>
           </div>
-          <div class="path">
-            <h4>🎮 Discord login</h4>
-            <div class="who">You'd rather sign in with your Discord account.</div>
-            <ul>
-              <li>Still free, still runs locally</li>
-              <li>Only lets people manage servers they already run</li>
-              <li>A couple of extra fields to fill</li>
-            </ul>
+          <div class="main">
+            <div class="stat-row">
+              <div class="stat"><b>412</b><span>Members</span></div>
+              <div class="stat"><b>1,284</b><span>Tracks / wk</span></div>
+              <div class="stat"><b>42ms</b><span>Ping</span></div>
+            </div>
+            <div class="panel-mini">
+              <div class="ph"><span>Now playing · Late Night Set</span><span class="live">LIVE</span></div>
+              <div class="waves">
+                <i style="height:40%"></i><i style="height:70%"></i><i style="height:55%"></i><i style="height:90%"></i>
+                <i style="height:45%"></i><i style="height:75%"></i><i style="height:60%"></i><i style="height:85%"></i>
+                <i style="height:50%"></i><i style="height:68%"></i><i style="height:38%"></i><i style="height:80%"></i>
+                <i style="height:58%"></i><i style="height:72%"></i><i style="height:44%"></i><i style="height:64%"></i>
+              </div>
+            </div>
           </div>
         </div>
-
-        <p style="margin-top:8px"><b>For the local password</b>, add one line to your <code class="inl">.env</code> and you're done:</p>
-        <div class="code">
-          <div class="ch"><span class="fname">.env</span><button class="copy">Copy</button></div>
-          <pre><span class="c"># Leave CLIENT_SECRET blank to stay in local mode,</span>
-<span class="c"># then set a password to open the dashboard with:</span>
-<span class="k">DASHBOARD_PASSWORD</span>=<span class="s">pick-any-password</span></pre>
-        </div>
-
-        <p><b>Prefer the Discord login?</b> On the Developer Portal's <b>OAuth2</b> tab copy your <b>Client Secret</b>, then fill these in. Leave the redirect line blank and Harmonix points it at your own computer automatically:</p>
-        <div class="code">
-          <div class="ch"><span class="fname">.env</span><button class="copy">Copy</button></div>
-          <pre><span class="k">CLIENT_SECRET</span>=<span class="s">your-client-secret</span>
-<span class="k">SESSION_SECRET</span>=<span class="s">any-long-random-string</span>
-<span class="c"># Leave OAUTH_REDIRECT_URI blank — it auto-fills to</span>
-<span class="c"># http://localhost:3000/auth/callback</span></pre>
-        </div>
-        <p>Then, on that same <b>OAuth2</b> tab, add <code class="inl">http://localhost:3000/auth/callback</code> under <b>Redirects</b> so Discord recognises it.</p>
       </div>
-
-      <!-- STEP 5 -->
-      <div class="step" id="launch" style="scroll-margin-top:90px">
-        <div class="num">5</div>
-        <h3>Launch — just double-click</h3>
-        <p class="lead">Once everything's installed, you don't touch the terminal at all. Harmonix ships with a launcher that does the whole start-up for you.</p>
-        <p>On <b>Windows</b>, open the Harmonix folder and <b>double-click <code class="inl">start.bat</code></b>. On <b>Mac or Linux</b>, run <code class="inl">./start.sh</code>. That one file:</p>
-        <ul>
-          <li>Makes sure the <b>music engine</b> is up (starts it through Docker for you)</li>
-          <li><b>Registers the slash commands</b> so they show up in Discord</li>
-          <li>Optionally opens a free public link for the dashboard and <b>prints the exact login redirect</b> to paste into Discord</li>
-          <li><b>Starts the bot</b> and streams everything into one window</li>
-        </ul>
-        <div class="callout tip">
-          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9h8M8 13h5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span>
-          <p><b>First launch asks you two quick questions:</b> whether to start a public Cloudflare tunnel (say <b>no</b> if you'll only use the dashboard on this PC), and whether to register commands globally (every server, correct for real use) or locally (just your test server, instant). Your answers are saved, so it only asks once — run <code class="inl">node run.js --reconfigure</code> to change them later.</p>
-        </div>
-        <div class="callout tip">
-          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></span>
-          <p><b>That's the whole job.</b> Install the pieces once, double-click the launcher, and Harmonix runs. Leave that window open while you're using the bot; closing it (or Ctrl+C) stops the bot.</p>
-        </div>
-        <p>Want it out of the way? On Windows, double-click <code class="inl">start-silent.vbs</code> instead and Harmonix runs hidden with an icon in your system tray — right-click it to open the dashboard, restart, or stop.</p>
-
-        <p style="margin-top:22px"><b>Rather not use the launcher?</b> You can start things by hand — the launcher just runs these for you:</p>
-        <div class="code">
-          <div class="ch"><span class="fname">terminal</span><button class="copy">Copy</button></div>
-          <pre><span class="c"># the same thing the batch file does</span>
-npm run launch
-
-<span class="c"># local only — skip the public link, dashboard stays on your PC</span>
-npm run launch:local
-
-<span class="c"># no Docker? run the music engine yourself with Java 17+ first…</span>
-cd lavalink && java -jar Lavalink.jar
-<span class="c"># …then in another window:</span>
-node run.js --no-tunnel</pre>
-        </div>
-        <p>However you start it, open <code class="inl">http://localhost:3000</code> in your browser and log in the way you chose in step 4. That's the dashboard.</p>
-      </div>
-
-      <!-- STEP 6 -->
-      <div class="step" id="invite" style="scroll-margin-top:90px">
-        <div class="num">6</div>
-        <h3>Invite the bot to your server</h3>
-        <p class="lead">One link adds it. Commands set themselves up on their own.</p>
-        <p>Paste your <b>Client ID</b> into this link where it says <code class="inl">YOUR_CLIENT_ID</code>, open it, pick your server, and confirm:</p>
-        <div class="code">
-          <div class="ch"><span class="fname">invite link</span><button class="copy">Copy</button></div>
-          <pre>https://discord.com/oauth2/authorize?client_id=<span class="s">YOUR_CLIENT_ID</span>&permissions=<span class="k">277083450646</span>&scope=bot+applications.commands</pre>
-        </div>
-        <p>Slash commands deploy automatically on first launch. If you left <code class="inl">GUILD_ID</code> blank, give them a few minutes to appear the first time.</p>
-      </div>
-
-      <!-- OPTIONAL: REMOTE -->
-      <section id="remote" style="scroll-margin-top:90px;margin-bottom:20px">
-        <span class="eyebrow">Optional · also free</span>
-        <h3 style="font-family:'Poppins';font-weight:800;font-size:1.6rem;margin:14px 0 8px;letter-spacing:-.02em">Open the dashboard from another device</h3>
-        <p style="color:var(--cream-dim);margin-bottom:16px">Everything above runs on your own machine, which is all most people need. If you also want to reach the dashboard from your phone or another computer, you can — without paying for a domain — using a free Cloudflare quick tunnel:</p>
-        <div class="code">
-          <div class="ch"><span class="fname">terminal (second window)</span><button class="copy">Copy</button></div>
-          <pre>cloudflared tunnel --url http://localhost:3000</pre>
-        </div>
-        <p style="color:var(--cream-dim);margin-bottom:16px">It prints a free <code class="inl">https://…trycloudflare.com</code> address you can open anywhere. Put that address in <code class="inl">PUBLIC_URL</code> in your <code class="inl">.env</code>, and if you use the Discord login, add <code class="inl">&lt;that address&gt;/auth/callback</code> to your OAuth2 redirects too.</p>
-        <div class="callout tip">
-          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-          <p><b>No port forwarding, ever.</b> You don't open any router ports for this. The tunnel makes an <b>outbound</b> connection to Cloudflare, so it works from behind any home network with nothing to configure — that's the whole reason to use it instead of forwarding a port.</p>
-        </div>
-        <div class="callout warn">
-          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></span>
-          <p><b>Heads up:</b> a free quick-tunnel address changes every time you restart it, so you'd update those two spots each run. Fine for occasional remote access — for the local password setup you never need this at all.</p>
-        </div>
-      </section>
-
-      <!-- TROUBLESHOOTING -->
-      <section id="trouble" class="tips" style="scroll-margin-top:90px">
-        <h2>If something's off</h2>
-        <p class="sub">The usual hiccups, and the one-line fix for each.</p>
-
-        <details>
-          <summary>Do I need to port-forward or open router ports? <span class="plus">+</span></summary>
-          <div class="body"><b>No.</b> The bot connects out to Discord, so it receives commands without any port being opened — it just works behind your router. The music engine runs locally on your PC. The only thing that ever leaves your machine is the optional dashboard tunnel, and that dials <b>out</b> to Cloudflare, so there's still nothing to forward. If a guide tells you to open port 3000 on your router, you don't need to.</div>
-        </details>
-        <details>
-          <summary>The dashboard login won't work <span class="plus">+</span></summary>
-          <div class="body">If you're using the local password, double-check <code class="inl">CLIENT_SECRET</code> is <b>blank</b> and <code class="inl">DASHBOARD_PASSWORD</code> is set. If you're using the Discord login and it keeps bouncing you back, the cause is almost always a leftover <code class="inl">OAUTH_REDIRECT_URI</code> line — delete it so Harmonix can fill it in automatically, and make sure the same address is listed under Redirects in the Developer Portal.</div>
-        </details>
-        <details>
-          <summary>Music won't play <span class="plus">+</span></summary>
-          <div class="body">This is the music engine (Lavalink). Make sure <b>Docker Desktop is running</b> before you launch — the launcher starts the engine through it. Check the startup logs actually show the engine connecting. (Running it the no-Docker way instead? Confirm Java 17+ with <code class="inl">java -version</code> and that <code class="inl">Lavalink.jar</code> is up.)</div>
-        </details>
-        <details>
-          <summary>Slash commands aren't showing up <span class="plus">+</span></summary>
-          <div class="body">Global commands can take up to an hour the very first time. To see them instantly while setting up, paste your server's ID into <code class="inl">GUILD_ID</code> and relaunch. Also make sure you invited the bot with the link in step 6, which includes the commands permission.</div>
-        </details>
-        <details>
-          <summary>It logs me out every time I restart <span class="plus">+</span></summary>
-          <div class="body">Set <code class="inl">SESSION_SECRET</code> to any long random string in your <code class="inl">.env</code>. When it's blank, a new one is generated on each restart, which signs everyone out.</div>
-        </details>
-        <details>
-          <summary>The bot is online but ignores commands <span class="plus">+</span></summary>
-          <div class="body">Usually a missing intent. Go back to step 1 and make sure both <b>Message Content</b> and <b>Server Members</b> are switched on in the Developer Portal, then restart.</div>
-        </details>
-      </section>
-
-      <div class="done-band">
-        <h2>That's it — you're hosting Harmonix, free.</h2>
-        <p>Once Harmonix is running, your <b>real</b> dashboard lives at <span style="font-family:'JetBrains Mono',monospace;font-size:.9em;background:rgba(255,255,255,.18);padding:2px 8px;border-radius:6px;white-space:nowrap">http://localhost:3000</span> — log in there to run your server.</p>
-        <a href="dashboard.html">Explore the interactive demo<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-        <div style="margin-top:14px;font-size:.82rem;color:rgba(255,255,255,.78);position:relative">A preview with sample data — not your live server. Your real dashboard opens at the address above.</div>
-      </div>
-    </main>
+    </div>
   </div>
-</div>
+</section>
+
+<!-- COMMANDS -->
+<section id="commands">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Slash commands</span>
+      <h2>Type <span style="color:var(--coral)">/</span> and go.</h2>
+      <p>41 top-level commands with 240+ subcommands underneath — pick a category to expand it, or search to jump straight to what you need.</p>
+    </div>
+    <div class="cmd-wrap reveal">
+      <div class="cmd-bar">
+        <span class="slash">/</span>
+        <input type="text" id="cmdSearch" placeholder="Try “mod”, “play”, or “ban”…" aria-label="Search commands" autocomplete="off">
+        <span class="esc">ESC</span>
+      </div>
+      <div class="cmd-list" id="cmdList">
+        <div class="cgroup" data-q="247 toggle 24/7 mode (the bot stays in the channel forever).">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>247</span><span class="cgdesc">Toggle 24/7 mode (the bot stays in the channel forever).</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/247 toggle 24/7 mode (the bot stays in the channel forever)."><span class="name"><b>/</b>247</span><span class="desc">Toggle 24/7 mode (the bot stays in the channel forever).</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="achievements view unlocked badges">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>achievements</span><span class="cgdesc">View unlocked badges</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/achievements view unlocked badges"><span class="name"><b>/</b>achievements</span><span class="desc">View unlocked badges</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="automod configure automatic message moderation">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>automod</span><span class="cgdesc">Configure automatic message moderation</span><span class="cgcount">8</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/automod status show current automod settings"><span class="name"><b>/</b>automod <i>status</i></span><span class="desc">Show current automod settings</span></div>
+          <div class="cmd" data-q="/automod rule enable or disable a filter"><span class="name"><b>/</b>automod <i>rule</i></span><span class="desc">Enable or disable a filter</span></div>
+          <div class="cmd" data-q="/automod exempt add add an exempt role"><span class="name"><b>/</b>automod <i>exempt add</i></span><span class="desc">Add an exempt role</span></div>
+          <div class="cmd" data-q="/automod exempt remove remove an exempt role"><span class="name"><b>/</b>automod <i>exempt remove</i></span><span class="desc">Remove an exempt role</span></div>
+          <div class="cmd" data-q="/automod words add block a word"><span class="name"><b>/</b>automod <i>words add</i></span><span class="desc">Block a word</span></div>
+          <div class="cmd" data-q="/automod words remove unblock a word"><span class="name"><b>/</b>automod <i>words remove</i></span><span class="desc">Unblock a word</span></div>
+          <div class="cmd" data-q="/automod words list show blocked words"><span class="name"><b>/</b>automod <i>words list</i></span><span class="desc">Show blocked words</span></div>
+          <div class="cmd" data-q="/automod words clear clear the blocked-word list"><span class="name"><b>/</b>automod <i>words clear</i></span><span class="desc">Clear the blocked-word list</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="autoplay toggle autoplay (keeps the music going with related tracks).">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>autoplay</span><span class="cgdesc">Toggle autoplay (keeps the music going with related tracks).</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/autoplay toggle autoplay (keeps the music going with related tracks)."><span class="name"><b>/</b>autoplay</span><span class="desc">Toggle autoplay (keeps the music going with related tracks).</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="clear clear the queue (keeps the current track).">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>clear</span><span class="cgdesc">Clear the queue (keeps the current track).</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/clear clear the queue (keeps the current track)."><span class="name"><b>/</b>clear</span><span class="desc">Clear the queue (keeps the current track).</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="community tags, afk, suggestions, birthdays &amp; info">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>community</span><span class="cgdesc">Tags, AFK, suggestions, birthdays &amp; info</span><span class="cgcount">19</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/community tag get show a tag"><span class="name"><b>/</b>community <i>tag get</i></span><span class="desc">Show a tag</span></div>
+          <div class="cmd" data-q="/community tag add create or update a tag (manage messages)"><span class="name"><b>/</b>community <i>tag add</i></span><span class="desc">Create or update a tag (Manage Messages)</span></div>
+          <div class="cmd" data-q="/community tag delete delete a tag (manage messages)"><span class="name"><b>/</b>community <i>tag delete</i></span><span class="desc">Delete a tag (Manage Messages)</span></div>
+          <div class="cmd" data-q="/community tag list list all tags"><span class="name"><b>/</b>community <i>tag list</i></span><span class="desc">List all tags</span></div>
+          <div class="cmd" data-q="/community afk set yourself as afk"><span class="name"><b>/</b>community <i>afk</i></span><span class="desc">Set yourself as AFK</span></div>
+          <div class="cmd" data-q="/community snipe show the last deleted message here"><span class="name"><b>/</b>community <i>snipe</i></span><span class="desc">Show the last deleted message here</span></div>
+          <div class="cmd" data-q="/community suggest submit a suggestion"><span class="name"><b>/</b>community <i>suggest</i></span><span class="desc">Submit a suggestion</span></div>
+          <div class="cmd" data-q="/community suggestions set set the suggestions channel"><span class="name"><b>/</b>community <i>suggestions set</i></span><span class="desc">Set the suggestions channel</span></div>
+          <div class="cmd" data-q="/community suggestions disable clear the suggestions channel"><span class="name"><b>/</b>community <i>suggestions disable</i></span><span class="desc">Clear the suggestions channel</span></div>
+          <div class="cmd" data-q="/community userinfo show info about a member"><span class="name"><b>/</b>community <i>userinfo</i></span><span class="desc">Show info about a member</span></div>
+          <div class="cmd" data-q="/community serverinfo show info about this server"><span class="name"><b>/</b>community <i>serverinfo</i></span><span class="desc">Show info about this server</span></div>
+          <div class="cmd" data-q="/community roleinfo show info about a role"><span class="name"><b>/</b>community <i>roleinfo</i></span><span class="desc">Show info about a role</span></div>
+          <div class="cmd" data-q="/community avatar show a user’s avatar"><span class="name"><b>/</b>community <i>avatar</i></span><span class="desc">Show a user’s avatar</span></div>
+          <div class="cmd" data-q="/community membercount show the member count"><span class="name"><b>/</b>community <i>membercount</i></span><span class="desc">Show the member count</span></div>
+          <div class="cmd" data-q="/community birthday set set your birthday"><span class="name"><b>/</b>community <i>birthday set</i></span><span class="desc">Set your birthday</span></div>
+          <div class="cmd" data-q="/community birthday remove remove your birthday"><span class="name"><b>/</b>community <i>birthday remove</i></span><span class="desc">Remove your birthday</span></div>
+          <div class="cmd" data-q="/community birthday show show a birthday"><span class="name"><b>/</b>community <i>birthday show</i></span><span class="desc">Show a birthday</span></div>
+          <div class="cmd" data-q="/community birthday list upcoming birthdays"><span class="name"><b>/</b>community <i>birthday list</i></span><span class="desc">Upcoming birthdays</span></div>
+          <div class="cmd" data-q="/community birthday config set the announcement channel and optional birthday role (admin)"><span class="name"><b>/</b>community <i>birthday config</i></span><span class="desc">Set the announcement channel and optional birthday role (admin)</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="dj restrict disruptive music controls to a dj role">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>dj</span><span class="cgdesc">Restrict disruptive music controls to a DJ role</span><span class="cgcount">3</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/dj set set the dj role"><span class="name"><b>/</b>dj <i>set</i></span><span class="desc">Set the DJ role</span></div>
+          <div class="cmd" data-q="/dj clear clear the dj role (open controls to everyone)"><span class="name"><b>/</b>dj <i>clear</i></span><span class="desc">Clear the DJ role (open controls to everyone)</span></div>
+          <div class="cmd" data-q="/dj status show the current dj role"><span class="name"><b>/</b>dj <i>status</i></span><span class="desc">Show the current DJ role</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="economy server economy: currency, daily rewards, shop and games">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>economy</span><span class="cgdesc">Server economy: currency, daily rewards, shop and games</span><span class="cgcount">16</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/economy balance check a balance"><span class="name"><b>/</b>economy <i>balance</i></span><span class="desc">Check a balance</span></div>
+          <div class="cmd" data-q="/economy daily claim your daily reward"><span class="name"><b>/</b>economy <i>daily</i></span><span class="desc">Claim your daily reward</span></div>
+          <div class="cmd" data-q="/economy work work for some coins"><span class="name"><b>/</b>economy <i>work</i></span><span class="desc">Work for some coins</span></div>
+          <div class="cmd" data-q="/economy give give coins to someone"><span class="name"><b>/</b>economy <i>give</i></span><span class="desc">Give coins to someone</span></div>
+          <div class="cmd" data-q="/economy leaderboard richest members"><span class="name"><b>/</b>economy <i>leaderboard</i></span><span class="desc">Richest members</span></div>
+          <div class="cmd" data-q="/economy slots spin the slot machine"><span class="name"><b>/</b>economy <i>slots</i></span><span class="desc">Spin the slot machine</span></div>
+          <div class="cmd" data-q="/economy coinflip bet on a coin flip"><span class="name"><b>/</b>economy <i>coinflip</i></span><span class="desc">Bet on a coin flip</span></div>
+          <div class="cmd" data-q="/economy shop list browse the shop"><span class="name"><b>/</b>economy <i>shop list</i></span><span class="desc">Browse the shop</span></div>
+          <div class="cmd" data-q="/economy shop buy buy an item"><span class="name"><b>/</b>economy <i>shop buy</i></span><span class="desc">Buy an item</span></div>
+          <div class="cmd" data-q="/economy shop additem add a shop item (admin)"><span class="name"><b>/</b>economy <i>shop additem</i></span><span class="desc">Add a shop item (admin)</span></div>
+          <div class="cmd" data-q="/economy shop removeitem remove a shop item (admin)"><span class="name"><b>/</b>economy <i>shop removeitem</i></span><span class="desc">Remove a shop item (admin)</span></div>
+          <div class="cmd" data-q="/economy admin add add coins to a user"><span class="name"><b>/</b>economy <i>admin add</i></span><span class="desc">Add coins to a user</span></div>
+          <div class="cmd" data-q="/economy admin remove remove coins from a user"><span class="name"><b>/</b>economy <i>admin remove</i></span><span class="desc">Remove coins from a user</span></div>
+          <div class="cmd" data-q="/economy admin set set a user’s balance"><span class="name"><b>/</b>economy <i>admin set</i></span><span class="desc">Set a user’s balance</span></div>
+          <div class="cmd" data-q="/economy config currency set currency name &amp; symbol"><span class="name"><b>/</b>economy <i>config currency</i></span><span class="desc">Set currency name &amp; symbol</span></div>
+          <div class="cmd" data-q="/economy config rates set daily/work payouts"><span class="name"><b>/</b>economy <i>config rates</i></span><span class="desc">Set daily/work payouts</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="engage polls, giveaways, events &amp; temporary channels">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>engage</span><span class="cgdesc">Polls, giveaways, events &amp; temporary channels</span><span class="cgcount">13</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/engage poll create start a new poll"><span class="name"><b>/</b>engage <i>poll create</i></span><span class="desc">Start a new poll</span></div>
+          <div class="cmd" data-q="/engage poll end close a poll"><span class="name"><b>/</b>engage <i>poll end</i></span><span class="desc">Close a poll</span></div>
+          <div class="cmd" data-q="/engage giveaway start start a giveaway"><span class="name"><b>/</b>engage <i>giveaway start</i></span><span class="desc">Start a giveaway</span></div>
+          <div class="cmd" data-q="/engage giveaway end end a giveaway now"><span class="name"><b>/</b>engage <i>giveaway end</i></span><span class="desc">End a giveaway now</span></div>
+          <div class="cmd" data-q="/engage giveaway reroll reroll winners"><span class="name"><b>/</b>engage <i>giveaway reroll</i></span><span class="desc">Reroll winners</span></div>
+          <div class="cmd" data-q="/engage event create open the event form (posts to this channel)"><span class="name"><b>/</b>engage <i>event create</i></span><span class="desc">Open the event form (posts to this channel)</span></div>
+          <div class="cmd" data-q="/engage event list list upcoming events"><span class="name"><b>/</b>engage <i>event list</i></span><span class="desc">List upcoming events</span></div>
+          <div class="cmd" data-q="/engage event cancel cancel an event"><span class="name"><b>/</b>engage <i>event cancel</i></span><span class="desc">Cancel an event</span></div>
+          <div class="cmd" data-q="/engage event format how this server reads dates you type"><span class="name"><b>/</b>engage <i>event format</i></span><span class="desc">How this server reads dates you type</span></div>
+          <div class="cmd" data-q="/engage tempvoice setup set the hub members join to spawn their own private voice channel + control panel"><span class="name"><b>/</b>engage <i>tempvoice setup</i></span><span class="desc">Set the hub members join to spawn their own private voice channel + control panel</span></div>
+          <div class="cmd" data-q="/engage tempvoice disable turn off join-to-create"><span class="name"><b>/</b>engage <i>tempvoice disable</i></span><span class="desc">Turn off join-to-create</span></div>
+          <div class="cmd" data-q="/engage tempvoice status show join-to-create settings"><span class="name"><b>/</b>engage <i>tempvoice status</i></span><span class="desc">Show join-to-create settings</span></div>
+          <div class="cmd" data-q="/engage temptext create a temporary text channel that auto-deletes"><span class="name"><b>/</b>engage <i>temptext</i></span><span class="desc">Create a temporary text channel that auto-deletes</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="filter apply an audio filter to playback">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>filter</span><span class="cgdesc">Apply an audio filter to playback</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/filter apply an audio filter to playback"><span class="name"><b>/</b>filter</span><span class="desc">Apply an audio filter to playback</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="fun jokes, facts, food, pictures &amp; random fun">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>fun</span><span class="cgdesc">Jokes, facts, food, pictures &amp; random fun</span><span class="cgcount">17</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/fun dadjoke a random dad joke"><span class="name"><b>/</b>fun <i>dadjoke</i></span><span class="desc">A random dad joke</span></div>
+          <div class="cmd" data-q="/fun joke a random (safe-mode) joke"><span class="name"><b>/</b>fun <i>joke</i></span><span class="desc">A random (safe-mode) joke</span></div>
+          <div class="cmd" data-q="/fun fact a random useless fact"><span class="name"><b>/</b>fun <i>fact</i></span><span class="desc">A random useless fact</span></div>
+          <div class="cmd" data-q="/fun advice a random piece of advice"><span class="name"><b>/</b>fun <i>advice</i></span><span class="desc">A random piece of advice</span></div>
+          <div class="cmd" data-q="/fun catfact a random cat fact"><span class="name"><b>/</b>fun <i>catfact</i></span><span class="desc">A random cat fact</span></div>
+          <div class="cmd" data-q="/fun affirmation a positive affirmation"><span class="name"><b>/</b>fun <i>affirmation</i></span><span class="desc">A positive affirmation</span></div>
+          <div class="cmd" data-q="/fun chucknorris a random chuck norris fact"><span class="name"><b>/</b>fun <i>chucknorris</i></span><span class="desc">A random Chuck Norris fact</span></div>
+          <div class="cmd" data-q="/fun quote a random inspirational quote"><span class="name"><b>/</b>fun <i>quote</i></span><span class="desc">A random inspirational quote</span></div>
+          <div class="cmd" data-q="/fun dog a random dog picture"><span class="name"><b>/</b>fun <i>dog</i></span><span class="desc">A random dog picture</span></div>
+          <div class="cmd" data-q="/fun cat a random cat picture"><span class="name"><b>/</b>fun <i>cat</i></span><span class="desc">A random cat picture</span></div>
+          <div class="cmd" data-q="/fun inspire an ai-generated inspirational poster"><span class="name"><b>/</b>fun <i>inspire</i></span><span class="desc">An AI-generated inspirational poster</span></div>
+          <div class="cmd" data-q="/fun xkcd a random or specific xkcd comic"><span class="name"><b>/</b>fun <i>xkcd</i></span><span class="desc">A random or specific xkcd comic</span></div>
+          <div class="cmd" data-q="/fun iss where is the space station right now?"><span class="name"><b>/</b>fun <i>iss</i></span><span class="desc">Where is the Space Station right now?</span></div>
+          <div class="cmd" data-q="/fun apod nasa astronomy picture of the day"><span class="name"><b>/</b>fun <i>apod</i></span><span class="desc">NASA Astronomy Picture of the Day</span></div>
+          <div class="cmd" data-q="/fun guessage playfully guess an age from a first name"><span class="name"><b>/</b>fun <i>guessage</i></span><span class="desc">Playfully guess an age from a first name</span></div>
+          <div class="cmd" data-q="/fun recipe get a meal recipe (random or search)"><span class="name"><b>/</b>fun <i>recipe</i></span><span class="desc">Get a meal recipe (random or search)</span></div>
+          <div class="cmd" data-q="/fun cocktail get a cocktail recipe (random or search)"><span class="name"><b>/</b>fun <i>cocktail</i></span><span class="desc">Get a cocktail recipe (random or search)</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="game games">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>game</span><span class="cgdesc">Games</span><span class="cgcount">15</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/game 8ball ask the magic 8-ball"><span class="name"><b>/</b>game <i>8ball</i></span><span class="desc">Ask the magic 8-ball</span></div>
+          <div class="cmd" data-q="/game rps rock, paper, scissors vs the bot"><span class="name"><b>/</b>game <i>rps</i></span><span class="desc">Rock, paper, scissors vs the bot</span></div>
+          <div class="cmd" data-q="/game coinflip flip a coin"><span class="name"><b>/</b>game <i>coinflip</i></span><span class="desc">Flip a coin</span></div>
+          <div class="cmd" data-q="/game roll roll dice (e.g. 2d6, d20, 3d6+2)"><span class="name"><b>/</b>game <i>roll</i></span><span class="desc">Roll dice (e.g. 2d6, d20, 3d6+2)</span></div>
+          <div class="cmd" data-q="/game draw draw cards from a shuffled deck"><span class="name"><b>/</b>game <i>draw</i></span><span class="desc">Draw cards from a shuffled deck</span></div>
+          <div class="cmd" data-q="/game pokemon look up a pokémon"><span class="name"><b>/</b>game <i>pokemon</i></span><span class="desc">Look up a Pokémon</span></div>
+          <div class="cmd" data-q="/game whosthat play “who’s that pokémon?”"><span class="name"><b>/</b>game <i>whosthat</i></span><span class="desc">Play “Who’s That Pokémon?”</span></div>
+          <div class="cmd" data-q="/game scramble unscramble the word — first to type it wins!"><span class="name"><b>/</b>game <i>scramble</i></span><span class="desc">Unscramble the word — first to type it wins!</span></div>
+          <div class="cmd" data-q="/game trivia start continuous trivia in this channel (run again to stop)"><span class="name"><b>/</b>game <i>trivia</i></span><span class="desc">Start continuous trivia in this channel (run again to stop)</span></div>
+          <div class="cmd" data-q="/game hangman start start a new game"><span class="name"><b>/</b>game <i>hangman start</i></span><span class="desc">Start a new game</span></div>
+          <div class="cmd" data-q="/game hangman guess guess a letter"><span class="name"><b>/</b>game <i>hangman guess</i></span><span class="desc">Guess a letter</span></div>
+          <div class="cmd" data-q="/game hangman quit end the current game"><span class="name"><b>/</b>game <i>hangman quit</i></span><span class="desc">End the current game</span></div>
+          <div class="cmd" data-q="/game wordle start start a new game"><span class="name"><b>/</b>game <i>wordle start</i></span><span class="desc">Start a new game</span></div>
+          <div class="cmd" data-q="/game wordle guess guess a 5-letter word"><span class="name"><b>/</b>game <i>wordle guess</i></span><span class="desc">Guess a 5-letter word</span></div>
+          <div class="cmd" data-q="/game wordle quit give up your game"><span class="name"><b>/</b>game <i>wordle quit</i></span><span class="desc">Give up your game</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="help browse everything this bot can do.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>help</span><span class="cgdesc">Browse everything this bot can do.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/help browse everything this bot can do."><span class="name"><b>/</b>help</span><span class="desc">Browse everything this bot can do.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="leave disconnect the bot from the voice channel.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>leave</span><span class="cgdesc">Disconnect the bot from the voice channel.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/leave disconnect the bot from the voice channel."><span class="name"><b>/</b>leave</span><span class="desc">Disconnect the bot from the voice channel.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="level leveling &amp; ranks">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>level</span><span class="cgdesc">Leveling &amp; ranks</span><span class="cgcount">9</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/level rank show your (or someone’s) level and xp"><span class="name"><b>/</b>level <i>rank</i></span><span class="desc">Show your (or someone’s) level and XP</span></div>
+          <div class="cmd" data-q="/level leaderboard show the server xp leaderboard"><span class="name"><b>/</b>level <i>leaderboard</i></span><span class="desc">Show the server XP leaderboard</span></div>
+          <div class="cmd" data-q="/level enable turn leveling on"><span class="name"><b>/</b>level <i>enable</i></span><span class="desc">Turn leveling on</span></div>
+          <div class="cmd" data-q="/level disable turn leveling off"><span class="name"><b>/</b>level <i>disable</i></span><span class="desc">Turn leveling off</span></div>
+          <div class="cmd" data-q="/level announce toggle level-up announcements"><span class="name"><b>/</b>level <i>announce</i></span><span class="desc">Toggle level-up announcements</span></div>
+          <div class="cmd" data-q="/level setxp set a member’s total xp"><span class="name"><b>/</b>level <i>setxp</i></span><span class="desc">Set a member’s total XP</span></div>
+          <div class="cmd" data-q="/level reward add add a role reward at a level"><span class="name"><b>/</b>level <i>reward add</i></span><span class="desc">Add a role reward at a level</span></div>
+          <div class="cmd" data-q="/level reward remove remove a role reward"><span class="name"><b>/</b>level <i>reward remove</i></span><span class="desc">Remove a role reward</span></div>
+          <div class="cmd" data-q="/level reward list list role rewards"><span class="name"><b>/</b>level <i>reward list</i></span><span class="desc">List role rewards</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="lookup dictionary, country, currency, wiki &amp; more">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>lookup</span><span class="cgdesc">Dictionary, country, currency, wiki &amp; more</span><span class="cgcount">10</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/lookup define look up a word’s definition"><span class="name"><b>/</b>lookup <i>define</i></span><span class="desc">Look up a word’s definition</span></div>
+          <div class="cmd" data-q="/lookup country look up information about a country"><span class="name"><b>/</b>lookup <i>country</i></span><span class="desc">Look up information about a country</span></div>
+          <div class="cmd" data-q="/lookup convert convert currency (ecb rates)"><span class="name"><b>/</b>lookup <i>convert</i></span><span class="desc">Convert currency (ECB rates)</span></div>
+          <div class="cmd" data-q="/lookup crypto get a cryptocurrency’s price"><span class="name"><b>/</b>lookup <i>crypto</i></span><span class="desc">Get a cryptocurrency’s price</span></div>
+          <div class="cmd" data-q="/lookup wiki get a wikipedia summary"><span class="name"><b>/</b>lookup <i>wiki</i></span><span class="desc">Get a Wikipedia summary</span></div>
+          <div class="cmd" data-q="/lookup forecast 3-day weather forecast for a place"><span class="name"><b>/</b>lookup <i>forecast</i></span><span class="desc">3-day weather forecast for a place</span></div>
+          <div class="cmd" data-q="/lookup mcstatus check a minecraft server’s status"><span class="name"><b>/</b>lookup <i>mcstatus</i></span><span class="desc">Check a Minecraft server’s status</span></div>
+          <div class="cmd" data-q="/lookup github look up a github user or repo"><span class="name"><b>/</b>lookup <i>github</i></span><span class="desc">Look up a GitHub user or repo</span></div>
+          <div class="cmd" data-q="/lookup anime look up an anime"><span class="name"><b>/</b>lookup <i>anime</i></span><span class="desc">Look up an anime</span></div>
+          <div class="cmd" data-q="/lookup qr generate a qr code"><span class="name"><b>/</b>lookup <i>qr</i></span><span class="desc">Generate a QR code</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="loop set or cycle the loop mode.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>loop</span><span class="cgdesc">Set or cycle the loop mode.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/loop set or cycle the loop mode."><span class="name"><b>/</b>loop</span><span class="desc">Set or cycle the loop mode.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="mod moderation tools">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>mod</span><span class="cgdesc">Moderation tools</span><span class="cgcount">40</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/mod warn warn a member (logged as a case)"><span class="name"><b>/</b>mod <i>warn</i></span><span class="desc">Warn a member (logged as a case)</span></div>
+          <div class="cmd" data-q="/mod warnings list a member’s moderation history"><span class="name"><b>/</b>mod <i>warnings</i></span><span class="desc">List a member’s moderation history</span></div>
+          <div class="cmd" data-q="/mod case view a moderation case by number"><span class="name"><b>/</b>mod <i>case</i></span><span class="desc">View a moderation case by number</span></div>
+          <div class="cmd" data-q="/mod reason update the reason on an existing case"><span class="name"><b>/</b>mod <i>reason</i></span><span class="desc">Update the reason on an existing case</span></div>
+          <div class="cmd" data-q="/mod kick kick a member from the server"><span class="name"><b>/</b>mod <i>kick</i></span><span class="desc">Kick a member from the server</span></div>
+          <div class="cmd" data-q="/mod ban ban a user (works even if they’ve left)"><span class="name"><b>/</b>mod <i>ban</i></span><span class="desc">Ban a user (works even if they’ve left)</span></div>
+          <div class="cmd" data-q="/mod unban unban a user by id"><span class="name"><b>/</b>mod <i>unban</i></span><span class="desc">Unban a user by ID</span></div>
+          <div class="cmd" data-q="/mod timeout temporarily mute a member (discord timeout)"><span class="name"><b>/</b>mod <i>timeout</i></span><span class="desc">Temporarily mute a member (Discord timeout)</span></div>
+          <div class="cmd" data-q="/mod untimeout remove a member’s timeout"><span class="name"><b>/</b>mod <i>untimeout</i></span><span class="desc">Remove a member’s timeout</span></div>
+          <div class="cmd" data-q="/mod purge bulk-delete recent messages in this channel"><span class="name"><b>/</b>mod <i>purge</i></span><span class="desc">Bulk-delete recent messages in this channel</span></div>
+          <div class="cmd" data-q="/mod slowmode set this channel’s slowmode delay"><span class="name"><b>/</b>mod <i>slowmode</i></span><span class="desc">Set this channel’s slowmode delay</span></div>
+          <div class="cmd" data-q="/mod modlog set set the channel where moderation cases are posted"><span class="name"><b>/</b>mod <i>modlog set</i></span><span class="desc">Set the channel where moderation cases are posted</span></div>
+          <div class="cmd" data-q="/mod modlog disable stop posting moderation cases"><span class="name"><b>/</b>mod <i>modlog disable</i></span><span class="desc">Stop posting moderation cases</span></div>
+          <div class="cmd" data-q="/mod modlog status show the current mod-log channel"><span class="name"><b>/</b>mod <i>modlog status</i></span><span class="desc">Show the current mod-log channel</span></div>
+          <div class="cmd" data-q="/mod logging set set the channel where server events are logged"><span class="name"><b>/</b>mod <i>logging set</i></span><span class="desc">Set the channel where server events are logged</span></div>
+          <div class="cmd" data-q="/mod logging disable turn off the event log"><span class="name"><b>/</b>mod <i>logging disable</i></span><span class="desc">Turn off the event log</span></div>
+          <div class="cmd" data-q="/mod logging toggle enable or disable a specific event type"><span class="name"><b>/</b>mod <i>logging toggle</i></span><span class="desc">Enable or disable a specific event type</span></div>
+          <div class="cmd" data-q="/mod logging ignore stop logging activity from a channel"><span class="name"><b>/</b>mod <i>logging ignore</i></span><span class="desc">Stop logging activity from a channel</span></div>
+          <div class="cmd" data-q="/mod logging unignore log a channel again"><span class="name"><b>/</b>mod <i>logging unignore</i></span><span class="desc">Log a channel again</span></div>
+          <div class="cmd" data-q="/mod logging status show current logging settings"><span class="name"><b>/</b>mod <i>logging status</i></span><span class="desc">Show current logging settings</span></div>
+          <div class="cmd" data-q="/mod ticket setup configure the ticket system"><span class="name"><b>/</b>mod <i>ticket setup</i></span><span class="desc">Configure the ticket system</span></div>
+          <div class="cmd" data-q="/mod ticket panel post a ticket panel with an open button"><span class="name"><b>/</b>mod <i>ticket panel</i></span><span class="desc">Post a ticket panel with an Open button</span></div>
+          <div class="cmd" data-q="/mod ticket close close the current ticket"><span class="name"><b>/</b>mod <i>ticket close</i></span><span class="desc">Close the current ticket</span></div>
+          <div class="cmd" data-q="/mod ticket add add a user to the current ticket"><span class="name"><b>/</b>mod <i>ticket add</i></span><span class="desc">Add a user to the current ticket</span></div>
+          <div class="cmd" data-q="/mod ticket remove remove a user from the current ticket"><span class="name"><b>/</b>mod <i>ticket remove</i></span><span class="desc">Remove a user from the current ticket</span></div>
+          <div class="cmd" data-q="/mod verify setup set the verified role and post a verify panel"><span class="name"><b>/</b>mod <i>verify setup</i></span><span class="desc">Set the verified role and post a verify panel</span></div>
+          <div class="cmd" data-q="/mod verify disable turn off verification"><span class="name"><b>/</b>mod <i>verify disable</i></span><span class="desc">Turn off verification</span></div>
+          <div class="cmd" data-q="/mod verify status show verification settings"><span class="name"><b>/</b>mod <i>verify status</i></span><span class="desc">Show verification settings</span></div>
+          <div class="cmd" data-q="/mod antiraid enable turn raid protection on"><span class="name"><b>/</b>mod <i>antiraid enable</i></span><span class="desc">Turn raid protection on</span></div>
+          <div class="cmd" data-q="/mod antiraid disable turn raid protection off"><span class="name"><b>/</b>mod <i>antiraid disable</i></span><span class="desc">Turn raid protection off</span></div>
+          <div class="cmd" data-q="/mod antiraid config tune raid-protection thresholds"><span class="name"><b>/</b>mod <i>antiraid config</i></span><span class="desc">Tune raid-protection thresholds</span></div>
+          <div class="cmd" data-q="/mod antiraid status show raid-protection settings"><span class="name"><b>/</b>mod <i>antiraid status</i></span><span class="desc">Show raid-protection settings</span></div>
+          <div class="cmd" data-q="/mod tempban ban a member for a set duration, then auto-unban"><span class="name"><b>/</b>mod <i>tempban</i></span><span class="desc">Ban a member for a set duration, then auto-unban</span></div>
+          <div class="cmd" data-q="/mod mute mute a member for a set duration (managed role)"><span class="name"><b>/</b>mod <i>mute</i></span><span class="desc">Mute a member for a set duration (managed role)</span></div>
+          <div class="cmd" data-q="/mod unmute remove a member’s mute"><span class="name"><b>/</b>mod <i>unmute</i></span><span class="desc">Remove a member’s mute</span></div>
+          <div class="cmd" data-q="/mod warnthreshold add add or replace a rule at a warning count"><span class="name"><b>/</b>mod <i>warnthreshold add</i></span><span class="desc">Add or replace a rule at a warning count</span></div>
+          <div class="cmd" data-q="/mod warnthreshold remove remove the rule at a warning count"><span class="name"><b>/</b>mod <i>warnthreshold remove</i></span><span class="desc">Remove the rule at a warning count</span></div>
+          <div class="cmd" data-q="/mod warnthreshold list list all auto-escalation rules"><span class="name"><b>/</b>mod <i>warnthreshold list</i></span><span class="desc">List all auto-escalation rules</span></div>
+          <div class="cmd" data-q="/mod lockdown lock channels so members can’t talk or join voice"><span class="name"><b>/</b>mod <i>lockdown</i></span><span class="desc">Lock channels so members can’t talk or join voice</span></div>
+          <div class="cmd" data-q="/mod unlock unlock channels, restoring their previous permissions"><span class="name"><b>/</b>mod <i>unlock</i></span><span class="desc">Unlock channels, restoring their previous permissions</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="nowplaying show the track that is currently playing.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>nowplaying</span><span class="cgdesc">Show the track that is currently playing.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/nowplaying show the track that is currently playing."><span class="name"><b>/</b>nowplaying</span><span class="desc">Show the track that is currently playing.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="nsfw adult images — only works in age-restricted (nsfw) channels">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>nsfw</span><span class="cgdesc">Adult images — only works in age-restricted (NSFW) channels</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/nsfw adult images — only works in age-restricted (nsfw) channels"><span class="name"><b>/</b>nsfw</span><span class="desc">Adult images — only works in age-restricted (NSFW) channels</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="pause pause the current track.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>pause</span><span class="cgdesc">Pause the current track.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/pause pause the current track."><span class="name"><b>/</b>pause</span><span class="desc">Pause the current track.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="play play a track or playlist (youtube, spotify, soundcloud — link or search).">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>play</span><span class="cgdesc">Play a track or playlist (YouTube, Spotify, SoundCloud — link or search).</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/play play a track or playlist (youtube, spotify, soundcloud — link or search)."><span class="name"><b>/</b>play</span><span class="desc">Play a track or playlist (YouTube, Spotify, SoundCloud — link or search).</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="playlist save and load your music playlists">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>playlist</span><span class="cgdesc">Save and load your music playlists</span><span class="cgcount">5</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/playlist save save the current queue as a playlist"><span class="name"><b>/</b>playlist <i>save</i></span><span class="desc">Save the current queue as a playlist</span></div>
+          <div class="cmd" data-q="/playlist load queue up one of your playlists"><span class="name"><b>/</b>playlist <i>load</i></span><span class="desc">Queue up one of your playlists</span></div>
+          <div class="cmd" data-q="/playlist list list your saved playlists"><span class="name"><b>/</b>playlist <i>list</i></span><span class="desc">List your saved playlists</span></div>
+          <div class="cmd" data-q="/playlist show show a playlist’s tracks"><span class="name"><b>/</b>playlist <i>show</i></span><span class="desc">Show a playlist’s tracks</span></div>
+          <div class="cmd" data-q="/playlist delete delete a playlist"><span class="name"><b>/</b>playlist <i>delete</i></span><span class="desc">Delete a playlist</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="previous go back to the previous track.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>previous</span><span class="cgdesc">Go back to the previous track.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/previous go back to the previous track."><span class="name"><b>/</b>previous</span><span class="desc">Go back to the previous track.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="queue show the current queue.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>queue</span><span class="cgdesc">Show the current queue.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/queue show the current queue."><span class="name"><b>/</b>queue</span><span class="desc">Show the current queue.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="remove remove a track from the queue by its position.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>remove</span><span class="cgdesc">Remove a track from the queue by its position.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/remove remove a track from the queue by its position."><span class="name"><b>/</b>remove</span><span class="desc">Remove a track from the queue by its position.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="resume resume playback.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>resume</span><span class="cgdesc">Resume playback.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/resume resume playback."><span class="name"><b>/</b>resume</span><span class="desc">Resume playback.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="seek jump to a position in the current track.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>seek</span><span class="cgdesc">Jump to a position in the current track.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/seek jump to a position in the current track."><span class="name"><b>/</b>seek</span><span class="desc">Jump to a position in the current track.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="server server setup &amp; management">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>server</span><span class="cgdesc">Server setup &amp; management</span><span class="cgcount">31</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/server welcome set enable &amp; configure the welcome message"><span class="name"><b>/</b>server <i>welcome set</i></span><span class="desc">Enable &amp; configure the Welcome message</span></div>
+          <div class="cmd" data-q="/server welcome test preview the welcome message"><span class="name"><b>/</b>server <i>welcome test</i></span><span class="desc">Preview the Welcome message</span></div>
+          <div class="cmd" data-q="/server welcome disable turn off the welcome message"><span class="name"><b>/</b>server <i>welcome disable</i></span><span class="desc">Turn off the Welcome message</span></div>
+          <div class="cmd" data-q="/server welcome status show the welcome configuration"><span class="name"><b>/</b>server <i>welcome status</i></span><span class="desc">Show the Welcome configuration</span></div>
+          <div class="cmd" data-q="/server goodbye set enable &amp; configure the goodbye message"><span class="name"><b>/</b>server <i>goodbye set</i></span><span class="desc">Enable &amp; configure the Goodbye message</span></div>
+          <div class="cmd" data-q="/server goodbye test preview the goodbye message"><span class="name"><b>/</b>server <i>goodbye test</i></span><span class="desc">Preview the Goodbye message</span></div>
+          <div class="cmd" data-q="/server goodbye disable turn off the goodbye message"><span class="name"><b>/</b>server <i>goodbye disable</i></span><span class="desc">Turn off the Goodbye message</span></div>
+          <div class="cmd" data-q="/server goodbye status show the goodbye configuration"><span class="name"><b>/</b>server <i>goodbye status</i></span><span class="desc">Show the Goodbye configuration</span></div>
+          <div class="cmd" data-q="/server autorole set set the role to assign on join"><span class="name"><b>/</b>server <i>autorole set</i></span><span class="desc">Set the role to assign on join</span></div>
+          <div class="cmd" data-q="/server autorole disable turn off autorole"><span class="name"><b>/</b>server <i>autorole disable</i></span><span class="desc">Turn off autorole</span></div>
+          <div class="cmd" data-q="/server autorole status show the autorole configuration"><span class="name"><b>/</b>server <i>autorole status</i></span><span class="desc">Show the autorole configuration</span></div>
+          <div class="cmd" data-q="/server reactionrole create post a new reaction-role message"><span class="name"><b>/</b>server <i>reactionrole create</i></span><span class="desc">Post a new reaction-role message</span></div>
+          <div class="cmd" data-q="/server reactionrole add add a role button to a panel"><span class="name"><b>/</b>server <i>reactionrole add</i></span><span class="desc">Add a role button to a panel</span></div>
+          <div class="cmd" data-q="/server reactionrole remove remove a role button from a panel"><span class="name"><b>/</b>server <i>reactionrole remove</i></span><span class="desc">Remove a role button from a panel</span></div>
+          <div class="cmd" data-q="/server reactionrole list list reaction-role panels in this server"><span class="name"><b>/</b>server <i>reactionrole list</i></span><span class="desc">List reaction-role panels in this server</span></div>
+          <div class="cmd" data-q="/server starboard set enable the starboard in a channel"><span class="name"><b>/</b>server <i>starboard set</i></span><span class="desc">Enable the starboard in a channel</span></div>
+          <div class="cmd" data-q="/server starboard disable turn the starboard off"><span class="name"><b>/</b>server <i>starboard disable</i></span><span class="desc">Turn the starboard off</span></div>
+          <div class="cmd" data-q="/server starboard status show starboard settings"><span class="name"><b>/</b>server <i>starboard status</i></span><span class="desc">Show starboard settings</span></div>
+          <div class="cmd" data-q="/server autodelete auto-delete the bot’s replies after a delay (0 = off)"><span class="name"><b>/</b>server <i>autodelete</i></span><span class="desc">Auto-delete the bot’s replies after a delay (0 = off)</span></div>
+          <div class="cmd" data-q="/server triviachannel set the channel auto-cleared every hour for trivia (omit channel to clear)"><span class="name"><b>/</b>server <i>triviachannel</i></span><span class="desc">Set the channel auto-cleared every hour for trivia (omit channel to clear)</span></div>
+          <div class="cmd" data-q="/server autoresponder add add an auto-reply"><span class="name"><b>/</b>server <i>autoresponder add</i></span><span class="desc">Add an auto-reply</span></div>
+          <div class="cmd" data-q="/server autoresponder remove remove an auto-reply by id or trigger"><span class="name"><b>/</b>server <i>autoresponder remove</i></span><span class="desc">Remove an auto-reply by id or trigger</span></div>
+          <div class="cmd" data-q="/server autoresponder list list auto-replies"><span class="name"><b>/</b>server <i>autoresponder list</i></span><span class="desc">List auto-replies</span></div>
+          <div class="cmd" data-q="/server sticky set set the sticky message for this channel"><span class="name"><b>/</b>server <i>sticky set</i></span><span class="desc">Set the sticky message for this channel</span></div>
+          <div class="cmd" data-q="/server sticky remove remove this channel’s sticky message"><span class="name"><b>/</b>server <i>sticky remove</i></span><span class="desc">Remove this channel’s sticky message</span></div>
+          <div class="cmd" data-q="/server sticky list list channels with sticky messages"><span class="name"><b>/</b>server <i>sticky list</i></span><span class="desc">List channels with sticky messages</span></div>
+          <div class="cmd" data-q="/server rolemenu create create a role menu in this channel"><span class="name"><b>/</b>server <i>rolemenu create</i></span><span class="desc">Create a role menu in this channel</span></div>
+          <div class="cmd" data-q="/server rolemenu addrole add a role to a menu"><span class="name"><b>/</b>server <i>rolemenu addrole</i></span><span class="desc">Add a role to a menu</span></div>
+          <div class="cmd" data-q="/server rolemenu removerole remove a role from a menu"><span class="name"><b>/</b>server <i>rolemenu removerole</i></span><span class="desc">Remove a role from a menu</span></div>
+          <div class="cmd" data-q="/server rolemenu list list this server’s role menus"><span class="name"><b>/</b>server <i>rolemenu list</i></span><span class="desc">List this server’s role menus</span></div>
+          <div class="cmd" data-q="/server prefix set or view the text-command prefix (e.g. !)"><span class="name"><b>/</b>server <i>prefix</i></span><span class="desc">Set or view the text-command prefix (e.g. !)</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="setup create (or designate) the dedicated music control channel with live buttons.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>setup</span><span class="cgdesc">Create (or designate) the dedicated music control channel with live buttons.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/setup create (or designate) the dedicated music control channel with live buttons."><span class="name"><b>/</b>setup</span><span class="desc">Create (or designate) the dedicated music control channel with live buttons.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="shuffle shuffle the queue.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>shuffle</span><span class="cgdesc">Shuffle the queue.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/shuffle shuffle the queue."><span class="name"><b>/</b>shuffle</span><span class="desc">Shuffle the queue.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="skip skip to the next track.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>skip</span><span class="cgdesc">Skip to the next track.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/skip skip to the next track."><span class="name"><b>/</b>skip</span><span class="desc">Skip to the next track.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="status show the bot’s health &amp; status">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>status</span><span class="cgdesc">Show the bot’s health &amp; status</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/status show the bot’s health &amp; status"><span class="name"><b>/</b>status</span><span class="desc">Show the bot’s health &amp; status</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="stop stop playback and clear the queue.">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>stop</span><span class="cgdesc">Stop playback and clear the queue.</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/stop stop playback and clear the queue."><span class="name"><b>/</b>stop</span><span class="desc">Stop playback and clear the queue.</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="timezone set your timezone so the bot can show your local time">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>timezone</span><span class="cgdesc">Set your timezone so the bot can show your local time</span><span class="cgcount">3</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/timezone set set your timezone (iana name like america/chicago)"><span class="name"><b>/</b>timezone <i>set</i></span><span class="desc">Set your timezone (IANA name like America/Chicago)</span></div>
+          <div class="cmd" data-q="/timezone show show a timezone &amp; current local time"><span class="name"><b>/</b>timezone <i>show</i></span><span class="desc">Show a timezone &amp; current local time</span></div>
+          <div class="cmd" data-q="/timezone clear remove your saved timezone"><span class="name"><b>/</b>timezone <i>clear</i></span><span class="desc">Remove your saved timezone</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="tools handy text &amp; dev utilities">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>tools</span><span class="cgdesc">Handy text &amp; dev utilities</span><span class="cgcount">11</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/tools timestamp generate discord timestamp codes"><span class="name"><b>/</b>tools <i>timestamp</i></span><span class="desc">Generate Discord timestamp codes</span></div>
+          <div class="cmd" data-q="/tools math evaluate a math expression"><span class="name"><b>/</b>tools <i>math</i></span><span class="desc">Evaluate a math expression</span></div>
+          <div class="cmd" data-q="/tools base64 encode or decode base64"><span class="name"><b>/</b>tools <i>base64</i></span><span class="desc">Encode or decode Base64</span></div>
+          <div class="cmd" data-q="/tools hash hash text"><span class="name"><b>/</b>tools <i>hash</i></span><span class="desc">Hash text</span></div>
+          <div class="cmd" data-q="/tools password generate a random password"><span class="name"><b>/</b>tools <i>password</i></span><span class="desc">Generate a random password</span></div>
+          <div class="cmd" data-q="/tools color preview a hex color"><span class="name"><b>/</b>tools <i>color</i></span><span class="desc">Preview a hex color</span></div>
+          <div class="cmd" data-q="/tools choose pick a random option"><span class="name"><b>/</b>tools <i>choose</i></span><span class="desc">Pick a random option</span></div>
+          <div class="cmd" data-q="/tools mock spongebob-ify text"><span class="name"><b>/</b>tools <i>mock</i></span><span class="desc">sPoNgEbOb-ify text</span></div>
+          <div class="cmd" data-q="/tools emojify turn text into regional-indicator emoji"><span class="name"><b>/</b>tools <i>emojify</i></span><span class="desc">Turn text into regional-indicator emoji</span></div>
+          <div class="cmd" data-q="/tools ascii make ascii-art text"><span class="name"><b>/</b>tools <i>ascii</i></span><span class="desc">Make ASCII-art text</span></div>
+          <div class="cmd" data-q="/tools reverse reverse text"><span class="name"><b>/</b>tools <i>reverse</i></span><span class="desc">Reverse text</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="util reminders, translate, weather, feeds &amp; free games">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>util</span><span class="cgdesc">Reminders, translate, weather, feeds &amp; free games</span><span class="cgcount">15</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/util reminder set set a reminder"><span class="name"><b>/</b>util <i>reminder set</i></span><span class="desc">Set a reminder</span></div>
+          <div class="cmd" data-q="/util reminder list list your active reminders"><span class="name"><b>/</b>util <i>reminder list</i></span><span class="desc">List your active reminders</span></div>
+          <div class="cmd" data-q="/util reminder cancel cancel a reminder"><span class="name"><b>/</b>util <i>reminder cancel</i></span><span class="desc">Cancel a reminder</span></div>
+          <div class="cmd" data-q="/util feed add subscribe a channel to a feed"><span class="name"><b>/</b>util <i>feed add</i></span><span class="desc">Subscribe a channel to a feed</span></div>
+          <div class="cmd" data-q="/util feed remove unsubscribe a feed"><span class="name"><b>/</b>util <i>feed remove</i></span><span class="desc">Unsubscribe a feed</span></div>
+          <div class="cmd" data-q="/util feed list list this server’s feeds"><span class="name"><b>/</b>util <i>feed list</i></span><span class="desc">List this server’s feeds</span></div>
+          <div class="cmd" data-q="/util translate translate text to another language"><span class="name"><b>/</b>util <i>translate</i></span><span class="desc">Translate text to another language</span></div>
+          <div class="cmd" data-q="/util weather show current weather for a place"><span class="name"><b>/</b>util <i>weather</i></span><span class="desc">Show current weather for a place</span></div>
+          <div class="cmd" data-q="/util freegames setup pick the channel and turn it on"><span class="name"><b>/</b>util <i>freegames setup</i></span><span class="desc">Pick the channel and turn it on</span></div>
+          <div class="cmd" data-q="/util freegames toggle turn the notifier on or off"><span class="name"><b>/</b>util <i>freegames toggle</i></span><span class="desc">Turn the notifier on or off</span></div>
+          <div class="cmd" data-q="/util freegames platform toggle a platform on/off"><span class="name"><b>/</b>util <i>freegames platform</i></span><span class="desc">Toggle a platform on/off</span></div>
+          <div class="cmd" data-q="/util freegames kinds choose which offer types to post"><span class="name"><b>/</b>util <i>freegames kinds</i></span><span class="desc">Choose which offer types to post</span></div>
+          <div class="cmd" data-q="/util freegames content choose which content types to post"><span class="name"><b>/</b>util <i>freegames content</i></span><span class="desc">Choose which content types to post</span></div>
+          <div class="cmd" data-q="/util freegames status show current settings"><span class="name"><b>/</b>util <i>freegames status</i></span><span class="desc">Show current settings</span></div>
+          <div class="cmd" data-q="/util freegames test post matching free games right now"><span class="name"><b>/</b>util <i>freegames test</i></span><span class="desc">Post matching free games right now</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="voicelock restrict music to a single voice channel">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>voicelock</span><span class="cgdesc">Restrict music to a single voice channel</span><span class="cgcount">3</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/voicelock set lock music to a voice channel"><span class="name"><b>/</b>voicelock <i>set</i></span><span class="desc">Lock music to a voice channel</span></div>
+          <div class="cmd" data-q="/voicelock off remove the music voice lock"><span class="name"><b>/</b>voicelock <i>off</i></span><span class="desc">Remove the music voice lock</span></div>
+          <div class="cmd" data-q="/voicelock status show the current music voice lock"><span class="name"><b>/</b>voicelock <i>status</i></span><span class="desc">Show the current music voice lock</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="volume set the playback volume (0-150).">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>volume</span><span class="cgdesc">Set the playback volume (0-150).</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/volume set the playback volume (0-150)."><span class="name"><b>/</b>volume</span><span class="desc">Set the playback volume (0-150).</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="voteskip vote to skip the current track">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>voteskip</span><span class="cgdesc">Vote to skip the current track</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/voteskip vote to skip the current track"><span class="name"><b>/</b>voteskip</span><span class="desc">Vote to skip the current track</span></div>
+          </div>
+        </div>
+        <div class="cgroup" data-q="wrapped a recap of your server’s music &amp; activity">
+          <button class="cghead" type="button"><span class="cgname"><b>/</b>wrapped</span><span class="cgdesc">A recap of your server’s music &amp; activity</span><span class="cgcount">1</span><span class="cgchev">›</span></button>
+          <div class="cgbody">
+          <div class="cmd" data-q="/wrapped a recap of your server’s music &amp; activity"><span class="name"><b>/</b>wrapped</span><span class="desc">A recap of your server’s music &amp; activity</span></div>
+          </div>
+        </div>
+        <div class="cmd-empty" id="cmdEmpty" style="display:none;padding:20px 15px;color:var(--tan);font-size:.9rem;text-align:center">No commands match that search.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section id="get" style="padding-top:20px">
+  <div class="wrap">
+    <div class="band reveal">
+      <h2>Bring the control room to your server.</h2>
+      <p>Harmonix runs on your own machine — free, no monthly bill. Download it, run one command, and the bot and dashboard start together. Set it up once, then run the whole show from your browser.</p>
+      <div class="hero-cta">
+        <a href="harmonix-music-bot.zip" download class="btn btn-primary">
+            <span class="btile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></span>
+            <span class="btxt"><b>Download Harmonix</b><span>Free · ~360 KB</span></span>
+          </a>
+        <a href="https://discord.com/oauth2/authorize?client_id=1511943816469414109&amp;permissions=8&amp;integration_type=0&amp;scope=bot+applications.commands" target="_blank" rel="noopener" class="btn btn-discord">
+            <span class="btile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg></span>
+            <span class="btxt"><b>Add our bot</b><span>Hosted by us · no setup</span></span>
+          </a>
+      </div>
+      <div class="linkchips">
+        <a href="setup.html" class="lchip">
+          <span class="li"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></span>
+          <span class="lt"><b>Setup guide</b><span>Free · about 15 minutes</span></span>
+          <span class="lar">›</span>
+        </a>
+        <a href="dashboard.html" class="lchip">
+          <span class="li"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></span>
+          <span class="lt"><b>Try the demo</b><span>Sample data · no install</span></span>
+          <span class="lar">›</span>
+        </a>
+      </div>
+      <div style="margin-top:16px;font-size:.82rem;color:rgba(255,255,255,.75);position:relative">Free &amp; open source · ~360 KB · runs on your own PC</div>
+    </div>
+  </div>
+</section>
 
 <footer>
-  <div class="wrap">Harmonix · free self-hosting guide · built by ItsChaBoiDan</div>
+  <div class="wrap">
+    <div class="foot">
+      <div class="brand">
+        <span class="glyph"><span><i></i><i></i><i></i></span></span>
+        Harmonix
+      </div>
+      <div class="links">
+        <a href="#features">Features</a>
+        <a href="dashboard.html">Demo dashboard</a>
+        <a href="#commands">Commands</a>
+        <a href="#get">Get started</a>
+      </div>
+      <div class="note">Harmonix · a self-hosted Discord bot built by ItsChaBoiDan. Made for friends and communities who want to run their server their way.</div>
+    </div>
+  </div>
 </footer>
 
 <script>
-  document.querySelectorAll('.code .copy').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const pre=btn.closest('.code').querySelector('pre');
-      navigator.clipboard.writeText(pre.innerText).then(()=>{
-        btn.textContent='Copied';btn.classList.add('done');
-        setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('done')},1600);
-      });
+  // scroll reveal
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // command palette: expand/collapse + search across subcommands
+  const cmdSearch = document.getElementById('cmdSearch');
+  const cmdList = document.getElementById('cmdList');
+  const cmdEmpty = document.getElementById('cmdEmpty');
+  if (cmdSearch && cmdList) {
+    const groups = [...cmdList.querySelectorAll('.cgroup')];
+
+    cmdList.addEventListener('click', (e) => {
+      const head = e.target.closest('.cghead');
+      if (head) head.parentElement.classList.toggle('open');
     });
-  });
-  const links=[...document.querySelectorAll('.toc a')];
-  const map=new Map(links.map(l=>[l.getAttribute('href').slice(1),l]));
-  const spy=new IntersectionObserver((es)=>{
-    es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('active'));map.get(e.target.id)?.classList.add('active');}});
-  },{rootMargin:'-40% 0px -55% 0px'});
-  document.querySelectorAll('[id]').forEach(el=>{if(map.has(el.id))spy.observe(el)});
+
+    const filter = () => {
+      const q = cmdSearch.value.toLowerCase().replace(/^\//, '').trim();
+      let shown = 0;
+      groups.forEach(g => {
+        const rows = [...g.querySelectorAll('.cmd')];
+        if (!q) {
+          g.style.display = ''; g.classList.remove('open');
+          rows.forEach(r => r.style.display = '');
+          shown++;
+          return;
+        }
+        const groupHit = (g.dataset.q || '').includes(q);
+        let any = false;
+        rows.forEach(r => {
+          const hit = groupHit || (r.dataset.q || '').includes(q);
+          r.style.display = hit ? '' : 'none';
+          if (hit) any = true;
+        });
+        g.style.display = any ? '' : 'none';
+        g.classList.toggle('open', any);
+        if (any) shown++;
+      });
+      if (cmdEmpty) cmdEmpty.style.display = shown ? 'none' : '';
+    };
+
+    cmdSearch.addEventListener('input', filter);
+    cmdSearch.addEventListener('keydown', e => { if (e.key === 'Escape') { cmdSearch.value = ''; filter(); } });
+  }
 </script>
 </body>
 </html>
