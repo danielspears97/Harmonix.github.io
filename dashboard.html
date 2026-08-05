@@ -61,10 +61,80 @@ select, textarea {
   transition: border-color .15s;
 }
 textarea { height: auto; padding: 10px 12px; resize: vertical; }
-select[multiple] { height: auto; padding: 6px; }
+
+/* Selects: replace the OS dropdown arrow with our own chevron. */
+select:not([multiple]) {
+  appearance: none; -webkit-appearance: none; -moz-appearance: none;
+  padding-right: 32px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23a2947f' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 18px 18px;
+}
+select[multiple] {
+  height: auto; padding: 6px;
+  appearance: none; -webkit-appearance: none;
+}
+select[multiple] option {
+  padding: 6px 8px; border-radius: 5px; margin-bottom: 2px;
+}
+select[multiple] option:checked {
+  background: var(--accent) linear-gradient(0deg, var(--accent), var(--accent));
+  color: #fff;
+}
 input[type="color"] { height: var(--ctl-h); width: 64px; padding: 4px; cursor: pointer; }
-input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
-input[type="range"] { accent-color: var(--accent); height: auto; }
+/* The OS-native number spinners don't match anything else in this UI. Hidden
+   globally — arrow keys still step the value natively. */
+input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; appearance: none; margin: 0; }
+/* Custom checkboxes — accent-color only tints the OS control, it still renders
+   as a native (Windows/macOS) box. Drawn from scratch so it matches the UI. */
+input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none;
+  width: 18px; height: 18px; flex: 0 0 18px;
+  margin: 0; padding: 0; cursor: pointer;
+  display: inline-grid; place-content: center;   /* centres the tick exactly */
+  vertical-align: middle;
+  background: var(--bg-soft);
+  border: 1px solid var(--line); border-radius: 5px;
+  transition: background .15s, border-color .15s;
+}
+input[type="checkbox"]:hover { border-color: #4a3d5c; }
+input[type="checkbox"]:checked {
+  background: var(--accent); border-color: var(--accent);
+}
+/* the tick — grid-centred, nudged up 1px so the rotated shape looks optically centred */
+input[type="checkbox"]::after {
+  content: ''; width: 5px; height: 9px;
+  border: solid #fff; border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-1px, -1px);
+  opacity: 0; transition: opacity .12s;
+}
+input[type="checkbox"]:checked::after { opacity: 1; }
+input[type="checkbox"]:disabled { opacity: .45; cursor: not-allowed; }
+input[type="checkbox"]:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+
+/* Range slider — native thumbs differ wildly between browsers/OSes. */
+input[type="range"] {
+  appearance: none; -webkit-appearance: none;
+  height: 4px; padding: 0; border: none; border-radius: 999px;
+  background: var(--line); cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--text); border: none; cursor: pointer;
+  transition: background .15s, transform .1s;
+}
+input[type="range"]:hover::-webkit-slider-thumb { background: var(--accent); }
+input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.15); }
+input[type="range"]::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--text); border: none; cursor: pointer;
+}
+input[type="range"]:hover::-moz-range-thumb { background: var(--accent); }
+input[type="range"]::-moz-range-track { height: 4px; border-radius: 999px; background: var(--line); }
 input:hover, select:hover, textarea:hover { border-color: #4a3d5c; }
 input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; }
 button { font: inherit; cursor: pointer; }
@@ -147,7 +217,13 @@ header.topbar {
 .hamburger { width: 40px; height: 40px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--text); font-size: 17px; }
 .guild-select { display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; }
 .guild-select img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; background: var(--panel-2); }
-.guild-select select { width: auto; height: auto; background: transparent; border: none; cursor: pointer; }
+.guild-select select {
+  width: auto; height: auto; border: none; cursor: pointer;
+  /* keep our chevron: a plain `background: transparent` would wipe it */
+  background-color: transparent;
+  background-position: right 0 center;
+  padding-right: 22px; padding-left: 0;
+}
 .guild-select select option { background: var(--panel); }
 .userbox { display: flex; align-items: center; gap: 8px; padding-left: 10px; border-left: 1px solid var(--line); font-size: 13px; }
 .userbox img { width: 24px; height: 24px; border-radius: 50%; }
@@ -202,17 +278,22 @@ header.topbar {
 
 .transport { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .ctl {
-  width: 42px; height: 42px;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 42px; height: 42px; padding: 0;
   background: var(--panel-2); border: 1px solid var(--line); border-radius: 50%;
-  color: var(--text); font-size: 15px;
+  color: var(--text); font-size: 15px; line-height: 0;
   transition: border-color .15s, background .15s;
 }
 .ctl:hover { border-color: var(--accent); }
+.ctl .ico { display: block; color: var(--text); }
+.ctl.wide { display: inline-flex; align-items: center; gap: 7px; }
+.ctl.wide .ico { color: var(--muted); }
+.ctl.wide:hover .ico, .ctl.wide.on .ico { color: var(--text); }
 .ctl.primary { width: 52px; height: 52px; background: var(--accent); border-color: var(--accent); color: #fff; font-size: 18px; }
 .ctl.primary:hover { filter: brightness(1.12); }
 .ctl.danger:hover { border-color: var(--accent); color: var(--accent); }
 .ctl.wide { width: auto; border-radius: 999px; padding: 0 16px; font-size: 13px; }
-.ctl.wide.on { border-color: var(--accent); color: var(--accent-2); }
+.ctl.wide.on { border-color: var(--accent); color: var(--text); background: rgba(240, 76, 60, 0.14); }
 .vol { display: flex; align-items: center; gap: 8px; margin-left: auto; font-size: 14px; }
 .vol input { width: 120px; }
 .vol span { font-size: 12px; color: var(--muted); min-width: 36px; }
@@ -385,16 +466,23 @@ header.topbar {
 .cfg-card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 18px; margin-bottom: 14px; }
 .cfg-title { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 14px; margin-bottom: 8px; }
 .cfg-line { display: flex; flex-direction: column; gap: 5px; padding: 9px 0; font-size: 13px; font-weight: 600; }
-.cfg-line input[type="checkbox"] { align-self: flex-start; }
+.cfg-line:has(> input[type="checkbox"]) { flex-direction: row; align-items: center; gap: 9px; }
+.cfg-line input[type="checkbox"] { align-self: center; }
 .cfg-actions { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
 
 /* ── overview ── */
-.ov-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; align-items: stretch; }
-@media (max-width: 1180px) { .ov-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 640px)  { .ov-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.ov-tile { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-md); padding: 18px 12px 14px; text-align: center; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
-.ov-num { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: clamp(19px, 1.55vw, 25px); letter-spacing: -0.5px; line-height: 1.1; overflow-wrap: anywhere; }
-.ov-lbl { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; margin-top: 5px; line-height: 1.3; }
+/* Flex, not grid: grid reserves fixed track widths, so counts that don't divide
+   evenly leave a gap on the right. With flex-grow every tile share stretches, so
+   ANY number of tiles (2, 6, 7...) fills the full width and lines up with the
+   top-track panel below. On wrap, the last row stretches too. */
+.ov-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.ov-tile {
+  flex: 1 1 140px; min-width: 0;
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-md);
+  padding: 18px 14px 14px; text-align: center;
+}
+.ov-num { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 25px; letter-spacing: -0.5px; }
+.ov-lbl { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.4px; margin-top: 4px; }
 .ov-hero { background: rgba(240, 76, 60, 0.09); border: 1px solid rgba(240, 76, 60, 0.3); border-radius: var(--r-md); padding: 14px 18px; margin-bottom: 16px; }
 .ov-hero-eyebrow { font-size: 10.5px; text-transform: uppercase; letter-spacing: 1.6px; color: var(--accent-2); font-weight: 700; }
 .ov-hero-title { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 17px; margin-top: 4px; }
@@ -483,23 +571,168 @@ header.topbar {
 .mgr-power .power-roles { border: none; border-top: 1px solid var(--line); border-radius: 0; margin: 8px 0 0; }
 .mgr-mini { height: var(--ctl-h); padding: 0 14px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--text); font-size: 13px; font-weight: 600; }
 .mgr-mini:hover { border-color: var(--accent); color: var(--accent-2); }
-#mgrSaveCmds, #mgrSaveConfig { height: var(--ctl-h); padding: 0 18px; background: var(--accent); color: #fff; border: none; border-radius: var(--r-sm); font-weight: 700; }
-#mgrSaveCmds:hover, #mgrSaveConfig:hover { filter: brightness(1.12); }
+/* "Save now" is a backup for the autosave, not the primary action — so it reads
+   as a quiet secondary control rather than a big coral call-to-action. */
+#mgrSaveCmds, #mgrSaveConfig, #mgrSaveSettings {
+  height: 34px; padding: 0 16px;
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--line); border-radius: 999px;
+  font-size: 12.5px; font-weight: 600; letter-spacing: .2px;
+  display: inline-flex; align-items: center; gap: 7px;
+  transition: border-color .15s, color .15s, background .15s;
+}
+#mgrSaveCmds::before, #mgrSaveConfig::before, #mgrSaveSettings::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--good); opacity: .55;
+}
+#mgrSaveCmds:hover, #mgrSaveConfig:hover, #mgrSaveSettings:hover {
+  background: var(--panel-2); border-color: var(--accent); color: var(--text);
+}
+.mgr-actions {
+  display: flex; align-items: center; gap: 12px;
+  margin-top: 18px; padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.mgr-actions .save-status { margin-right: auto; }
 .cfg-save { height: var(--ctl-h); }
 
 
 /* typed volume input beside the slider */
-.vol-num { display: inline-flex; align-items: center; gap: 2px; }
+/* Volume readout: one compact pill you can click and type into. The native
+   number spinners are removed — they're OS-styled and clash with everything. */
+.vol-num {
+  display: inline-flex; align-items: baseline; gap: 1px;
+  height: 30px; padding: 0 11px;
+  background: var(--bg-soft); border: 1px solid var(--line); border-radius: 999px;
+  transition: border-color .15s, background .15s;
+  cursor: text;
+}
+.vol-num:hover { border-color: #4a3d5c; }
+.vol-num:focus-within { border-color: var(--accent); background: var(--panel-2); }
 .vol-num input[type="number"] {
-  width: 58px; height: 28px; padding: 0 4px 0 6px;
-  text-align: right; font-variant-numeric: tabular-nums; font-size: 13px;
-  border-radius: 6px;
+  width: 30px; height: 100%; padding: 0; margin: 0;
+  background: transparent; border: none; border-radius: 0;
+  color: var(--text); font: inherit; font-size: 13px; font-weight: 700;
+  text-align: right; font-variant-numeric: tabular-nums;
+  -moz-appearance: textfield; appearance: textfield;
 }
 .vol-num input[type="number"]::-webkit-outer-spin-button,
-.vol-num input[type="number"]::-webkit-inner-spin-button { opacity: 1; height: 22px; }
-.vol-num b { color: var(--muted); font-size: 12px; font-weight: 500; }
+.vol-num input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none; appearance: none; margin: 0;
+}
+.vol-num input[type="number"]:focus { outline: none; border: none; }
+.vol-num b { color: var(--muted); font-size: 11px; font-weight: 600; }
 /* overview stats sit above the console on the home view */
 #homeStats { margin-bottom: 20px; }
+
+/* leaderboard identity */
+.lvl-av { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; background: var(--bg-soft); flex: 0 0 26px; }
+.lvl-av-none { display: inline-block; }
+.lvl-left { color: var(--muted); font-size: 11.5px; font-weight: 400; }
+.lvl-user { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ── server picker (shown when you arrive without a ?guild= link) ── */
+body.picking .sidenav,
+body.picking .side-foot { display: none; }
+body.picking .side { justify-content: flex-start; }
+
+.picker {
+  display: flex; flex-direction: column; justify-content: center;
+  min-height: calc(100vh - 120px);
+  max-width: 760px; margin: 0 auto; padding: 20px 0 60px;
+}
+.picker-head { text-align: center; margin-bottom: 30px; }
+.picker-eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+}
+.picker-title {
+  font-family: 'Poppins', sans-serif; font-weight: 800;
+  font-size: clamp(26px, 4vw, 40px); letter-spacing: -0.8px; line-height: 1.15;
+}
+.picker-sub { color: var(--muted); font-size: 14px; margin-top: 10px; }
+
+.picker-list { display: flex; flex-direction: column; gap: 12px; }
+.gp-item {
+  display: flex; align-items: center; gap: 20px; width: 100%;
+  padding: 18px 22px; text-align: left;
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-lg);
+  color: var(--text);
+  transition: border-color .15s, transform .15s, background .15s;
+}
+.gp-item:hover {
+  border-color: var(--accent); background: var(--panel-2);
+  transform: translateY(-2px);
+}
+.gp-icon {
+  width: 72px; height: 72px; flex: 0 0 72px;
+  border-radius: 50%; object-fit: cover; background: var(--bg-soft);
+}
+.gp-icon-fallback {
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 28px;
+  color: var(--accent);
+}
+.gp-meta { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
+.gp-name {
+  font-family: 'Poppins', sans-serif; font-weight: 800;
+  font-size: clamp(18px, 2.4vw, 26px); letter-spacing: -0.4px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.gp-role { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; }
+.gp-go { font-size: 22px; color: var(--muted); flex: 0 0 auto; }
+.gp-item:hover .gp-go { color: var(--accent); }
+@media (max-width: 620px) {
+  .gp-item { gap: 14px; padding: 14px 16px; }
+  .gp-icon { width: 54px; height: 54px; flex-basis: 54px; }
+}
+
+
+/* ── number stepper ───────────────────────────────────────────────
+   The native spinners are hidden globally (they're OS-styled). These are ours:
+   a small pair of arrows tucked inside the input's right edge. The wrapper is
+   a fixed width and never stretches, so the arrows stay attached to the number
+   box rather than drifting to the far end of a full-width field. */
+.num {
+  position: relative;
+  display: inline-flex; align-items: center;
+  max-width: 100%; vertical-align: middle;
+  /* No width of its own: the wrapper shrink-wraps whatever width the input
+     already has, so the arrows sit on the box's edge no matter which rule
+     sizes that particular field. */
+}
+.num > input[type="number"] {
+  padding-right: 24px;      /* room for the arrows */
+}
+/* Only the column-flex rows would stretch the wrapper; row layouts keep
+   their own vertical centring. */
+.mgr-field > .num,
+.cfg-line > .num,
+.set-group .mgr-field > .num { align-self: flex-start; }
+.num-steps {
+  position: absolute; right: 6px; top: 50%;
+  transform: translateY(-50%);
+  width: 13px; height: 22px;
+  display: flex; flex-direction: column; gap: 3px;
+  pointer-events: none;     /* only the buttons themselves are clickable */
+}
+.num-steps button {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none; border-radius: 3px;
+  padding: 0; cursor: pointer; pointer-events: auto;
+  transition: background .12s;
+}
+.num-steps button:hover { background: var(--panel-2); }
+.num-steps button::before {
+  content: ''; display: block;
+  border-left: 3.5px solid transparent; border-right: 3.5px solid transparent;
+}
+.num-up::before { border-bottom: 4px solid var(--muted); }
+.num-down::before { border-top: 4px solid var(--muted); }
+.num-steps button:hover::before { border-bottom-color: var(--accent-2); border-top-color: var(--accent-2); }
+.num-steps button:active::before { border-bottom-color: var(--accent); border-top-color: var(--accent); }
+/* the volume pill draws its own thing */
+.vol-num .num-steps { display: none; }
 
 /* ---- demo-mode banner (not part of the real dashboard) ---- */
 .demo-banner{
@@ -574,6 +807,7 @@ header.topbar {
     </aside>
 
     <div class="content">
+
       <div class="demo-banner">
         <span class="demo-tag">DEMO</span>
         <span class="demo-txt">You're viewing a preview with sample data — this isn't a real server.</span>
@@ -591,6 +825,16 @@ header.topbar {
           </span>
         </div>
       </header>
+
+      <!-- server picker: shown when you arrive without a ?guild= link -->
+      <div class="picker" id="guildPicker" style="display:none">
+        <div class="picker-head">
+          <div class="picker-eyebrow">Harmonix</div>
+          <h1 class="picker-title">Which server are you here for?</h1>
+          <p class="picker-sub">Pick one to open its dashboard. You can switch any time from the top right.</p>
+        </div>
+        <div class="picker-list" id="pickerList"></div>
+      </div>
 
     <div id="homeStats" style="display:none">
       <div class="section-title" id="ovTitle">Overview</div>
@@ -637,12 +881,12 @@ header.topbar {
           </div>
 
           <div class="transport">
-            <button class="ctl" id="prev" title="Previous">⏮</button>
-            <button class="ctl primary" id="play" title="Play / Pause">▶</button>
-            <button class="ctl" id="skip" title="Skip">⏭</button>
-            <button class="ctl danger" id="stop" title="Stop">⏹</button>
-            <button class="ctl" id="shuffle" title="Shuffle">🔀</button>
-            <button class="ctl" id="loop" title="Loop">🔁</button>
+            <button class="ctl" id="prev" title="Previous"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg></button>
+            <button class="ctl primary" id="play" title="Play / Pause"><svg class="ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg></button>
+            <button class="ctl" id="skip" title="Skip"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
+            <button class="ctl danger" id="stop" title="Stop"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M6 6h12v12H6z"/></svg></button>
+            <button class="ctl" id="shuffle" title="Shuffle"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg></button>
+            <button class="ctl" id="loop" title="Loop"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg></button>
             <div class="vol">
               🔈
               <input type="range" id="vol" min="0" max="150" value="60" />
@@ -660,10 +904,10 @@ header.topbar {
 
       <!-- toggles row -->
       <div class="transport" style="margin-top:6px">
-        <button class="ctl wide" id="autoplay">♾ Autoplay</button>
-        <button class="ctl wide" id="t247">🕒 24/7</button>
-        <button class="ctl wide danger" id="clear">🧹 Clear queue</button>
-        <button class="ctl wide danger" id="disconnect" style="margin-left:auto">⏏ Disconnect</button>
+        <button class="ctl wide" id="autoplay"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M18.6 6.62c-1.44 0-2.8.56-3.77 1.53L12 10.66 10.49 12h.01L7.8 14.39c-.64.64-1.49.99-2.4.99-1.87 0-3.39-1.51-3.39-3.38S3.53 8.62 5.4 8.62c.91 0 1.76.35 2.44 1.03l1.13 1 1.51-1.34L9.22 8.2C8.2 7.18 6.84 6.62 5.4 6.62 2.42 6.62 0 9.04 0 12s2.42 5.38 5.4 5.38c1.44 0 2.8-.56 3.77-1.53l2.83-2.5.01.01L13.52 12h-.01l2.69-2.39c.64-.64 1.49-.99 2.4-.99 1.87 0 3.39 1.51 3.39 3.38s-1.52 3.38-3.39 3.38c-.9 0-1.76-.35-2.44-1.03l-1.14-1.01-1.51 1.34 1.27 1.12c1.02 1.01 2.37 1.57 3.82 1.57 2.98 0 5.4-2.41 5.4-5.38s-2.42-5.37-5.4-5.37z"/></svg><span>Autoplay</span></button>
+        <button class="ctl wide" id="t247"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg><span>24/7</span></button>
+        <button class="ctl wide danger" id="clear"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg><span>Clear queue</span></button>
+        <button class="ctl wide danger" id="disconnect" style="margin-left:auto"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M5 17h14v2H5zm7-12L5.33 15h13.34z"/></svg><span>Disconnect</span></button>
       </div>
 
       <!-- queue -->
@@ -800,6 +1044,11 @@ header.topbar {
           <div class="mgr-field">
             <label for="mgrChLogging">📝 Event log channel</label>
             <select id="mgrChLogging"></select>
+          </div>
+          <div class="mgr-field">
+            <label for="mgrLogIgnore">🙈 Channels the log ignores <small>(Ctrl/Cmd-click for multiple)</small></label>
+            <select id="mgrLogIgnore" multiple size="5"></select>
+            <span><small>message edits/deletes and voice activity here are never logged. The log channel itself is always skipped.</small></span>
           </div>
           <div class="mgr-field">
             <label for="mgrChModlog">🛡️ Mod-log channel</label>
@@ -1010,6 +1259,8 @@ function msToTime(ms) {
   return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
 }
 const PLACEHOLDER_ART = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Crect width='220' height='220' fill='%231a1722'/%3E%3Cpath d='M84 150V78l58-10v62' stroke='%23f04c3c' stroke-width='6' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='78' cy='150' r='12' fill='%23f04c3c'/%3E%3Ccircle cx='142' cy='140' r='12' fill='%23ff8fb0'/%3E%3C/svg%3E";
+const PLAY_ICON = '<svg class="ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>';
+const PAUSE_ICON = '<svg class="ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>';
 const CASE_EMOJI = { warn: '⚠️', kick: '👢', ban: '🔨', tempban: '⏲️', unban: '♻️', timeout: '⏳', untimeout: '🔓', mute: '🔇', unmute: '🔊' };
 
 function showNotice(type, message) {
@@ -1032,8 +1283,17 @@ const btnAutoplay = $('autoplay'), bt247 = $('t247'), btnLoop = $('loop');
 const searchInput = $('searchInput'), searchBtn = $('searchBtn');
 const queueEl = $('queue'), notice = $('notice');
 const hamburger = $('hamburger'), hamMenu = $('hamMenu'), mgrCommands = $('mgrCommands');
+const guildPicker = $('guildPicker'), pickerList = $('pickerList'), mgrLogIgnore = $('mgrLogIgnore');
 
 // ══════════════════════════════════════════════ MOCK DATA ══
+// three servers so the picker and the top-right switcher are both meaningful
+const GUILDS = [
+  { id: 'g1', name: 'The Lounge', icon: null, canManage: true, members: 412 },
+  { id: 'g2', name: 'Pixel Pit', icon: null, canManage: true, members: 1180 },
+  { id: 'g3', name: 'Study Hall', icon: null, canManage: false, members: 96 },
+];
+let currentGuild = 'g1';
+
 const CHANNELS = ['general','the-lounge','music','announcements','mod-log','welcome','counting','trivia','suggestions','starboard','birthdays'].map((n, i) => ({ id: 'c' + i, name: n }));
 const VOICE = ['General','Music','Gaming','AFK'].map((n, i) => ({ id: 'v' + i, name: n }));
 const ROLES = ['Admin','Moderator','DJ','Trusted','Member'].map((n, i) => ({ id: 'r' + i, name: n }));
@@ -1076,10 +1336,10 @@ const CASES = [
 ];
 
 const LEVELS = [
-  { userId: '@maya', level: 42, xp: 88400 }, { userId: '@dan', level: 39, xp: 79050 },
-  { userId: '@theo', level: 35, xp: 70200 }, { userId: '@june', level: 28, xp: 56800 },
-  { userId: '@korra', level: 24, xp: 48120 }, { userId: '@ravi', level: 21, xp: 41300 },
-  { userId: '@sol', level: 18, xp: 33900 }, { userId: '@ivy', level: 15, xp: 27600 },
+  { userId: '111', name: 'maya', level: 42, xp: 88400 }, { userId: '112', name: 'dan', level: 39, xp: 79050 },
+  { userId: '113', name: 'theo', level: 35, xp: 70200 }, { userId: '114', name: 'june', level: 28, xp: 56800 },
+  { userId: '115', name: 'korra', level: 24, xp: 48120 }, { userId: '116', name: 'ravi', level: 21, xp: 41300 },
+  { userId: '117', name: 'sol', level: 18, xp: 33900 }, { userId: '118', name: 'ivy', level: 15, xp: 27600, left: true },
 ];
 
 const STATS = {
@@ -1094,8 +1354,8 @@ const STATS = {
 const ACH = {
   total: 34,
   board: [
-    { name: '@maya', count: 22 }, { name: '@dan', count: 20 },
-    { name: '@theo', count: 17 }, { name: '@june', count: 13 }, { name: '@korra', count: 9 },
+    { name: 'maya', userId: '111', count: 22 }, { name: 'dan', userId: '112', count: 20 },
+    { name: 'theo', userId: '113', count: 17 }, { name: 'june', userId: '114', count: 13 }, { name: 'ivy', userId: '118', count: 9, left: true },
   ],
   defs: [
     { key: 'first_spin', group: 'Music', emoji: '🎵', name: 'First Spin', desc: 'Play your first track' },
@@ -1123,21 +1383,24 @@ const CONFIG = {
   starboard: { enabled: true, channelId: 'c9', threshold: 3, emoji: '⭐' },
 };
 
+// names and channels are resolved server-side now — no raw IDs
 const LOG_ENTRIES = [
-  { at: Date.now() - 30000, color: 0xf04c3c, text: '/mod lockdown lifted on #general by @dan' },
-  { at: Date.now() - 120000, color: 0x5ad27e, text: '@maya unlocked achievement: Night Owl' },
-  { at: Date.now() - 240000, color: 0xff8fb0, text: '@dan queued 12 tracks in #music' },
-  { at: Date.now() - 360000, color: 0xf0b84a, text: 'Case #47 — warn @spammer (repeated self-promo)' },
-  { at: Date.now() - 520000, color: 0x5ad27e, text: '@theo reached level 35' },
-  { at: Date.now() - 700000, color: 0xa2947f, text: 'Autoplay engaged in #the-lounge' },
+  { at: Date.now() - 30000, color: 0xf04c3c, text: 'dan · Lockdown lifted in #general' },
+  { at: Date.now() - 120000, color: 0x5ad27e, text: 'maya · Unlocked achievement: Night Owl' },
+  { at: Date.now() - 180000, color: 0xa2947f, text: 'theo · Message deleted in #general' },
+  { at: Date.now() - 240000, color: 0xff8fb0, text: 'dan · Queued 12 tracks in #music' },
+  { at: Date.now() - 300000, color: 0xa2947f, text: 'june · Joined voice #Music' },
+  { at: Date.now() - 360000, color: 0xf0b84a, text: 'spammer · Case #47 warn (repeated self-promo)' },
+  { at: Date.now() - 520000, color: 0x5ad27e, text: 'theo · Reached level 35' },
 ];
 
 // canManage drives the managers-only bits of Overview (jump links + module notice)
-const OVERVIEW = {
-  guildName: 'The Lounge', members: 412, playsWeek: 1284, listenersWeek: 96,
-  commandsUsed: 14208, achievementsUnlocked: 18, ping: 42, canManage: true,
-  topTrack: { title: 'Late Night Set', author: 'Nova', plays: 37 }, disabledModules: 1,
+const OVERVIEWS = {
+  g1: { guildName: 'The Lounge', members: 412, playsWeek: 1284, listenersWeek: 96, commandsUsed: 14208, achievementsUnlocked: 18, ping: 42, canManage: true, topTrack: { title: 'Late Night Set', author: 'Nova', plays: 37 }, disabledModules: 1 },
+  g2: { guildName: 'Pixel Pit', members: 1180, playsWeek: 3402, listenersWeek: 214, commandsUsed: 38911, achievementsUnlocked: 27, ping: 39, canManage: true, topTrack: { title: 'Boss Rush', author: 'Arcadea', plays: 82 }, disabledModules: 0 },
+  g3: { guildName: 'Study Hall', members: 96, playsWeek: 310, listenersWeek: 22, commandsUsed: 2104, achievementsUnlocked: 9, ping: 44, canManage: false, topTrack: { title: 'Rain on Glass', author: 'Lowlit', plays: 15 }, disabledModules: 0 },
 };
+let OVERVIEW = OVERVIEWS.g1;
 
 // ══════════════════════════════════════════════ PLAYER ══
 function renderPlayer() {
@@ -1147,7 +1410,7 @@ function renderPlayer() {
   elArt.src = c.artworkUrl || PLACEHOLDER_ART;
   elEyebrow.textContent = state.paused ? 'Paused' : 'Now Playing';
   elTitle.textContent = c.title; elSub.textContent = c.author;
-  btnPlay.textContent = state.paused ? '▶' : '⏸';
+  btnPlay.innerHTML = state.paused ? PLAY_ICON : PAUSE_ICON;
   elCur.textContent = msToTime(state.position); elDur.textContent = msToTime(c.duration);
   elFill.style.width = `${Math.min(100, (state.position / c.duration) * 100)}%`;
 
@@ -1159,8 +1422,8 @@ function renderPlayer() {
   if (c.requester) badges.push(`<span class="badge">requested by ${escapeHtml(c.requester.username)}</span>`);
   elBadges.innerHTML = badges.join('');
 
-  btnAutoplay.classList.toggle('active', !!state.autoplay);
-  bt247.classList.toggle('active', !!state.twentyFourSeven);
+  btnAutoplay.classList.toggle('on', !!state.autoplay);
+  bt247.classList.toggle('on', !!state.twentyFourSeven);
   btnLoop.classList.toggle('active', state.repeatMode && state.repeatMode !== 'off');
   vol.value = state.volume;
   if (document.activeElement !== volNum) volNum.value = state.volume;
@@ -1177,6 +1440,59 @@ function renderPlayer() {
       <button class="q-rm" data-i="${i}" title="Remove">✕</button>
     </div>`).join('');
 }
+
+
+// ══════════════════════════════════════════════ SERVER PICKER ══
+function setGuildIcon(id) {
+  const g = GUILDS.find((x) => x.id === id);
+  // the icon follows the selection now (it used to be set only on first load)
+  if (g && g.icon) { guildIcon.src = g.icon; guildIcon.style.visibility = 'visible'; }
+  else guildIcon.style.visibility = 'hidden';
+}
+
+/** Arriving without a ?guild= link → choose a server first. */
+function showGuildPicker() {
+  if (!guildPicker) return;
+  document.body.classList.add('picking');
+  guildPicker.style.display = '';
+  managerEl.style.display = 'none';
+  main.style.display = 'none';
+  disc.style.display = 'none';
+  if (homeStats) homeStats.style.display = 'none';
+  const mini = $('mini'); if (mini) mini.style.display = 'none';
+
+  pickerList.innerHTML = GUILDS.map((g) => `
+    <button class="gp-item" data-gid="${escapeHtml(g.id)}">
+      ${g.icon
+        ? `<img class="gp-icon" src="${escapeHtml(g.icon)}" alt="" />`
+        : `<span class="gp-icon gp-icon-fallback">${escapeHtml((g.name || '?').slice(0, 1).toUpperCase())}</span>`}
+      <span class="gp-meta">
+        <span class="gp-name">${escapeHtml(g.name)}</span>
+        <span class="gp-role">${g.canManage ? 'Manage this server' : 'Member'}</span>
+      </span>
+      <span class="gp-go">→</span>
+    </button>`).join('') || '<div class="empty">Harmonix isn\u2019t in any servers you\u2019re in yet.</div>';
+}
+
+/** Leave the picker and open the chosen server's dashboard. */
+function enterGuild(id) {
+  document.body.classList.remove('picking');
+  if (guildPicker) guildPicker.style.display = 'none';
+  currentGuild = id;
+  guildSelect.value = id;
+  setGuildIcon(id);
+  OVERVIEW = OVERVIEWS[id] || OVERVIEWS.g1;
+  setView('music');
+}
+
+if (pickerList) {
+  pickerList.addEventListener('click', (e) => {
+    const btn = e.target.closest('.gp-item');
+    if (btn) enterGuild(btn.dataset.gid);
+  });
+}
+// switching from the top-right dropdown re-renders for that server
+guildSelect.addEventListener('change', () => enterGuild(guildSelect.value));
 
 // ══════════════════════════════════════════════ VIEW SWITCH ══
 const PANELS = { commands: 'mgrCommandsPanel', settings: 'mgrSettingsPanel', cases: 'mgrCasesPanel', levels: 'mgrLevelsPanel', stats: 'mgrStatsPanel', achievements: 'mgrAchievementsPanel', composer: 'mgrComposerPanel', config: 'mgrConfigPanel', log: 'mgrLogPanel' };
@@ -1255,6 +1571,10 @@ function renderManager() {
   $('mgrMaxQueue').value = 0; $('mgrMaxSong').value = 0; $('mgrMaxPerUser').value = 0;
   $('mgrReplyMode').value = 'default';
   $('mgrXpIgnore').innerHTML = CHANNELS.map((c) => `<option value="${c.id}">#${escapeHtml(c.name)}</option>`).join('');
+  if (mgrLogIgnore) {
+    const ignored = ['c9']; // #starboard is ignored by the log in this demo server
+    mgrLogIgnore.innerHTML = CHANNELS.map((c) => `<option value="${c.id}" ${ignored.includes(c.id) ? 'selected' : ''}>#${escapeHtml(c.name)}</option>`).join('');
+  }
   $('mgrFade').value = 0;
   $('mgrCounting').innerHTML = '<option value="">— none —</option>' + CHANNELS.map((c) => `<option value="${c.id}" ${c.id === 'c6' ? 'selected' : ''}>#${escapeHtml(c.name)}</option>`).join('');
   const disabled = new Set(DISABLED_MODULES);
@@ -1429,7 +1749,8 @@ function renderCases() {
 function renderLevels() {
   $('mgrLevels').innerHTML = LEVELS.map((l, i) => `<div class="lvl-row" data-uid="${escapeHtml(l.userId)}">
       <span class="lvl-rank">#${i + 1}</span>
-      <span class="lvl-user">${escapeHtml(l.userId)}</span>
+      ${l.avatar ? `<img class="lvl-av" src="${escapeHtml(l.avatar)}" alt="" />` : '<span class="lvl-av lvl-av-none"></span>'}
+      <span class="lvl-user" title="${escapeHtml(l.userId)}">${escapeHtml(l.name || l.userId)}${l.left ? ' <span class="lvl-left">(left)</span>' : ''}</span>
       <span class="lvl-badge">Lv ${l.level}</span>
       <input class="lvl-xp" type="number" min="0" value="${l.xp}" />
       <button class="lvl-save">Save</button>
@@ -1447,7 +1768,7 @@ function renderAchievements() {
     <div class="ach-row">
       <span class="ach-rank">${medal(i)}</span>
       <span class="ach-av"></span>
-      <span class="ach-name">${escapeHtml(u.name)}</span>
+      <span class="ach-name" title="${escapeHtml(u.userId)}">${escapeHtml(u.name)}${u.left ? ' <span class="lvl-left">(left)</span>' : ''}</span>
       <span class="ach-count">${u.count}/${ACH.total}</span>
     </div>`).join('');
   const groups = {};
@@ -1569,10 +1890,10 @@ $('cfgImport') && $('cfgImport').addEventListener('click', () => showNotice('suc
 // ══════════════════════════════════════════════ player interactions ══
 searchBtn.addEventListener('click', () => { if (searchInput.value.trim()) { showNotice('success', `Added to queue: ${searchInput.value.trim()}`); searchInput.value = ''; } });
 searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') searchBtn.click(); });
-$('play').addEventListener('click', () => { STATE.paused = !STATE.paused; btnPlay.textContent = STATE.paused ? '▶' : '⏸'; elEyebrow.textContent = STATE.paused ? 'Paused' : 'Now Playing'; });
+$('play').addEventListener('click', () => { STATE.paused = !STATE.paused; btnPlay.innerHTML = STATE.paused ? PLAY_ICON : PAUSE_ICON; elEyebrow.textContent = STATE.paused ? 'Paused' : 'Now Playing'; });
 [['prev', 'Previous track'], ['skip', 'Skipped'], ['stop', 'Stopped'], ['shuffle', 'Queue shuffled'], ['loop', 'Loop toggled']].forEach(([id, msg]) => { const b = $(id); b && b.addEventListener('click', () => showNotice('success', msg)); });
-btnAutoplay.addEventListener('click', () => { STATE.autoplay = !STATE.autoplay; btnAutoplay.classList.toggle('active', STATE.autoplay); showNotice('success', `Autoplay ${STATE.autoplay ? 'on' : 'off'}`); });
-bt247.addEventListener('click', () => { STATE.twentyFourSeven = !STATE.twentyFourSeven; bt247.classList.toggle('active', STATE.twentyFourSeven); showNotice('success', `24/7 ${STATE.twentyFourSeven ? 'on' : 'off'}`); });
+btnAutoplay.addEventListener('click', () => { STATE.autoplay = !STATE.autoplay; btnAutoplay.classList.toggle('on', STATE.autoplay); showNotice('success', `Autoplay ${STATE.autoplay ? 'on' : 'off'}`); });
+bt247.addEventListener('click', () => { STATE.twentyFourSeven = !STATE.twentyFourSeven; bt247.classList.toggle('on', STATE.twentyFourSeven); showNotice('success', `24/7 ${STATE.twentyFourSeven ? 'on' : 'off'}`); });
 $('clear').addEventListener('click', () => showNotice('success', 'Queue cleared'));
 $('disconnect').addEventListener('click', () => showNotice('success', 'Disconnected'));
 queueEl.addEventListener('click', (e) => { if (e.target.closest('.q-rm')) { e.target.closest('.q-item').remove(); showNotice('success', 'Removed from queue'); } });
@@ -1587,7 +1908,17 @@ function applyVolume(raw) {
   vol.value = v; volNum.value = v; STATE.volume = v;
   showNotice('success', `Volume ${v}%`);
 }
-volNum.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); volNum.blur(); } });
+const volPill = volNum.closest('.vol-num');
+if (volPill) volPill.addEventListener('click', () => volNum.focus());
+volNum.addEventListener('focus', () => volNum.select()); // type straight over it
+volNum.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); volNum.blur(); return; }
+  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    const step = e.shiftKey ? 10 : 1;
+    applyVolume(clampVol(volNum.value) + (e.key === 'ArrowUp' ? step : -step));
+  }
+});
 volNum.addEventListener('change', () => applyVolume(volNum.value));
 volNum.addEventListener('blur', () => applyVolume(volNum.value));
 
@@ -1634,11 +1965,13 @@ palette && palette.addEventListener('click', (e) => { if (e.target === palette) 
 lock.style.display = 'none';
 app.style.display = '';
 hamburger.style.display = '';
-guildSelect.innerHTML = '<option value="g1">The Lounge</option>';
+guildSelect.innerHTML = GUILDS.map((g) => `<option value="${g.id}">${escapeHtml(g.name)}</option>`).join('');
 guildIcon.style.visibility = 'hidden';
 $('sideStatus').textContent = 'online';
 renderPlayer();
-setView('music');
+// Opening this page directly is exactly the "no ?guild= link" case, so the
+// picker is what you'd really see. Choosing a server drops you into it.
+showGuildPicker();
 
 </script>
 </body>
