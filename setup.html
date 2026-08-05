@@ -323,9 +323,13 @@
         <ul>
           <li>Makes sure the <b>music engine</b> is up (starts it through Docker for you)</li>
           <li><b>Registers the slash commands</b> so they show up in Discord</li>
-          <li>Opens a free public link for the dashboard and <b>prints the exact login redirect</b> to paste into Discord</li>
+          <li>Optionally opens a free public link for the dashboard and <b>prints the exact login redirect</b> to paste into Discord</li>
           <li><b>Starts the bot</b> and streams everything into one window</li>
         </ul>
+        <div class="callout tip">
+          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9h8M8 13h5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span>
+          <p><b>First launch asks you two quick questions:</b> whether to start a public Cloudflare tunnel (say <b>no</b> if you'll only use the dashboard on this PC), and whether to register commands globally (every server, correct for real use) or locally (just your test server, instant). Your answers are saved, so it only asks once — run <code class="inl">node run.js --reconfigure</code> to change them later.</p>
+        </div>
         <div class="callout tip">
           <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></span>
           <p><b>That's the whole job.</b> Install the pieces once, double-click the launcher, and Harmonix runs. Leave that window open while you're using the bot; closing it (or Ctrl+C) stops the bot.</p>
